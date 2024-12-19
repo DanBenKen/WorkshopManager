@@ -1,6 +1,6 @@
 ﻿using WorkshopManager.Models;
 
-namespace WorkshopManager.Interfaces
+namespace WorkshopManager.Interfaces.RepositoryInterfaces
 {
     public interface IWorkerRepository
     {

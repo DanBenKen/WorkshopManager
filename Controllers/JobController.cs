@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WorkshopManager.DTOs;
-using WorkshopManager.Interfaces;
+using WorkshopManager.Interfaces.ServiceInterfaces;
 
 namespace WorkshopManager.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class JobController : Controller
@@ -15,7 +17,7 @@ namespace WorkshopManager.Controllers
             _jobService = jobService;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateJob([FromBody] JobDTO jobDTO)
         {
             if (jobDTO == null)

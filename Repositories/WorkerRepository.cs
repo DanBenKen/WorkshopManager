@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkshopManager.Interfaces;
+using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Models;
 
 namespace WorkshopManager.Repositories

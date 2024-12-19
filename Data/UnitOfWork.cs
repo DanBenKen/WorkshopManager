@@ -1,4 +1,5 @@
 ﻿using WorkshopManager.Interfaces;
+using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Repositories;
 
 namespace WorkshopManager.Data

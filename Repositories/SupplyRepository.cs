@@ -1,4 +1,4 @@
-﻿using WorkshopManager.Interfaces;
+﻿using WorkshopManager.Interfaces.RepositoryInterfaces;
 
 namespace WorkshopManager.Repositories
 {

@@ -1,7 +1,7 @@
 ﻿using WorkshopManager.DTOs;
 using WorkshopManager.Models;
 
-namespace WorkshopManager.Interfaces
+namespace WorkshopManager.Interfaces.ServiceInterfaces
 {
     public interface IJobService
     {

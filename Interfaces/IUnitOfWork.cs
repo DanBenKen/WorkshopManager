@@ -1,4 +1,6 @@
-﻿namespace WorkshopManager.Interfaces
+﻿using WorkshopManager.Interfaces.RepositoryInterfaces;
+
+namespace WorkshopManager.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
