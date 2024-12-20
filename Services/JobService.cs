@@ -21,10 +21,11 @@ namespace WorkshopManager.Services
             var job = new Job
             {
                 WorkerId = jobDTO.WorkerId,
+                SupplyId = jobDTO.SupplyId,
                 JobName = jobDTO.JobName,
                 Description = jobDTO.Description,
                 Status = jobDTO.Status,
-                WorkerName = $"{worker.FirstName} {worker.LastName}",
+                WorkerName = $"{worker?.FirstName} {worker?.LastName}",
             };
 
             _unitOfWork.JobRepository.AddJob(job);
@@ -45,7 +46,7 @@ namespace WorkshopManager.Services
             job.JobName = jobDTO.JobName;
             job.Description = jobDTO.Description;
             job.Status = jobDTO.Status;
-            job.WorkerName = $"{worker.FirstName} {worker.LastName}";
+            job.WorkerName = $"{worker?.FirstName} {worker?.LastName}";
 
             _unitOfWork.JobRepository.UpdateJob(job);
             await _unitOfWork.SaveChangesAsync();

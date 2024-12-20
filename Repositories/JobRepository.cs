@@ -13,7 +13,7 @@ namespace WorkshopManager.Repositories
             _context = context;
         }
 
-        public async Task<Job> GetJobByIdAsync(int id)
+        public async Task<Job?> GetJobByIdAsync(int id)
         {
             return await _context.Jobs.FirstOrDefaultAsync(j => j.Id == id);
         }

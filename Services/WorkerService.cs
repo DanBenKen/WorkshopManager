@@ -32,7 +32,7 @@ namespace WorkshopManager.Services
             return worker;
         }
 
-        public async Task<Worker> GetWorkerAsync(int id)
+        public async Task<Worker?> GetWorkerAsync(int id)
         {
             return await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id);
         }
