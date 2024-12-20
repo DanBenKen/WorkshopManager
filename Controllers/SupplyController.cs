@@ -34,7 +34,7 @@ namespace WorkshopManager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSupply(int id, [FromBody] SupplyDTO supplyDTO)
         {
-            var updatedSupply = await _supplyService.UpdateSupplyAsync(id, supplyDTO);
+            await _supplyService.UpdateSupplyAsync(id, supplyDTO);
             return NoContent();
         }
 

@@ -48,7 +48,7 @@ namespace WorkshopManager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateWorker(int id, [FromBody] WorkerDTO workerDTO)
         {
-            var updatedWorker = await _workerService.UpdateWorkerAsync(id, workerDTO);
+            await _workerService.UpdateWorkerAsync(id, workerDTO);
             return NoContent();
         }
 
