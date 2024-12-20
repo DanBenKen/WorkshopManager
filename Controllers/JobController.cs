@@ -46,12 +46,18 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateJob(int id, JobDTO jobDTO)
+        public async Task<IActionResult> UpdateJob(int id, [FromBody] JobDTO jobDTO)
         {
+            if (jobDTO == null)
+                return BadRequest("Job data is required.");
+
             try
             {
-                var job = await _jobService.UpdateJobAsync(id, jobDTO);
-                return Ok(job);
+                var updatedJob = await _jobService.UpdateJobAsync(id, jobDTO);
+                if (updatedJob == null)
+                    return NotFound("Job not found.");
+
+                return Ok(updatedJob);
             }
             catch (Exception ex)
             {
@@ -62,11 +68,19 @@ namespace WorkshopManager.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteJob(int id)
         {
-            var job = await _jobService.DeleteJobAsync(id);
-            if (!job)
-                return NotFound();
+            try
+            {
+                var result = await _jobService.DeleteJobAsync(id);
+                if (!result)
+                    return NotFound("Job not found.");
 
-            return Ok("Job deleted.");
+                return Ok("Job deleted.");
+                // return NoContent(); 204 No Content
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
