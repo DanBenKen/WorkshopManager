@@ -30,13 +30,10 @@ namespace WorkshopManager.Repositories
             return job;
         }
 
-        public void DeleteJob(int id)
+        public Job DeleteJob(Job job)
         {
-            var job = _context.Jobs.Find(id);
-            if (job != null)
-            {
-                _context.Jobs.Remove(job);
-            }
+            _context.Jobs.Remove(job);
+            return job;
         }
     }
 }

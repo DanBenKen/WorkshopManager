@@ -21,9 +21,7 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> CreateJob([FromBody] JobDTO jobDTO)
         {
             if (jobDTO == null)
-            {
                 return BadRequest("Job data is required.");
-            }
 
             try
             {
@@ -45,6 +43,30 @@ namespace WorkshopManager.Controllers
                 return NotFound();
 
             return Ok(job);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateJob(int id, JobDTO jobDTO)
+        {
+            try
+            {
+                var job = await _jobService.UpdateJobAsync(id, jobDTO);
+                return Ok(job);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteJob(int id)
+        {
+            var job = await _jobService.DeleteJobAsync(id);
+            if (!job)
+                return NotFound();
+
+            return Ok("Job deleted.");
         }
     }
 }

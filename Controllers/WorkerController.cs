@@ -20,7 +20,8 @@ namespace WorkshopManager.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateWorker([FromBody] WorkerDTO workerDTO)
         {
-            if (workerDTO == null) return BadRequest("Worker data is required.");
+            if (workerDTO == null) 
+                return BadRequest("Worker data is required.");
 
             try
             {

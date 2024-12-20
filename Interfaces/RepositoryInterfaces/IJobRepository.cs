@@ -7,6 +7,6 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
         Task<Job> GetJobByIdAsync(int id);
         Job AddJob(Job job);
         Job UpdateJob(Job job);
-        void DeleteJob(int id);
+        Job DeleteJob(Job job);
     }
 }
