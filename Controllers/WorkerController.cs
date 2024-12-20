@@ -21,7 +21,7 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> CreateWorker([FromBody] WorkerDTO workerDTO)
         {
             if (workerDTO == null)
-                return BadRequest(new { message = "Supply data is required." });
+                return BadRequest(new { message = "Worker data is required." });
 
             try
             {
@@ -63,7 +63,7 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> UpdateWorker(int id, [FromBody] WorkerDTO workerDTO)
         {
             if (workerDTO == null)
-                return BadRequest(new { message = "Supply data is required." });
+                return BadRequest(new { message = "Worker data is required." });
 
             try
             {
