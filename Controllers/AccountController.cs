@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using WorkshopManager.DTOs;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 
@@ -15,7 +16,7 @@ namespace WorkshopManager.Controllers
             _accountService = accountService;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
         {
             if (!ModelState.IsValid)
@@ -39,6 +40,13 @@ namespace WorkshopManager.Controllers
                 return Ok(new { message = "Login successful." });
 
             return Unauthorized("Invalid login attempt.");
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _accountService.LogoutAsync();
+            return Ok("Logout successful.");
         }
     }
 }

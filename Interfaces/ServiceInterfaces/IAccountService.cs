@@ -7,5 +7,6 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
     {
         Task<IdentityResult> RegisterAsync(RegisterDTO registerDTO);
         Task<SignInResult> LoginAsync(LoginDTO loginDTO);
+        Task LogoutAsync();
     }
 }

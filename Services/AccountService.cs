@@ -18,13 +18,55 @@ namespace WorkshopManager.Services
 
         public async Task<IdentityResult> RegisterAsync(RegisterDTO registerDTO)
         {
-            var user = new ApplicationUser { UserName = registerDTO.Email, Email = registerDTO.Email };
-            return await _userManager.CreateAsync(user, registerDTO.Password);
+            var passwordValidationResult = await ValidatePasswordAsync(registerDTO.Password);
+            if (!passwordValidationResult.Succeeded)
+            {
+                return passwordValidationResult;
+            }
+
+            var user = new ApplicationUser { UserName = registerDTO.UserName, Email = registerDTO.Email };
+            var result = await _userManager.CreateAsync(user, registerDTO.Password);
+
+            return result;
+        }
+
+        public async Task<IdentityResult> ValidatePasswordAsync(string password)
+        {
+            var passwordValidators = _userManager.PasswordValidators;
+            var user = new ApplicationUser();
+
+            var errors = new List<IdentityError>();
+
+            foreach (var validator in passwordValidators)
+            {
+                var result = await validator.ValidateAsync(_userManager, user, password);
+                if (!result.Succeeded)
+                {
+                    errors.AddRange(result.Errors);
+                }
+            }
+
+            return errors.Count != 0 ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
         }
 
         public async Task<SignInResult> LoginAsync(LoginDTO loginDTO)
         {
-            return await _signInManager.PasswordSignInAsync(loginDTO.Email, loginDTO.Password, loginDTO.RememberMe, false);
+            var user = await _userManager.FindByEmailAsync(loginDTO.Email);
+            if (user == null)
+                return SignInResult.Failed;
+
+            var passwordValid = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
+            if (!passwordValid)
+                return SignInResult.Failed;
+
+            await _signInManager.SignInAsync(user, isPersistent: loginDTO.RememberMe);
+
+            return SignInResult.Success;
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }
