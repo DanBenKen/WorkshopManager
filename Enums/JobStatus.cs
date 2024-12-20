@@ -13,5 +13,4 @@ namespace WorkshopManager.Enums
         [EnumMember(Value = "Completed")]
         Completed
     }
-
 }

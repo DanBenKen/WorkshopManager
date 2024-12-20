@@ -12,14 +12,18 @@ namespace WorkshopManager.Data
         private IWorkerRepository _workerRepository;
         private ISupplyRepository _supplyRepository;
 
-        public IJobRepository JobRepository => _jobRepository ??= new JobRepository(_context);
-        public IWorkerRepository WorkerRepository => _workerRepository ??= new WorkerRepository(_context);
-        public ISupplyRepository SupplyRepository => _supplyRepository ??= new SupplyRepository(_context);
-
         public UnitOfWork(WorkshopDbContext context)
         {
             _context = context;
+
+            _jobRepository = new JobRepository(_context);
+            _workerRepository = new WorkerRepository(_context);
+            _supplyRepository = new SupplyRepository(_context);
         }
+
+        public IJobRepository JobRepository => _jobRepository ??= new JobRepository(_context);
+        public IWorkerRepository WorkerRepository => _workerRepository ??= new WorkerRepository(_context);
+        public ISupplyRepository SupplyRepository => _supplyRepository ??= new SupplyRepository(_context);
 
         public async Task<int> SaveChangesAsync()
         {
