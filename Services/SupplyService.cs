@@ -32,14 +32,15 @@ namespace WorkshopManager.Services
             return supply;
         }
 
-        public async Task<Supply> GetSupplyAsync(int id)
+        public async Task<Supply?> GetSupplyAsync(int id)
         {
             return await _unitOfWork.SupplyRepository.GetSupplyById(id);
         }
 
-        public async Task<Supply> UpdateSupplyAsync(int id, SupplyDTO supplyDTO)
+        public async Task<Supply?> UpdateSupplyAsync(int id, SupplyDTO supplyDTO)
         {
-            var supply = await _unitOfWork.SupplyRepository.GetSupplyById(id);
+            var supply = await _unitOfWork.SupplyRepository.GetSupplyById(id)
+                ?? throw new ArgumentNullException(nameof(supplyDTO));
 
             supply.Name = supplyDTO.Name;
             supply.Quantity = supplyDTO.Quantity;

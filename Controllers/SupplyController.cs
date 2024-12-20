@@ -8,7 +8,7 @@ namespace WorkshopManager.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class SupplyController : Controller
+    public class SupplyController : ControllerBase
     {
         private readonly ISupplyService _supplyService;
 
@@ -18,10 +18,10 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSupply([FromBody] SupplyDTO supplyDTO)
+        public async Task<ActionResult<SupplyDTO>> CreateSupply([FromBody] SupplyDTO supplyDTO)
         {
-            if (supplyDTO == null)
-                return BadRequest(new { message = "Supply data is required." });
+            //if (supplyDTO == null)
+            //    return BadRequest(new { message = "Supply data is required." }); ApiController vec obezbedjuje ovu validaciju
 
             try
             {
@@ -39,7 +39,7 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSupply(int id)
+        public async Task<ActionResult<SupplyDTO>> GetSupply(int id)
         {
             try
             {

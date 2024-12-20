@@ -34,7 +34,7 @@ namespace WorkshopManager.Services
             return job;
         }
 
-        public async Task<Job> UpdateJobAsync(int id, JobDTO jobDTO)
+        public async Task<Job?> UpdateJobAsync(int id, JobDTO jobDTO)
         {
             var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id);
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(jobDTO.WorkerId);
@@ -66,7 +66,7 @@ namespace WorkshopManager.Services
             return true;
         }
 
-        public async Task<Job> GetJobAsync(int id)
+        public async Task<Job?> GetJobAsync(int id)
         {
             return await _unitOfWork.JobRepository.GetJobByIdAsync(id);
         }

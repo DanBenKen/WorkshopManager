@@ -37,9 +37,10 @@ namespace WorkshopManager.Services
             return await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id);
         }
 
-        public async Task<Worker> UpdateWorkerAsync(int id, WorkerDTO workerDTO)
+        public async Task<Worker?> UpdateWorkerAsync(int id, WorkerDTO workerDTO)
         {
-            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id);
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
+                ?? throw new ArgumentNullException(nameof(workerDTO));
 
             worker.FirstName = workerDTO.FirstName;
             worker.LastName = workerDTO.LastName;
