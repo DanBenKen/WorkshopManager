@@ -18,6 +18,11 @@ namespace WorkshopManager.Repositories
             return await _context.Workers.FirstOrDefaultAsync(w => w.Id == id);
         }
 
+        public async Task<IEnumerable<Worker>> GetAllWorkersAsync()
+        {
+            return await _context.Workers.ToListAsync();
+        }
+
         public Worker AddWorker(Worker worker)
         {
             _context.AddAsync(worker);

@@ -5,7 +5,7 @@ using WorkshopManager.Interfaces.ServiceInterfaces;
 
 namespace WorkshopManager.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class WorkerController : ControllerBase
@@ -29,6 +29,20 @@ namespace WorkshopManager.Controllers
         {
             var worker = await _workerService.GetWorkerAsync(id);
             return Ok(worker);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllWorkers()
+        {
+            var workers = await _workerService.GetAllWorkersAsync();
+            return Ok(workers);
+        }
+
+        [HttpGet("workers-with-jobs")]
+        public async Task<IActionResult> GetWorkersWithJobs()
+        {
+            var workersWithJobs = await _workerService.GetAllWorkersWithJobsAsync();
+            return Ok(workersWithJobs);
         }
 
         [HttpPut("{id}")]

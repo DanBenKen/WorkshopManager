@@ -26,6 +26,10 @@ namespace WorkshopManager.Services
 
             var user = new ApplicationUser { UserName = registerDTO.UserName, Email = registerDTO.Email };
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Admin");
+            }
 
             return result;
         }

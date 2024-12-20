@@ -22,13 +22,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = false;
+
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
-
-    options.User.RequireUniqueEmail = true;
 });
 
 // Register repositories
@@ -53,6 +54,14 @@ var app = builder.Build();
 
 // Exception handling
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    await RoleInitializer.Initialize(serviceProvider, roleManager);
+}
 
 if (app.Environment.IsDevelopment())
 {
