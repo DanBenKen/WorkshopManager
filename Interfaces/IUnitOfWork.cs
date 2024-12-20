@@ -4,9 +4,9 @@ namespace WorkshopManager.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IJobRepository Jobs { get; }
-        IWorkerRepository Workers { get; }
-        ISupplyRepository Supplies { get; }
-        Task<int> CompleteAsync();
+        IJobRepository JobRepository { get; }
+        IWorkerRepository WorkerRepository { get; }
+        ISupplyRepository SupplyRepository { get; }
+        Task<int> SaveChangesAsync();
     }
 }

@@ -16,23 +16,26 @@ namespace WorkshopManager.Services
 
         public async Task<Job> CreateJobAsync(JobDTO jobDTO)
         {
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(jobDTO.WorkerId);
+
             var job = new Job
             {
                 WorkerId = jobDTO.WorkerId,
                 JobName = jobDTO.JobName,
                 Description = jobDTO.Description,
                 Status = jobDTO.Status,
+                WorkerName = $"{worker.FirstName} {worker.LastName}",
             };
 
-            _unitOfWork.Jobs.AddJob(job);
-            await _unitOfWork.CompleteAsync();
+            _unitOfWork.JobRepository.AddJob(job);
+            await _unitOfWork.SaveChangesAsync();
 
             return job;
         }
 
         public async Task<Job> GetJobAsync(int id)
         {
-            return await _unitOfWork.Jobs.GetJobByIdAsync(id);
+            return await _unitOfWork.JobRepository.GetJobByIdAsync(id);
         }
     }
 }

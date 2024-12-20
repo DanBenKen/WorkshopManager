@@ -41,11 +41,8 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> GetJob(int id)
         {
             var job = await _jobService.GetJobAsync(id);
-
             if (job == null)
-            {
                 return NotFound();
-            }
 
             return Ok(job);
         }

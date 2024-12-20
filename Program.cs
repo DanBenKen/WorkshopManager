@@ -39,8 +39,9 @@ builder.Services.AddScoped<ISupplyRepository, SupplyRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Register services
-builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IWorkerService, WorkerService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
