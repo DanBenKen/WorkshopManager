@@ -13,7 +13,7 @@ namespace WorkshopManager.Repositories
             _context = context;
         }
 
-        public async Task<Supply?> GetSupplyById(int id)
+        public async Task<Supply?> GetSupplyByIdAsync(int id)
         {
             return await _context.Supplies.FirstOrDefaultAsync(s => s.Id == id);
         }

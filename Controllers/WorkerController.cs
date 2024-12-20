@@ -8,7 +8,7 @@ namespace WorkshopManager.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class WorkerController : Controller
+    public class WorkerController : ControllerBase
     {
         private readonly IWorkerService _workerService;
 
@@ -28,32 +28,20 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> GetWorker(int id)
         {
             var worker = await _workerService.GetWorkerAsync(id);
-            if (worker == null)
-                return NotFound(new { message = "Worker not found." });
-
             return Ok(worker);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateWorker(int id, [FromBody] WorkerDTO workerDTO)
         {
-            if (workerDTO == null)
-                return BadRequest(new { message = "Worker data is required." });
-
             var updatedWorker = await _workerService.UpdateWorkerAsync(id, workerDTO);
-            if (updatedWorker == null)
-                return NotFound(new { message = "Worker not found." });
-
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWorker(int id)
         {
-            var result = await _workerService.DeleteWorkerAsync(id);
-            if (!result)
-                return NotFound(new { message = "Worker not found." });
-
+            await _workerService.DeleteWorkerAsync(id);
             return NoContent();
         }
     }

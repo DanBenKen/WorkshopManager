@@ -8,7 +8,7 @@ namespace WorkshopManager.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class JobController : Controller
+    public class JobController : ControllerBase
     {
         private readonly IJobService _jobService;
 
@@ -28,9 +28,6 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> GetJob(int id)
         {
             var job = await _jobService.GetJobAsync(id);
-            if (job == null)
-                return NotFound(new { message = "Job not found." });
-
             return Ok(job);
         }
 
@@ -38,19 +35,13 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> UpdateJob(int id, [FromBody] JobDTO jobDTO)
         {
             var updatedJob = await _jobService.UpdateJobAsync(id, jobDTO);
-            if (updatedJob == null)
-                return NotFound(new { message = "Job not found." });
-
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteJob(int id)
         {
-            var result = await _jobService.DeleteJobAsync(id);
-            if (!result)
-                return NotFound(new { message = "Job not found." });
-
+            await _jobService.DeleteJobAsync(id);
             return NoContent();
         }
     }

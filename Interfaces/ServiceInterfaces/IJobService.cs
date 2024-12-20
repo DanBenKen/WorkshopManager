@@ -8,7 +8,7 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
     {
         Task<Job> CreateJobAsync(JobDTO jobDTO);
         Task<Job?> UpdateJobAsync(int id, JobDTO jobDTO);
-        Task<bool> DeleteJobAsync(int id);
+        Task DeleteJobAsync(int id);
         Task<Job?> GetJobAsync(int id);
     }
 }

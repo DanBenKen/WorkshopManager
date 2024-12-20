@@ -1,4 +1,5 @@
 ﻿using WorkshopManager.DTOs;
+using WorkshopManager.Exceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 using WorkshopManager.Models;
@@ -16,7 +17,11 @@ namespace WorkshopManager.Services
 
         public async Task<Job> CreateJobAsync(JobDTO jobDTO)
         {
-            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(jobDTO.WorkerId);
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(jobDTO.WorkerId)
+                ?? throw new WorkerNotFoundException(jobDTO.WorkerId);
+
+            var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(jobDTO.SupplyId)
+                ?? throw new SupplyNotFoundException(jobDTO.SupplyId);
 
             var job = new Job
             {
@@ -36,11 +41,11 @@ namespace WorkshopManager.Services
 
         public async Task<Job?> UpdateJobAsync(int id, JobDTO jobDTO)
         {
-            var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id);
-            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(jobDTO.WorkerId);
+            var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
+                ?? throw new JobNotFoundException(id);
 
-            if (job == null)
-                throw new Exception("Job not found");
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(jobDTO.WorkerId)
+                ?? throw new WorkerNotFoundException(jobDTO.WorkerId);
 
             job.WorkerId = jobDTO.WorkerId;
             job.JobName = jobDTO.JobName;
@@ -54,16 +59,13 @@ namespace WorkshopManager.Services
             return job;
         }
 
-        public async Task<bool> DeleteJobAsync(int id)
+        public async Task DeleteJobAsync(int id)
         {
-            var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id);
-            if (job == null)
-                return false;
+            var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
+                ?? throw new JobNotFoundException(id);
 
             _unitOfWork.JobRepository.DeleteJob(job);
             await _unitOfWork.SaveChangesAsync();
-
-            return true;
         }
 
         public async Task<Job?> GetJobAsync(int id)

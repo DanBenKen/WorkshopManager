@@ -1,4 +1,5 @@
 ﻿using WorkshopManager.DTOs;
+using WorkshopManager.Exceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 using WorkshopManager.Models;
@@ -16,9 +17,6 @@ namespace WorkshopManager.Services
 
         public async Task<Worker> CreateWorker(WorkerDTO workerDto)
         {
-            if (workerDto == null)
-                throw new ArgumentNullException(nameof(workerDto));
-
             var worker = new Worker
             {
                 FirstName = workerDto.FirstName,
@@ -40,7 +38,7 @@ namespace WorkshopManager.Services
         public async Task<Worker?> UpdateWorkerAsync(int id, WorkerDTO workerDTO)
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
-                ?? throw new ArgumentNullException(nameof(workerDTO));
+                ?? throw new WorkerNotFoundException(id);
 
             worker.FirstName = workerDTO.FirstName;
             worker.LastName = workerDTO.LastName;
@@ -52,16 +50,13 @@ namespace WorkshopManager.Services
             return worker;
         }
 
-        public async Task<bool> DeleteWorkerAsync(int id)
+        public async Task DeleteWorkerAsync(int id)
         {
-            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id);
-            if (worker == null)
-                return false;
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
+                ?? throw new WorkerNotFoundException(id);
 
             _unitOfWork.WorkerRepository.DeleteWorker(worker);
             await _unitOfWork.SaveChangesAsync();
-
-            return true;
         }
     }
 }

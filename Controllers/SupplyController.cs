@@ -28,9 +28,6 @@ namespace WorkshopManager.Controllers
         public async Task<ActionResult<SupplyDTO>> GetSupply(int id)
         {
             var supply = await _supplyService.GetSupplyAsync(id);
-            if (supply == null)
-                return NotFound(new { message = "Supply not found." });
-
             return Ok(supply);
         }
 
@@ -38,19 +35,13 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> UpdateSupply(int id, [FromBody] SupplyDTO supplyDTO)
         {
             var updatedSupply = await _supplyService.UpdateSupplyAsync(id, supplyDTO);
-            if (updatedSupply == null)
-                return NotFound(new { message = "Supply not found." });
-
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSupply(int id)
         {
-            var result = await _supplyService.DeleteSupplyAsync(id);
-            if (!result)
-                return NotFound(new { message = "Supply not found." });
-
+            await _supplyService.DeleteSupplyAsync(id);
             return NoContent();
         }
     }

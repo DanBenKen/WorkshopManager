@@ -8,6 +8,6 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
         Task<Supply> CreateSupply(SupplyDTO supplyDTO);
         Task<Supply?> GetSupplyAsync(int id);
         Task<Supply?> UpdateSupplyAsync(int id, SupplyDTO supplyDTO);
-        Task<bool> DeleteSupplyAsync(int id);
+        Task DeleteSupplyAsync(int id);
     }
 }
