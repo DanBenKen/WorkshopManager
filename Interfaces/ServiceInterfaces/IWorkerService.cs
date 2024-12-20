@@ -7,5 +7,7 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
     {
         Task<Worker> CreateWorker(WorkerDTO workerDto);
         Task<Worker> GetWorkerAsync(int id);
+        Task<Worker> UpdateWorkerAsync(int id, WorkerDTO workerDTO);
+        Task<bool> DeleteWorkerAsync(int id);
     }
 }

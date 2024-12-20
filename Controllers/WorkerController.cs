@@ -26,11 +26,11 @@ namespace WorkshopManager.Controllers
             try
             {
                 var worker = await _workerService.CreateWorker(workerDTO);
-                return CreatedAtAction(nameof(GetWorker), new { id = worker.Id }, workerDTO);
+                return CreatedAtAction(nameof(GetWorker), new { id = worker.Id }, worker);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
@@ -41,6 +41,37 @@ namespace WorkshopManager.Controllers
             if (worker == null) return NotFound();
 
             return Ok(worker);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateWorker(int id, [FromBody] WorkerDTO workerDTO)
+        {
+            try
+            {
+                var updatedWorker = await _workerService.UpdateWorkerAsync(id, workerDTO);
+                return Ok(updatedWorker);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteWorker(int id)
+        {
+            try
+            {
+                var result = await _workerService.DeleteWorkerAsync(id);
+                if (!result) 
+                    return NotFound("Worker not found.");
+
+                return Ok("Worker deleted.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500,$"Internal server error: {ex.Message}");
+            }
         }
     }
 }
