@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WorkshopManager.Data;
-using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
+using WorkshopManager.Interfaces;
+using WorkshopManager.Middlewares;
 using WorkshopManager.Models;
 using WorkshopManager.Repositories;
 using WorkshopManager.Services;
@@ -14,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<WorkshopDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Dodavanje servisa za Identity
+// Identity services
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<WorkshopDbContext>()
     .AddDefaultTokenProviders();
@@ -45,13 +46,14 @@ builder.Services.AddScoped<IWorkerService, WorkerService>();
 builder.Services.AddScoped<ISupplyService, SupplyService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Exception handling
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -59,7 +61,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();
