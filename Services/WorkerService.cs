@@ -54,7 +54,7 @@ namespace WorkshopManager.Services
         public async Task<bool> DeleteWorkerAsync(int id)
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id);
-            if (worker != null)
+            if (worker == null)
                 return false;
 
             _unitOfWork.WorkerRepository.DeleteWorker(worker);
