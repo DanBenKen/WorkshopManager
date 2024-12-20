@@ -20,8 +20,8 @@ namespace WorkshopManager.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateWorker([FromBody] WorkerDTO workerDTO)
         {
-            if (workerDTO == null) 
-                return BadRequest("Worker data is required.");
+            if (workerDTO == null)
+                return BadRequest(new { message = "Supply data is required." });
 
             try
             {
@@ -30,7 +30,11 @@ namespace WorkshopManager.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred.",
+                    details = ex.Message
+                });
             }
         }
 
@@ -41,13 +45,17 @@ namespace WorkshopManager.Controllers
             {
                 var worker = await _workerService.GetWorkerAsync(id);
                 if (worker == null)
-                    return NotFound("Worker not found.");
+                    return NotFound(new { message = "Worker not found." });
 
                 return Ok(worker);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred.",
+                    details = ex.Message
+                });
             }
         }
 
@@ -55,19 +63,24 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> UpdateWorker(int id, [FromBody] WorkerDTO workerDTO)
         {
             if (workerDTO == null)
-                return BadRequest("Worker data is required.");
+                return BadRequest(new { message = "Supply data is required." });
 
             try
             {
                 var updatedWorker = await _workerService.UpdateWorkerAsync(id, workerDTO);
                 if (updatedWorker == null)
-                    return NotFound("Worker not found.");
+                    return NotFound(new { message = "Worker not found." });
 
                 return Ok(updatedWorker);
+                //return NoContent(); 204 No Content
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred.",
+                    details = ex.Message
+                });
             }
         }
 
@@ -78,14 +91,18 @@ namespace WorkshopManager.Controllers
             {
                 var result = await _workerService.DeleteWorkerAsync(id);
                 if (!result)
-                    return NotFound("Worker not found.");
+                    return NotFound(new { message = "Worker not found." });
 
                 return Ok("Worker deleted.");
                 //return NoContent(); 204 No Content
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred.",
+                    details = ex.Message
+                });
             }
         }
     }

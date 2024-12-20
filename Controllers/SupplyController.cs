@@ -21,7 +21,7 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> CreateSupply([FromBody] SupplyDTO supplyDTO)
         {
             if (supplyDTO == null)
-                return BadRequest("Supply data is required.");
+                return BadRequest(new { message = "Supply data is required." });
 
             try
             {
@@ -30,7 +30,11 @@ namespace WorkshopManager.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred.",
+                    details = ex.Message
+                });
             }
         }
 
@@ -41,13 +45,17 @@ namespace WorkshopManager.Controllers
             {
                 var supply = await _supplyService.GetSupplyAsync(id);
                 if (supply == null)
-                    return NotFound();
+                    return NotFound(new { message = "Supply not found." });
 
                 return Ok(supply);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred.",
+                    details = ex.Message
+                });
             }
         }
 
@@ -55,19 +63,24 @@ namespace WorkshopManager.Controllers
         public async Task<IActionResult> UpdateSupply(int id, [FromBody] SupplyDTO supplyDTO)
         {
             if (supplyDTO == null)
-                return BadRequest("Supply data is required.");
+                return BadRequest(new { message = "Supply data is required." });
 
             try
             {
                 var updatedSupply = await _supplyService.UpdateSupplyAsync(id, supplyDTO);
                 if (updatedSupply == null)
-                    return NotFound("Supply not found.");
+                    return NotFound(new { message = "Supply not found." });
 
                 return Ok(updatedSupply);
+                //return NoContent(); 204 No Content
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred.",
+                    details = ex.Message
+                });
             }
         }
 
@@ -78,14 +91,18 @@ namespace WorkshopManager.Controllers
             {
                 var result = await _supplyService.DeleteSupplyAsync(id);
                 if (!result)
-                    return NotFound("Supply not found.");
+                    return NotFound(new { message = "Supply not found." });
 
                 return Ok("Supply deleted.");
                 //return NoContent(); 204 No Content
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred.",
+                    details = ex.Message
+                });
             }
         }
     }
