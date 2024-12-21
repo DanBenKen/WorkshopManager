@@ -15,62 +15,88 @@ namespace WorkshopManager.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Job> CreateJobAsync(JobDTO jobDTO)
+        public async Task<JobDTO> CreateJobAsync(RequestCreateJobDTO createJob)
         {
-            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(jobDTO.WorkerId)
-                ?? throw new WorkerNotFoundException(jobDTO.WorkerId);
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(createJob.WorkerId)
+                ?? throw new WorkerNotFoundException(createJob.WorkerId);
 
-            var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(jobDTO.SupplyId)
-                ?? throw new SupplyNotFoundException(jobDTO.SupplyId);
+            var job = _unitOfWork.JobRepository.AddJob(createJob, worker.FirstName, worker.LastName);
+            await _unitOfWork.SaveChangesAsync();
 
-            var job = new Job
+            var result = new JobDTO
             {
-                WorkerId = jobDTO.WorkerId,
-                SupplyId = jobDTO.SupplyId,
-                JobName = jobDTO.JobName,
-                Description = jobDTO.Description,
-                Status = jobDTO.Status,
-                WorkerName = $"{worker?.FirstName} {worker?.LastName}",
+                Id = job.Id,
+                WorkerId = worker.Id,
+                SupplyId = job.Id,
+                Description = job.Description,
+                JobName = job.JobName,
+                Status = job.Status,
+                WorkerFirstName = worker.FirstName,
+                WorkerLastName = worker.LastName,
             };
 
-            _unitOfWork.JobRepository.AddJob(job);
-            await _unitOfWork.SaveChangesAsync();
-
-            return job;
+            return result;
         }
 
-        public async Task<Job?> UpdateJobAsync(int id, JobDTO jobDTO)
+        public async Task<JobDTO> UpdateJobAsync(int id, RequestUpdateJobDTO updateJob)
+        {
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(updateJob.WorkerId)
+                ?? throw new WorkerNotFoundException(updateJob.WorkerId);
+
+            var jobUpdate = new JobDTO
+            {
+                Id = id,
+                WorkerId = worker.Id,
+                SupplyId = updateJob.SupplyId,
+                JobName = updateJob.JobName,
+                Status = updateJob.Status,
+                WorkerFirstName = worker.FirstName,
+                WorkerLastName = worker.LastName,
+                Description = updateJob.Description,
+            };
+
+            _unitOfWork.JobRepository.UpdateJob(jobUpdate);
+            await _unitOfWork.SaveChangesAsync();
+
+            return jobUpdate;
+        }
+
+        public async Task<bool> DeleteJobAsync(int id)
         {
             var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
                 ?? throw new JobNotFoundException(id);
 
-            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(jobDTO.WorkerId)
-                ?? throw new WorkerNotFoundException(jobDTO.WorkerId);
+            var isDeleted = _unitOfWork.JobRepository.DeleteJob(job);
+            if (isDeleted)
+            {
+                await _unitOfWork.SaveChangesAsync();
+                return true;
+            }
 
-            job.WorkerId = jobDTO.WorkerId;
-            job.JobName = jobDTO.JobName;
-            job.Description = jobDTO.Description;
-            job.Status = jobDTO.Status;
-            job.WorkerName = $"{worker?.FirstName} {worker?.LastName}";
-
-            _unitOfWork.JobRepository.UpdateJob(job);
-            await _unitOfWork.SaveChangesAsync();
-
-            return job;
+            return false;
         }
 
-        public async Task DeleteJobAsync(int id)
+        public async Task<JobDTO> GetJobAsync(int id)
         {
             var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
                 ?? throw new JobNotFoundException(id);
 
-            _unitOfWork.JobRepository.DeleteJob(job);
-            await _unitOfWork.SaveChangesAsync();
-        }
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(job.WorkerId)
+                ?? throw new WorkerNotFoundException(job.WorkerId);
 
-        public async Task<Job?> GetJobAsync(int id)
-        {
-            return await _unitOfWork.JobRepository.GetJobByIdAsync(id);
+            var getJob = new JobDTO
+            {
+                Id = id,
+                WorkerId = job.WorkerId,
+                SupplyId = job.SupplyId,
+                JobName = job.JobName,
+                Status = job.Status,
+                WorkerFirstName = worker.FirstName,
+                WorkerLastName = worker.LastName,
+                Description = job.Description,
+            };
+
+            return getJob;
         }
     }
 }

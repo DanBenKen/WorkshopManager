@@ -5,7 +5,6 @@ using WorkshopManager.Interfaces.ServiceInterfaces;
 
 namespace WorkshopManager.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class WorkerController : ControllerBase
@@ -20,7 +19,7 @@ namespace WorkshopManager.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateWorker([FromBody] WorkerDTO workerDTO)
         {
-            var worker = await _workerService.CreateWorker(workerDTO);
+            var worker = await _workerService.CreateWorkerAsync(workerDTO);
             return CreatedAtAction(nameof(GetWorker), new { id = worker.Id }, worker);
         }
 

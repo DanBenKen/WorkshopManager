@@ -5,7 +5,6 @@ using WorkshopManager.Interfaces.ServiceInterfaces;
 
 namespace WorkshopManager.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class SupplyController : ControllerBase
@@ -20,7 +19,7 @@ namespace WorkshopManager.Controllers
         [HttpPost]
         public async Task<ActionResult<SupplyDTO>> CreateSupply([FromBody] SupplyDTO supplyDTO)
         {
-            var supply = await _supplyService.CreateSupply(supplyDTO);
+            var supply = await _supplyService.CreateSupplyAsync(supplyDTO);
             return CreatedAtAction(nameof(GetSupply), new { id = supply.Id }, supply);
         }
 

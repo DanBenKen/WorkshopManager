@@ -15,7 +15,7 @@ namespace WorkshopManager.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Worker> CreateWorker(WorkerDTO workerDto)
+        public async Task<Worker> CreateWorkerAsync(WorkerDTO workerDto)
         {
             var worker = new Worker
             {

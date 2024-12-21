@@ -5,9 +5,9 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
 {
     public interface IJobService
     {
-        Task<Job> CreateJobAsync(JobDTO jobDTO);
-        Task<Job?> UpdateJobAsync(int id, JobDTO jobDTO);
-        Task DeleteJobAsync(int id);
-        Task<Job?> GetJobAsync(int id);
+        Task<JobDTO> CreateJobAsync(RequestCreateJobDTO requestCreateJob);
+        Task<JobDTO> UpdateJobAsync(int id, RequestUpdateJobDTO jobDTO);
+        Task<bool> DeleteJobAsync(int id);
+        Task<JobDTO> GetJobAsync(int id);
     }
 }

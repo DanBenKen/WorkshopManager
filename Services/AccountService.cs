@@ -56,7 +56,7 @@ namespace WorkshopManager.Services
         public async Task<SignInResult> LoginAsync(LoginDTO loginDTO)
         {
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
-            if (user == null)
+            if (user is null)
                 return SignInResult.Failed;
 
             var passwordValid = await _userManager.CheckPasswordAsync(user, loginDTO.Password);

@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using WorkshopManager.DTOs;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopManager.Interfaces.ServiceInterfaces;
+using WorkshopManager.Models;
 
 namespace WorkshopManager.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class JobController : ControllerBase
@@ -18,9 +16,9 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateJob([FromBody] JobDTO jobDTO)
+        public async Task<IActionResult> CreateJob([FromBody] RequestCreateJobDTO requestCreateJob)
         {
-            var createJob = await _jobService.CreateJobAsync(jobDTO);
+            var createJob = await _jobService.CreateJobAsync(requestCreateJob);
             return CreatedAtAction(nameof(GetJob), new { id = createJob.Id }, createJob);
         }
 
@@ -32,9 +30,9 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateJob(int id, [FromBody] JobDTO jobDTO)
+        public async Task<IActionResult> UpdateJob(int id, [FromBody] RequestUpdateJobDTO updateJob)
         {
-            await _jobService.UpdateJobAsync(id, jobDTO);
+            await _jobService.UpdateJobAsync(id, updateJob);
             return NoContent();
         }
 

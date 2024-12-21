@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WorkshopManager.DTOs;
 using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Models;
 
@@ -25,22 +26,41 @@ namespace WorkshopManager.Repositories
                 .ToListAsync();
         }
 
-        public Job AddJob(Job job)
+        public Job AddJob(RequestCreateJobDTO createJobDTO, string firstName, string lastName)
         {
+            var job = new Job
+            {
+                WorkerId = createJobDTO.WorkerId,
+                SupplyId = createJobDTO.SupplyId,
+                JobName = createJobDTO.JobName,
+                Description = createJobDTO.Description,
+                Status = createJobDTO.Status,
+                WorkerName = $"{firstName} {lastName}",
+            };
+
             _context.Jobs.Add(job);
             return job;
         }
 
-        public Job UpdateJob(Job job)
+        public Job UpdateJob(JobDTO jobDTO)
         {
+            var job = new Job
+            {
+                WorkerId = jobDTO.WorkerId,
+                JobName = jobDTO.JobName,
+                Description = jobDTO.Description,
+                Status = jobDTO.Status,
+                WorkerName = $"{jobDTO.WorkerFirstName} {jobDTO.WorkerLastName}",
+            };
+
             _context.Jobs.Update(job);
             return job;
         }
 
-        public Job DeleteJob(Job job)
+        public bool DeleteJob(Job job)
         {
             _context.Jobs.Remove(job);
-            return job;
+            return true;
         }
     }
 }

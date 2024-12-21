@@ -5,7 +5,7 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
 {
     public interface IWorkerService
     {
-        Task<Worker> CreateWorker(WorkerDTO workerDto);
+        Task<Worker> CreateWorkerAsync(WorkerDTO workerDto);
         Task<Worker?> GetWorkerAsync(int id);
         Task<IEnumerable<Worker>> GetAllWorkersAsync();
         Task<IEnumerable<WorkerWithJobDTO>> GetAllWorkersWithJobsAsync();

@@ -15,7 +15,7 @@ namespace WorkshopManager.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Supply> CreateSupply(SupplyDTO supplyDTO)
+        public async Task<Supply> CreateSupplyAsync(SupplyDTO supplyDTO)
         {
             var supply = new Supply()
             {
