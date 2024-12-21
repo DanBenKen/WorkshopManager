@@ -1,4 +1,4 @@
-﻿using WorkshopManager.DTOs;
+﻿using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Models;
 
 namespace WorkshopManager.Interfaces.ServiceInterfaces

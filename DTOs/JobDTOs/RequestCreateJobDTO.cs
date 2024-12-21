@@ -2,7 +2,7 @@
 using WorkshopManager.DTOs;
 using WorkshopManager.Enums;
 
-namespace WorkshopManager.Models
+namespace WorkshopManager.DTOs.JobDTOs
 {
     public class RequestCreateJobDTO
     {

@@ -32,6 +32,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
 });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Register repositories
 builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<IWorkerRepository, WorkerRepository>();

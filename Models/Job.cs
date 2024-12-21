@@ -13,6 +13,7 @@ namespace WorkshopManager.Models
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public JobStatus Status { get; set; }
-        public required string WorkerName { get; set; }
+        public string? WorkerName { get; set; }
+        public Worker? Worker { get; set; }
     }
 }

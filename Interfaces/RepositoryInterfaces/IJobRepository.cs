@@ -1,4 +1,4 @@
-﻿using WorkshopManager.DTOs;
+﻿using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.Models;
 
 namespace WorkshopManager.Interfaces.RepositoryInterfaces
@@ -7,7 +7,7 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
     {
         Task<Job?> GetJobByIdAsync(int id);
         Task<IEnumerable<Job>> GetJobsByWorkerIdAsync(int workerId);
-        Job AddJob(RequestCreateJobDTO createJobDTO, string firstName, string lastName);
+        Job AddJob(JobDTO creatJob, string workerName);
         Job UpdateJob(JobDTO job);
         bool DeleteJob(Job job);
     }

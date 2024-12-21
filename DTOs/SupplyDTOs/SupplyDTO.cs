@@ -1,4 +1,4 @@
-﻿namespace WorkshopManager.DTOs
+﻿namespace WorkshopManager.DTOs.SupplyDTOs
 {
     public class SupplyDTO
     {

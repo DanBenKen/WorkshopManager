@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WorkshopManager.DTOs;
+using WorkshopManager.DTOs.AccountDTOs;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 
 namespace WorkshopManager.Controllers

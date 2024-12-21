@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using WorkshopManager.DTOs;
+using WorkshopManager.DTOs.AccountDTOs;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 using WorkshopManager.Models;
 

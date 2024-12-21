@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorkshopManager.DTOs
+namespace WorkshopManager.DTOs.AccountDTOs
 {
     public class RegisterDTO
     {

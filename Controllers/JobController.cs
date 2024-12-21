@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.Interfaces.ServiceInterfaces;
-using WorkshopManager.Models;
 
 namespace WorkshopManager.Controllers
 {

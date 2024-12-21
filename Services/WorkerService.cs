@@ -1,4 +1,5 @@
-﻿using WorkshopManager.DTOs;
+﻿using WorkshopManager.DTOs.JobDTOs;
+using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Exceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WorkshopManager.DTOs;
+using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 
 namespace WorkshopManager.Controllers

@@ -1,4 +1,5 @@
-﻿using WorkshopManager.DTOs;
+﻿using AutoMapper;
+using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.Exceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
@@ -6,54 +7,34 @@ using WorkshopManager.Models;
 
 namespace WorkshopManager.Services
 {
-    public class JobService : IJobService
+    public class JobService(IUnitOfWork unitOfWork, IMapper mapper) : IJobService
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public JobService(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<JobDTO> CreateJobAsync(RequestCreateJobDTO createJob)
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(createJob.WorkerId)
                 ?? throw new WorkerNotFoundException(createJob.WorkerId);
+            var workerFullName = $"{worker.FirstName} {worker.LastName}";
 
-            var job = _unitOfWork.JobRepository.AddJob(createJob, worker.FirstName, worker.LastName);
+            var jobCreate = _mapper.Map<JobDTO>(createJob);
+            jobCreate.WorkerName = workerFullName;
+
+            _unitOfWork.JobRepository.AddJob(jobCreate, workerFullName);
             await _unitOfWork.SaveChangesAsync();
 
-            var result = new JobDTO
-            {
-                Id = job.Id,
-                WorkerId = worker.Id,
-                SupplyId = job.Id,
-                Description = job.Description,
-                JobName = job.JobName,
-                Status = job.Status,
-                WorkerFirstName = worker.FirstName,
-                WorkerLastName = worker.LastName,
-            };
-
-            return result;
+            return jobCreate;
         }
 
         public async Task<JobDTO> UpdateJobAsync(int id, RequestUpdateJobDTO updateJob)
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(updateJob.WorkerId)
                 ?? throw new WorkerNotFoundException(updateJob.WorkerId);
+            var workerFullName = $"{worker.FirstName} {worker.LastName}";
 
-            var jobUpdate = new JobDTO
-            {
-                Id = id,
-                WorkerId = worker.Id,
-                SupplyId = updateJob.SupplyId,
-                JobName = updateJob.JobName,
-                Status = updateJob.Status,
-                WorkerFirstName = worker.FirstName,
-                WorkerLastName = worker.LastName,
-                Description = updateJob.Description,
-            };
+            var jobUpdate = _mapper.Map<JobDTO>(updateJob);
+            jobUpdate.WorkerName = workerFullName;
 
             _unitOfWork.JobRepository.UpdateJob(jobUpdate);
             await _unitOfWork.SaveChangesAsync();
@@ -81,20 +62,7 @@ namespace WorkshopManager.Services
             var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
                 ?? throw new JobNotFoundException(id);
 
-            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(job.WorkerId)
-                ?? throw new WorkerNotFoundException(job.WorkerId);
-
-            var getJob = new JobDTO
-            {
-                Id = id,
-                WorkerId = job.WorkerId,
-                SupplyId = job.SupplyId,
-                JobName = job.JobName,
-                Status = job.Status,
-                WorkerFirstName = worker.FirstName,
-                WorkerLastName = worker.LastName,
-                Description = job.Description,
-            };
+            var getJob = _mapper.Map<JobDTO>(job);
 
             return getJob;
         }

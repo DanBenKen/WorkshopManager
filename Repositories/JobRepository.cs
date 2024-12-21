@@ -1,18 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WorkshopManager.DTOs;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Models;
 
 namespace WorkshopManager.Repositories
 {
-    public class JobRepository : IJobRepository
+    public class JobRepository(WorkshopDbContext context, IMapper mapper) : IJobRepository
     {
-        private readonly WorkshopDbContext _context;
-
-        public JobRepository(WorkshopDbContext context)
-        {
-            _context = context;
-        }
+        private readonly WorkshopDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<Job?> GetJobByIdAsync(int id)
         {
@@ -26,17 +23,10 @@ namespace WorkshopManager.Repositories
                 .ToListAsync();
         }
 
-        public Job AddJob(RequestCreateJobDTO createJobDTO, string firstName, string lastName)
+        public Job AddJob(JobDTO creatJob, string workerName)
         {
-            var job = new Job
-            {
-                WorkerId = createJobDTO.WorkerId,
-                SupplyId = createJobDTO.SupplyId,
-                JobName = createJobDTO.JobName,
-                Description = createJobDTO.Description,
-                Status = createJobDTO.Status,
-                WorkerName = $"{firstName} {lastName}",
-            };
+            var job = _mapper.Map<Job>(creatJob);
+            job.WorkerName = workerName;
 
             _context.Jobs.Add(job);
             return job;
@@ -44,14 +34,7 @@ namespace WorkshopManager.Repositories
 
         public Job UpdateJob(JobDTO jobDTO)
         {
-            var job = new Job
-            {
-                WorkerId = jobDTO.WorkerId,
-                JobName = jobDTO.JobName,
-                Description = jobDTO.Description,
-                Status = jobDTO.Status,
-                WorkerName = $"{jobDTO.WorkerFirstName} {jobDTO.WorkerLastName}",
-            };
+            var job = _mapper.Map<Job>(jobDTO);
 
             _context.Jobs.Update(job);
             return job;

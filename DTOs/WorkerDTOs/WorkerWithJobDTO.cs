@@ -1,4 +1,6 @@
-﻿namespace WorkshopManager.DTOs
+﻿using WorkshopManager.DTOs.JobDTOs;
+
+namespace WorkshopManager.DTOs.WorkerDTOs
 {
     public class WorkerWithJobDTO
     {
