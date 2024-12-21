@@ -17,9 +17,9 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<SupplyDTO>> CreateSupply([FromBody] SupplyDTO supplyDTO)
+        public async Task<ActionResult<SupplyDTO>> CreateSupply([FromBody] RequestCreateSupplyDTO supplyCreateDTO)
         {
-            var supply = await _supplyService.CreateSupplyAsync(supplyDTO);
+            var supply = await _supplyService.CreateSupplyAsync(supplyCreateDTO);
             return CreatedAtAction(nameof(GetSupply), new { id = supply.Id }, supply);
         }
 
@@ -31,7 +31,7 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSupply(int id, [FromBody] SupplyDTO supplyDTO)
+        public async Task<IActionResult> UpdateSupply(int id, [FromBody] RequestUpdateSupplyDTO supplyDTO)
         {
             await _supplyService.UpdateSupplyAsync(id, supplyDTO);
             return NoContent();

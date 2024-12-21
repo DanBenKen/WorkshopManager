@@ -5,9 +5,9 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
 {
     public interface ISupplyService
     {
-        Task<Supply> CreateSupplyAsync(SupplyDTO supplyDTO);
-        Task<Supply?> GetSupplyAsync(int id);
-        Task<Supply?> UpdateSupplyAsync(int id, SupplyDTO supplyDTO);
+        Task<SupplyDTO> CreateSupplyAsync(RequestCreateSupplyDTO requestCreateSupply);
+        Task<SupplyDTO> GetSupplyAsync(int id);
+        Task<SupplyDTO> UpdateSupplyAsync(int id, RequestUpdateSupplyDTO requestUpdate);
         Task DeleteSupplyAsync(int id);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Models;
 
@@ -7,10 +9,12 @@ namespace WorkshopManager.Repositories
     public class WorkerRepository : IWorkerRepository
     {
         private readonly WorkshopDbContext _context;
+        private readonly IMapper _mapper;
 
-        public WorkerRepository(WorkshopDbContext context)
+        public WorkerRepository(WorkshopDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Worker?> GetWorkerByIdAsync(int id)
@@ -23,8 +27,10 @@ namespace WorkshopManager.Repositories
             return await _context.Workers.ToListAsync();
         }
 
-        public Worker AddWorker(Worker worker)
+        public Worker AddWorker(RequestCreateWorkerDTO createWorker)
         {
+            var worker = _mapper.Map<Worker>(createWorker);
+
             _context.AddAsync(worker);
             return worker;
         }

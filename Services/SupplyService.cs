@@ -1,4 +1,5 @@
-﻿using WorkshopManager.DTOs.SupplyDTOs;
+﻿using AutoMapper;
+using WorkshopManager.DTOs.SupplyDTOs;
 using WorkshopManager.Exceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
@@ -9,45 +10,41 @@ namespace WorkshopManager.Services
     public class SupplyService : ISupplyService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public SupplyService(IUnitOfWork unitOfWork)
+        public SupplyService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<Supply> CreateSupplyAsync(SupplyDTO supplyDTO)
+        public async Task<SupplyDTO> CreateSupplyAsync(RequestCreateSupplyDTO requestCreateSupply)
         {
-            var supply = new Supply()
-            {
-                Name = supplyDTO.Name,
-                Quantity = supplyDTO.Quantity,
-                Type = supplyDTO.Type,
-            };
+            var supplyDTO = _mapper.Map<SupplyDTO>(requestCreateSupply);
 
-            _unitOfWork.SupplyRepository.AddSupply(supply);
+            _unitOfWork.SupplyRepository.AddSupply(supplyDTO);
             await _unitOfWork.SaveChangesAsync();
 
-            return supply;
+            return supplyDTO;
         }
 
-        public async Task<Supply?> GetSupplyAsync(int id)
-        {
-            return await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id);
-        }
-
-        public async Task<Supply?> UpdateSupplyAsync(int id, SupplyDTO supplyDTO)
+        public async Task<SupplyDTO> GetSupplyAsync(int id)
         {
             var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
                 ?? throw new SupplyNotFoundException(id);
 
-            supply.Name = supplyDTO.Name;
-            supply.Quantity = supplyDTO.Quantity;
-            supply.Type = supplyDTO.Type;
+            var getSupply = _mapper.Map<SupplyDTO>(supply);
+            return getSupply;
+        }
 
-            _unitOfWork.SupplyRepository.UpdateSupply(supply);
+        public async Task<SupplyDTO> UpdateSupplyAsync(int id, RequestUpdateSupplyDTO requestUpdate)
+        {
+            var updateSupply = _mapper.Map<SupplyDTO>(requestUpdate);
+
+            _unitOfWork.SupplyRepository.UpdateSupply(updateSupply);
             await _unitOfWork.SaveChangesAsync();
 
-            return supply;
+            return updateSupply;
         }
 
         public async Task DeleteSupplyAsync(int id)

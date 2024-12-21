@@ -1,12 +1,13 @@
-﻿using WorkshopManager.Models;
+﻿using WorkshopManager.DTOs.SupplyDTOs;
+using WorkshopManager.Models;
 
 namespace WorkshopManager.Interfaces.RepositoryInterfaces
 {
     public interface ISupplyRepository
     {
         Task<Supply?> GetSupplyByIdAsync(int id);
-        Supply AddSupply(Supply supply);
-        Supply UpdateSupply(Supply supply);
+        Supply AddSupply(SupplyDTO supplyDTO);
+        Supply UpdateSupply(SupplyDTO supplyDTO);
         Supply DeleteSupply(Supply supply);
     }
 }

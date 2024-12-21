@@ -1,4 +1,5 @@
-﻿using WorkshopManager.DTOs.JobDTOs;
+﻿using AutoMapper;
+using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Exceptions;
 using WorkshopManager.Interfaces;
@@ -10,22 +11,19 @@ namespace WorkshopManager.Services
     public class WorkerService : IWorkerService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public WorkerService(IUnitOfWork unitOfWork)
+        public WorkerService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<Worker> CreateWorkerAsync(WorkerDTO workerDto)
+        public async Task<WorkerDTO> CreateWorkerAsync(RequestCreateWorkerDTO createWorkerDTO)
         {
-            var worker = new Worker
-            {
-                FirstName = workerDto.FirstName,
-                LastName = workerDto.LastName,
-                Position = workerDto.Position,
-            };
+            var worker = _mapper.Map<WorkerDTO>(createWorkerDTO);
 
-            _unitOfWork.WorkerRepository.AddWorker(worker);
+            _unitOfWork.WorkerRepository.AddWorker(createWorkerDTO);
             await _unitOfWork.SaveChangesAsync();
 
             return worker;

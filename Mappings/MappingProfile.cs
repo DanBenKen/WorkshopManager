@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using WorkshopManager.DTOs.JobDTOs;
+using WorkshopManager.DTOs.SupplyDTOs;
+using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Models;
 
 namespace WorkshopManager.Mappings
@@ -11,14 +13,19 @@ namespace WorkshopManager.Mappings
             CreateMap<Job, JobDTO>()
             .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src =>
                 src.Worker != null ? $"{src.Worker.FirstName} {src.Worker.LastName}" : null));
-            CreateMap<Job, RequestCreateJobDTO>();
-
             CreateMap<JobDTO, Job>();
-
-            CreateMap<RequestCreateJobDTO, Job>();
             CreateMap<RequestCreateJobDTO, JobDTO>();
-            CreateMap<RequestUpdateJobDTO, Job>();
             CreateMap<RequestUpdateJobDTO, JobDTO>();
+
+            CreateMap<Supply, SupplyDTO>();
+            CreateMap<SupplyDTO, Supply>();
+            CreateMap<RequestCreateSupplyDTO, SupplyDTO>();
+            CreateMap<RequestUpdateSupplyDTO, SupplyDTO>();
+            
+            CreateMap<Worker, WorkerDTO>();
+            CreateMap<WorkerDTO, Worker>();
+            CreateMap<RequestCreateWorkerDTO, WorkerDTO>();
+            CreateMap<RequestUpdateWorkerDTO, WorkerDTO>();
         }
     }
 }
