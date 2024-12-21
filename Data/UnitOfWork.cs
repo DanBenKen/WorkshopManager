@@ -20,12 +20,12 @@ namespace WorkshopManager.Data
             _mapper = mapper;
 
             _jobRepository = new JobRepository(_context, _mapper);
-            _workerRepository = new WorkerRepository(_context);
+            _workerRepository = new WorkerRepository(_context, _mapper);
             _supplyRepository = new SupplyRepository(_context, _mapper);
         }
 
         public IJobRepository JobRepository => _jobRepository ??= new JobRepository(_context, _mapper);
-        public IWorkerRepository WorkerRepository => _workerRepository ??= new WorkerRepository(_context);
+        public IWorkerRepository WorkerRepository => _workerRepository ??= new WorkerRepository(_context, _mapper);
         public ISupplyRepository SupplyRepository => _supplyRepository ??= new SupplyRepository(_context, _mapper);
 
         public async Task<int> SaveChangesAsync()

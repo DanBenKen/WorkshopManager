@@ -23,7 +23,7 @@ namespace WorkshopManager.Services
         {
             var worker = _mapper.Map<WorkerDTO>(createWorkerDTO);
 
-            _unitOfWork.WorkerRepository.AddWorker(createWorkerDTO);
+            _unitOfWork.WorkerRepository.AddWorker(worker);
             await _unitOfWork.SaveChangesAsync();
 
             return worker;
@@ -50,46 +50,43 @@ namespace WorkshopManager.Services
             {
                 var jobs = await _unitOfWork.JobRepository.GetJobsByWorkerIdAsync(worker.Id);
 
-                workersWithJobs.Add(new WorkerWithJobDTO
+                workersWithJobs = workers.Select(worker => new WorkerWithJobDTO
                 {
                     WorkerId = worker.Id,
-                    WorkerName = $"{worker.FirstName} {worker.LastName}",
-                    Jobs = jobs.Select(j => new JobDTO
-                    {
-                        WorkerId = j.WorkerId,
-                        SupplyId = j.SupplyId,
-                        JobName = j.JobName,
-                        Description = j.Description,
-                        Status = j.Status
-                    }).ToList()
-                });
+                    WorkerName = $"{worker.FullName}",
+                    Jobs = jobs
+                            .Where(j => j.WorkerId == worker.Id)
+                            .Select(j => _mapper.Map<JobDTO>(j))
+                            .ToList()
+                }).ToList();
             }
 
             return workersWithJobs;
         }
 
-        public async Task<Worker?> UpdateWorkerAsync(int id, WorkerDTO workerDTO)
+        public async Task<WorkerDTO> UpdateWorkerAsync(int id, RequestUpdateWorkerDTO workerUpdateDTO)
         {
-            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
-                ?? throw new WorkerNotFoundException(id);
+            var workerDTO = _mapper.Map<WorkerDTO>(workerUpdateDTO);
 
-            worker.FirstName = workerDTO.FirstName;
-            worker.LastName = workerDTO.LastName;
-            worker.Position = workerDTO.Position;
-
-            _unitOfWork.WorkerRepository.UpdateWorker(worker);
+            _unitOfWork.WorkerRepository.UpdateWorker(id, workerDTO);
             await _unitOfWork.SaveChangesAsync();
 
-            return worker;
+            return workerDTO;
         }
 
-        public async Task DeleteWorkerAsync(int id)
+        public async Task<bool> DeleteWorkerAsync(int id)
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
                 ?? throw new WorkerNotFoundException(id);
 
-            _unitOfWork.WorkerRepository.DeleteWorker(worker);
-            await _unitOfWork.SaveChangesAsync();
+            var isDeleted = _unitOfWork.WorkerRepository.DeleteWorker(worker);
+            if (isDeleted)
+            {
+                await _unitOfWork.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
     {
         Task<Supply?> GetSupplyByIdAsync(int id);
         Supply AddSupply(SupplyDTO supplyDTO);
-        Supply UpdateSupply(SupplyDTO supplyDTO);
-        Supply DeleteSupply(Supply supply);
+        Supply UpdateSupply(int id, SupplyDTO supplyDTO);
+        bool DeleteSupply(Supply supply);
     }
 }

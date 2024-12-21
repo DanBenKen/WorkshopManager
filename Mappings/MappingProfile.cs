@@ -10,9 +10,7 @@ namespace WorkshopManager.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<Job, JobDTO>()
-            .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src =>
-                src.Worker != null ? $"{src.Worker.FirstName} {src.Worker.LastName}" : null));
+            CreateMap<Job, JobDTO>();
             CreateMap<JobDTO, Job>();
             CreateMap<RequestCreateJobDTO, JobDTO>();
             CreateMap<RequestUpdateJobDTO, JobDTO>();
@@ -21,11 +19,13 @@ namespace WorkshopManager.Mappings
             CreateMap<SupplyDTO, Supply>();
             CreateMap<RequestCreateSupplyDTO, SupplyDTO>();
             CreateMap<RequestUpdateSupplyDTO, SupplyDTO>();
-            
+
             CreateMap<Worker, WorkerDTO>();
             CreateMap<WorkerDTO, Worker>();
             CreateMap<RequestCreateWorkerDTO, WorkerDTO>();
             CreateMap<RequestUpdateWorkerDTO, WorkerDTO>();
+
+            CreateMap<WorkerWithJobDTO, JobDTO>();
         }
     }
 }

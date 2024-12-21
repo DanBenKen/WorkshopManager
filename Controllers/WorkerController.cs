@@ -17,7 +17,7 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateWorker([FromBody] WorkerDTO workerDTO)
+        public async Task<IActionResult> CreateWorker([FromBody] RequestCreateWorkerDTO workerDTO)
         {
             var worker = await _workerService.CreateWorkerAsync(workerDTO);
             return CreatedAtAction(nameof(GetWorker), new { id = worker.Id }, worker);
@@ -45,7 +45,7 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateWorker(int id, [FromBody] WorkerDTO workerDTO)
+        public async Task<IActionResult> UpdateWorker(int id, [FromBody] RequestUpdateWorkerDTO workerDTO)
         {
             await _workerService.UpdateWorkerAsync(id, workerDTO);
             return NoContent();

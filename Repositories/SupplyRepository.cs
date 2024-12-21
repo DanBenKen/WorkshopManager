@@ -30,18 +30,19 @@ namespace WorkshopManager.Repositories
             return supply;
         }
 
-        public Supply UpdateSupply(SupplyDTO supplyDTO)
+        public Supply UpdateSupply(int id, SupplyDTO supplyDTO)
         {
             var supply = _mapper.Map<Supply>(supplyDTO);
+            supply.Id = id;
 
             _context.Supplies.Update(supply);
             return supply;
         }
 
-        public Supply DeleteSupply(Supply supply)
+        public bool DeleteSupply(Supply supply)
         {
             _context.Supplies.Remove(supply);
-            return supply;
+            return true;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using WorkshopManager.DTOs;
 using WorkshopManager.Enums;
 
 namespace WorkshopManager.DTOs.JobDTOs

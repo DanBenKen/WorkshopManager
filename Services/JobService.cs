@@ -3,7 +3,6 @@ using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.Exceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
-using WorkshopManager.Models;
 
 namespace WorkshopManager.Services
 {
@@ -16,7 +15,7 @@ namespace WorkshopManager.Services
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(createJob.WorkerId)
                 ?? throw new WorkerNotFoundException(createJob.WorkerId);
-            var workerFullName = $"{worker.FirstName} {worker.LastName}";
+            var workerFullName = worker.FullName;
 
             var jobCreate = _mapper.Map<JobDTO>(createJob);
             jobCreate.WorkerName = workerFullName;
@@ -31,12 +30,12 @@ namespace WorkshopManager.Services
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(updateJob.WorkerId)
                 ?? throw new WorkerNotFoundException(updateJob.WorkerId);
-            var workerFullName = $"{worker.FirstName} {worker.LastName}";
+            var workerFullName = worker.FullName;
 
             var jobUpdate = _mapper.Map<JobDTO>(updateJob);
             jobUpdate.WorkerName = workerFullName;
 
-            _unitOfWork.JobRepository.UpdateJob(jobUpdate);
+            _unitOfWork.JobRepository.UpdateJob(id, jobUpdate);
             await _unitOfWork.SaveChangesAsync();
 
             return jobUpdate;

@@ -41,19 +41,25 @@ namespace WorkshopManager.Services
         {
             var updateSupply = _mapper.Map<SupplyDTO>(requestUpdate);
 
-            _unitOfWork.SupplyRepository.UpdateSupply(updateSupply);
+            _unitOfWork.SupplyRepository.UpdateSupply(id, updateSupply);
             await _unitOfWork.SaveChangesAsync();
 
             return updateSupply;
         }
 
-        public async Task DeleteSupplyAsync(int id)
+        public async Task<bool> DeleteSupplyAsync(int id)
         {
             var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
                 ?? throw new SupplyNotFoundException(id);
 
-            _unitOfWork.SupplyRepository.DeleteSupply(supply);
-            await _unitOfWork.SaveChangesAsync();
+            var isDeleted = _unitOfWork.SupplyRepository.DeleteSupply(supply);
+            if (isDeleted) 
+            {
+                await _unitOfWork.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -27,24 +27,27 @@ namespace WorkshopManager.Repositories
             return await _context.Workers.ToListAsync();
         }
 
-        public Worker AddWorker(RequestCreateWorkerDTO createWorker)
+        public Worker AddWorker(WorkerDTO workerDTO)
         {
-            var worker = _mapper.Map<Worker>(createWorker);
+            var worker = _mapper.Map<Worker>(workerDTO);
 
             _context.AddAsync(worker);
             return worker;
         }
 
-        public Worker UpdateWorker(Worker worker)
+        public Worker UpdateWorker(int id, WorkerDTO workerDTO)
         {
+            var worker = _mapper.Map<Worker>(workerDTO);
+            worker.Id = id;
+
             _context.Update(worker);
             return worker;
         }
 
-        public Worker DeleteWorker(Worker worker) 
+        public bool DeleteWorker(Worker worker) 
         {
             _context.Workers.Remove(worker);
-            return worker;
+            return true;
         }
     }
 }

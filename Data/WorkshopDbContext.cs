@@ -11,4 +11,21 @@ public class WorkshopDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Supply> Supplies { get; set; }
     public DbSet<Worker> Workers { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Job>()
+            .HasOne(j => j.Supply)
+            .WithMany(s => s.Jobs)
+            .HasForeignKey(j => j.SupplyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Job>()
+            .HasOne(j => j.Worker)
+            .WithMany(w => w.Jobs)
+            .HasForeignKey(j => j.WorkerId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }

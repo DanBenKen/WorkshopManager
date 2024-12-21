@@ -23,18 +23,18 @@ namespace WorkshopManager.Repositories
                 .ToListAsync();
         }
 
-        public Job AddJob(JobDTO creatJob, string workerName)
+        public Job AddJob(JobDTO jobDTO, string workerName)
         {
-            var job = _mapper.Map<Job>(creatJob);
-            job.WorkerName = workerName;
+            var job = _mapper.Map<Job>(jobDTO);
 
             _context.Jobs.Add(job);
             return job;
         }
 
-        public Job UpdateJob(JobDTO jobDTO)
+        public Job UpdateJob(int id, JobDTO jobDTO)
         {
             var job = _mapper.Map<Job>(jobDTO);
+            job.Id = id;
 
             _context.Jobs.Update(job);
             return job;
