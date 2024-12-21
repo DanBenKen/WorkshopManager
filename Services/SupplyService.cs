@@ -3,7 +3,6 @@ using WorkshopManager.DTOs.SupplyDTOs;
 using WorkshopManager.Exceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
-using WorkshopManager.Models;
 
 namespace WorkshopManager.Services
 {
