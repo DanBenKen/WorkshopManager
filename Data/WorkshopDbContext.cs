@@ -20,12 +20,12 @@ public class WorkshopDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(j => j.Supply)
             .WithMany(s => s.Jobs)
             .HasForeignKey(j => j.SupplyId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<Job>()
             .HasOne(j => j.Worker)
             .WithMany(w => w.Jobs)
             .HasForeignKey(j => j.WorkerId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
