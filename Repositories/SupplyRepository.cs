@@ -22,11 +22,11 @@ namespace WorkshopManager.Repositories
             return await _context.Supplies.FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public Supply AddSupply(SupplyDTO supplyDTO)
+        public async Task<Supply> AddSupply(SupplyDTO supplyDTO)
         {
             var supply = _mapper.Map<Supply>(supplyDTO);
 
-            _context.Supplies.Add(supply);
+            await _context.Supplies.AddAsync(supply);
             return supply;
         }
 

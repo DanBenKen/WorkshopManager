@@ -6,7 +6,7 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
     public interface ISupplyRepository
     {
         Task<Supply?> GetSupplyByIdAsync(int id);
-        Supply AddSupply(SupplyDTO supplyDTO);
+        Task<Supply> AddSupply(SupplyDTO supplyDTO);
         Supply UpdateSupply(int id, SupplyDTO supplyDTO);
         bool DeleteSupply(Supply supply);
     }

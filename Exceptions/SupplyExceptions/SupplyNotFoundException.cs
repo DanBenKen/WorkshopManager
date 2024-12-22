@@ -1,4 +1,4 @@
-﻿namespace WorkshopManager.Exceptions
+﻿namespace WorkshopManager.Exceptions.SupplyExceptions
 {
     public class SupplyNotFoundException : Exception
     {

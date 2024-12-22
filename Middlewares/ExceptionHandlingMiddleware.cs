@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using WorkshopManager.Exceptions;
 using WorkshopManager.Exceptions.JobExceptions;
+using WorkshopManager.Exceptions.SupplyExceptions;
 
 namespace WorkshopManager.Middlewares
 {

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using WorkshopManager.DTOs.SupplyDTOs;
 using WorkshopManager.Exceptions;
+using WorkshopManager.Exceptions.SupplyExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
+using WorkshopManager.Models;
 
 namespace WorkshopManager.Services
 {
@@ -19,46 +21,70 @@ namespace WorkshopManager.Services
 
         public async Task<SupplyDTO> CreateSupplyAsync(RequestCreateSupplyDTO requestCreateSupply)
         {
-            var supplyDTO = _mapper.Map<SupplyDTO>(requestCreateSupply);
+            SupplyDTO? supplyDTO = null;
 
-            _unitOfWork.SupplyRepository.AddSupply(supplyDTO);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                supplyDTO = _mapper.Map<SupplyDTO>(requestCreateSupply);
+
+                await _unitOfWork.SupplyRepository.AddSupply(supplyDTO);
+            });
+
+            if (supplyDTO is null)
+                throw new SupplyCreateNullException();
 
             return supplyDTO;
         }
 
         public async Task<SupplyDTO> GetSupplyAsync(int id)
         {
-            var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
-                ?? throw new SupplyNotFoundException(id);
+            SupplyDTO? getSupply = null;
 
-            var getSupply = _mapper.Map<SupplyDTO>(supply);
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
+                    ?? throw new SupplyNotFoundException(id);
+
+                getSupply = _mapper.Map<SupplyDTO>(supply);
+            });
+
+            if (getSupply is null)
+                throw new SupplyGetNullException();
+
             return getSupply;
         }
 
         public async Task<SupplyDTO> UpdateSupplyAsync(int id, RequestUpdateSupplyDTO requestUpdate)
         {
-            var updateSupply = _mapper.Map<SupplyDTO>(requestUpdate);
+            SupplyDTO? updateSupply = null;
 
-            _unitOfWork.SupplyRepository.UpdateSupply(id, updateSupply);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.ExecuteInTransactionAsync(() =>
+            {
+                updateSupply = _mapper.Map<SupplyDTO>(requestUpdate);
 
+                _unitOfWork.SupplyRepository.UpdateSupply(id, updateSupply);
+                return Task.CompletedTask;
+            });
+
+            if (updateSupply is null)
+                throw new SupplyUpdateNullException();
+                      
             return updateSupply;
         }
 
         public async Task<bool> DeleteSupplyAsync(int id)
         {
-            var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
-                ?? throw new SupplyNotFoundException(id);
+            bool isDeleted = false;
 
-            bool isDeleted = _unitOfWork.SupplyRepository.DeleteSupply(supply);
-            if (isDeleted) 
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.SaveChangesAsync();
-                return true;
-            }
+                var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
+                    ?? throw new SupplyNotFoundException(id);
 
-            return false;
+                isDeleted = _unitOfWork.SupplyRepository.DeleteSupply(supply);
+            });
+
+            return isDeleted;
         }
     }
 }
