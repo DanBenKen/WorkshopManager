@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using WorkshopManager.DTOs.JobDTOs;
-using WorkshopManager.Exceptions;
 using WorkshopManager.Exceptions.JobExceptions;
 using WorkshopManager.Exceptions.WorkerExceptions;
 using WorkshopManager.Interfaces;
