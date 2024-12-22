@@ -23,11 +23,11 @@ namespace WorkshopManager.Repositories
                 .ToListAsync();
         }
 
-        public Job AddJob(JobDTO jobDTO, string workerName)
+        public async Task<Job> AddJobAsync(JobDTO jobDTO)
         {
             var job = _mapper.Map<Job>(jobDTO);
 
-            _context.Jobs.Add(job);
+            await _context.Jobs.AddAsync(job);
             return job;
         }
 

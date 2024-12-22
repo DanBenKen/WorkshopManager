@@ -24,7 +24,6 @@ namespace WorkshopManager.Mappings
             CreateMap<WorkerDTO, Worker>();
             CreateMap<RequestCreateWorkerDTO, WorkerDTO>();
             CreateMap<RequestUpdateWorkerDTO, WorkerDTO>();
-
             CreateMap<WorkerWithJobDTO, JobDTO>();
         }
     }

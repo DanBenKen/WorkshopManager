@@ -20,7 +20,7 @@ namespace WorkshopManager.Services
             var jobCreate = _mapper.Map<JobDTO>(createJob);
             jobCreate.WorkerName = workerFullName;
 
-            _unitOfWork.JobRepository.AddJob(jobCreate, workerFullName);
+            await _unitOfWork.JobRepository.AddJobAsync(jobCreate);
             await _unitOfWork.SaveChangesAsync();
 
             return jobCreate;
