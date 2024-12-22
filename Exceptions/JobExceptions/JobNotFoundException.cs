@@ -1,4 +1,4 @@
-﻿namespace WorkshopManager.Exceptions
+﻿namespace WorkshopManager.Exceptions.JobExceptions
 {
     public class JobNotFoundException : Exception
     {

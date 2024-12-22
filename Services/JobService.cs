@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.Exceptions;
+using WorkshopManager.Exceptions.JobExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 
@@ -19,51 +20,76 @@ namespace WorkshopManager.Services
 
         public async Task<JobDTO> CreateJobAsync(RequestCreateJobDTO createJob)
         {
-            var workerFullName = await GetWorkerFullNameAsync(createJob.WorkerId);
+            JobDTO? jobCreate = null;
 
-            var jobCreate = _mapper.Map<JobDTO>(createJob);
-            jobCreate.WorkerName = workerFullName;
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                var workerFullName = await GetWorkerFullNameAsync(createJob.WorkerId);
 
-            await _unitOfWork.JobRepository.AddJobAsync(jobCreate);
-            await _unitOfWork.SaveChangesAsync();
+                jobCreate = _mapper.Map<JobDTO>(createJob);
+                jobCreate.WorkerName = workerFullName;
+
+                await _unitOfWork.JobRepository.AddJobAsync(jobCreate);
+            });
+
+            if (jobCreate is null)
+                throw new JobCreationNullException();
 
             return jobCreate;
         }
 
         public async Task<JobDTO> UpdateJobAsync(int id, RequestUpdateJobDTO updateJob)
         {
-            var workerFullName = await GetWorkerFullNameAsync(updateJob.WorkerId);
+            JobDTO? jobUpdate = null;
 
-            var jobUpdate = _mapper.Map<JobDTO>(updateJob);
-            jobUpdate.WorkerName = workerFullName;
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                var workerFullName = await GetWorkerFullNameAsync(updateJob.WorkerId);
 
-            _unitOfWork.JobRepository.UpdateJob(id, jobUpdate);
-            await _unitOfWork.SaveChangesAsync();
+                jobUpdate = _mapper.Map<JobDTO>(updateJob);
+                jobUpdate.WorkerName = workerFullName;
+
+                _unitOfWork.JobRepository.UpdateJob(id, jobUpdate);
+            });
+
+            if (jobUpdate is null)
+                throw new JobUpdateNullException();
 
             return jobUpdate;
         }
 
         public async Task<bool> DeleteJobAsync(int id)
         {
-            var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
-                ?? throw new JobNotFoundException(id);
+            bool isDeleted = false;
 
-            bool isDeleted = _unitOfWork.JobRepository.DeleteJob(job);
-            if (isDeleted)
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.SaveChangesAsync();
-                return true;
-            }
+                var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
+                    ?? throw new JobNotFoundException(id);
 
-            return false;
+                isDeleted = _unitOfWork.JobRepository.DeleteJob(job);
+            });
+
+            return isDeleted;
         }
 
         public async Task<JobDTO> GetJobAsync(int id)
         {
-            var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
-                ?? throw new JobNotFoundException(id);
+            JobDTO? getJob = null;
 
-            var getJob = _mapper.Map<JobDTO>(job);
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
+                                ?? throw new JobNotFoundException(id);
+
+                var workerFullName = await GetWorkerFullNameAsync(job.WorkerId);
+
+                getJob = _mapper.Map<JobDTO>(job);
+                getJob.WorkerName = workerFullName;
+            });
+
+            if (getJob is null)
+                throw new JobGetNullException();
 
             return getJob;
         }

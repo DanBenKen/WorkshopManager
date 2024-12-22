@@ -12,7 +12,7 @@ namespace WorkshopManager.Models
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public JobStatus Status { get; set; }
-        public int? WorkerId { get; set; }
+        public int WorkerId { get; set; }
 
         public Supply Supply { get; set; } = null!;
         public Worker Worker { get; set; } = null!;

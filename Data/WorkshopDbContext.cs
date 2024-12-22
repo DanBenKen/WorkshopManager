@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WorkshopManager.Models;
 
-public class WorkshopDbContext : IdentityDbContext<ApplicationUser>
+public class WorkshopDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
 {
     public WorkshopDbContext(DbContextOptions<WorkshopDbContext> options) : base(options) { }
 

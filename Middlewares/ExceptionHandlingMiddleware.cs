@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using WorkshopManager.Exceptions;
+using WorkshopManager.Exceptions.JobExceptions;
 
 namespace WorkshopManager.Middlewares
 {
@@ -33,6 +34,8 @@ namespace WorkshopManager.Middlewares
         {
             var statusCode = exception switch
             {
+                JobUpdateNullException => StatusCodes.Status404NotFound,
+                JobCreationNullException => StatusCodes.Status404NotFound,
                 JobNotFoundException => StatusCodes.Status404NotFound,
                 WorkerNotFoundException => StatusCodes.Status404NotFound,
                 SupplyNotFoundException => StatusCodes.Status404NotFound,
