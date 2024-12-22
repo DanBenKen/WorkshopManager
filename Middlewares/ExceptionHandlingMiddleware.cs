@@ -62,7 +62,8 @@ namespace WorkshopManager.Middlewares
             {
                 title = exception.GetType().Name,
                 detail = exception.Message,
-                status = statusCode
+                status = statusCode,
+                code = Guid.NewGuid(),
             });
         }
 
@@ -76,7 +77,7 @@ namespace WorkshopManager.Middlewares
                 {
                     var body = await reader.ReadToEndAsync();
 
-                    if (body.Length > 500)
+                    if (body.Length > 1048576)
                     {
                         return "Large payload, body not logged.";
                     }
