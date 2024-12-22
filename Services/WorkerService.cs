@@ -42,24 +42,16 @@ namespace WorkshopManager.Services
 
         public async Task<IEnumerable<WorkerWithJobDTO>> GetAllWorkersWithJobsAsync()
         {
-            var workers = await _unitOfWork.WorkerRepository.GetAllWorkersAsync();
+            var workers = await _unitOfWork.WorkerRepository.GetAllWorkersWithJobsAsync();
 
-            var workersWithJobs = new List<WorkerWithJobDTO>();
-
-            foreach (var worker in workers)
-            {
-                var jobs = await _unitOfWork.JobRepository.GetJobsByWorkerIdAsync(worker.Id);
-
-                workersWithJobs = workers.Select(worker => new WorkerWithJobDTO
+            var workersWithJobs = workers
+                .Where(w => w.Jobs != null && w.Jobs.Any())
+                .Select(worker => new WorkerWithJobDTO
                 {
                     WorkerId = worker.Id,
-                    WorkerName = $"{worker.FullName}",
-                    Jobs = jobs
-                            .Where(j => j.WorkerId == worker.Id)
-                            .Select(j => _mapper.Map<JobDTO>(j))
-                            .ToList()
+                    WorkerName = worker.FullName,
+                    Jobs = worker.Jobs.Select(job => _mapper.Map<JobDTO>(job)).ToList()
                 }).ToList();
-            }
 
             return workersWithJobs;
         }

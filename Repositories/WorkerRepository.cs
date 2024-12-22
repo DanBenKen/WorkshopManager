@@ -27,6 +27,13 @@ namespace WorkshopManager.Repositories
             return await _context.Workers.ToListAsync();
         }
 
+        public async Task<IEnumerable<Worker>> GetAllWorkersWithJobsAsync()
+        {
+            return await _context.Workers
+                .Include(w => w.Jobs)
+                .ToListAsync();
+        }
+
         public Worker AddWorker(WorkerDTO workerDTO)
         {
             var worker = _mapper.Map<Worker>(workerDTO);
