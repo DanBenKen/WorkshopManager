@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using WorkshopManager.DTOs.SupplyDTOs;
-using WorkshopManager.Exceptions;
 using WorkshopManager.Exceptions.SupplyExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
-using WorkshopManager.Models;
 
 namespace WorkshopManager.Services
 {
@@ -27,7 +25,7 @@ namespace WorkshopManager.Services
             {
                 supplyDTO = _mapper.Map<SupplyDTO>(requestCreateSupply);
 
-                await _unitOfWork.SupplyRepository.AddSupply(supplyDTO);
+                await _unitOfWork.SupplyRepository.AddSupplyAsync(supplyDTO);
             });
 
             if (supplyDTO is null)

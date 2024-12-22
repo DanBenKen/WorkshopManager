@@ -34,11 +34,11 @@ namespace WorkshopManager.Repositories
                 .ToListAsync();
         }
 
-        public Worker AddWorker(WorkerDTO workerDTO)
+        public async Task<Worker> AddWorkerAsync(WorkerDTO workerDTO)
         {
             var worker = _mapper.Map<Worker>(workerDTO);
 
-            _context.AddAsync(worker);
+            await _context.AddAsync(worker);
             return worker;
         }
 

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.DTOs.WorkerDTOs;
-using WorkshopManager.Exceptions;
+using WorkshopManager.Exceptions.WorkerExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 using WorkshopManager.Models;
@@ -21,18 +21,37 @@ namespace WorkshopManager.Services
 
         public async Task<WorkerDTO> CreateWorkerAsync(RequestCreateWorkerDTO createWorkerDTO)
         {
-            var worker = _mapper.Map<WorkerDTO>(createWorkerDTO);
+            WorkerDTO? worker = null;
 
-            _unitOfWork.WorkerRepository.AddWorker(worker);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                worker = _mapper.Map<WorkerDTO>(createWorkerDTO);
+
+                await _unitOfWork.WorkerRepository.AddWorkerAsync(worker);
+            });
+
+            if (worker is null)
+                throw new WorkerCreateNullException();
 
             return worker;
         }
 
-        public async Task<Worker?> GetWorkerAsync(int id)
+        public async Task<WorkerDTO> GetWorkerAsync(int id)
         {
-            return await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
-                ?? throw new WorkerNotFoundException(id);
+            WorkerDTO? getWorker = null;
+
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id) 
+                    ?? throw new WorkerNotFoundException(id);
+
+                getWorker = _mapper.Map<WorkerDTO>(worker);
+            });
+
+            if (getWorker is null)
+                throw new WorkerGetNullException();
+
+            return getWorker;
         }
 
         public async Task<IEnumerable<Worker>> GetAllWorkersAsync()
@@ -42,43 +61,59 @@ namespace WorkshopManager.Services
 
         public async Task<IEnumerable<WorkerWithJobDTO>> GetAllWorkersWithJobsAsync()
         {
-            var workers = await _unitOfWork.WorkerRepository.GetAllWorkersWithJobsAsync();
+            IEnumerable<WorkerWithJobDTO>? workersWithJobs = null;
 
-            var workersWithJobs = workers
-                .Where(w => w.Jobs != null && w.Jobs.Any())
-                .Select(worker => new WorkerWithJobDTO
-                {
-                    WorkerId = worker.Id,
-                    WorkerName = worker.FullName,
-                    Jobs = worker.Jobs.Select(job => _mapper.Map<JobDTO>(job)).ToList()
-                }).ToList();
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                var workers = await _unitOfWork.WorkerRepository.GetAllWorkersWithJobsAsync();
+
+                workersWithJobs = workers
+                    .Where(w => w.Jobs != null && w.Jobs.Any())
+                    .Select(worker => new WorkerWithJobDTO
+                    {
+                        WorkerId = worker.Id,
+                        WorkerName = worker.FullName,
+                        Jobs = worker.Jobs.Select(job => _mapper.Map<JobDTO>(job)).ToList()
+                    }).ToList();
+            });
+
+            if (workersWithJobs is null)
+                throw new WorkerGetNullException();
 
             return workersWithJobs;
         }
 
         public async Task<WorkerDTO> UpdateWorkerAsync(int id, RequestUpdateWorkerDTO workerUpdateDTO)
         {
-            var workerDTO = _mapper.Map<WorkerDTO>(workerUpdateDTO);
+            WorkerDTO? workerDTO = null;
 
-            _unitOfWork.WorkerRepository.UpdateWorker(id, workerDTO);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.ExecuteInTransactionAsync(() =>
+            {
+                workerDTO = _mapper.Map<WorkerDTO>(workerUpdateDTO);
+
+                _unitOfWork.WorkerRepository.UpdateWorker(id, workerDTO);
+                return Task.CompletedTask;
+            });
+
+            if (workerDTO is null)
+                throw new WorkerUpdateNullException();
 
             return workerDTO;
         }
 
         public async Task<bool> DeleteWorkerAsync(int id)
         {
-            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
-                ?? throw new WorkerNotFoundException(id);
+            bool isDeleted = false;
 
-            bool isDeleted = _unitOfWork.WorkerRepository.DeleteWorker(worker);
-            if (isDeleted)
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.SaveChangesAsync();
-                return true;
-            }
+                var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
+                    ?? throw new WorkerNotFoundException(id);
 
-            return false;
+                isDeleted = _unitOfWork.WorkerRepository.DeleteWorker(worker);
+            });
+
+            return isDeleted;
         }
     }
 }

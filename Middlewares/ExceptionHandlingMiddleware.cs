@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using WorkshopManager.Exceptions;
 using WorkshopManager.Exceptions.JobExceptions;
 using WorkshopManager.Exceptions.SupplyExceptions;
+using WorkshopManager.Exceptions.WorkerExceptions;
 
 namespace WorkshopManager.Middlewares
 {
