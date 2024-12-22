@@ -71,7 +71,7 @@ namespace WorkshopManager.Services
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
                 ?? throw new WorkerNotFoundException(id);
 
-            var isDeleted = _unitOfWork.WorkerRepository.DeleteWorker(worker);
+            bool isDeleted = _unitOfWork.WorkerRepository.DeleteWorker(worker);
             if (isDeleted)
             {
                 await _unitOfWork.SaveChangesAsync();

@@ -51,7 +51,7 @@ namespace WorkshopManager.Services
             var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
                 ?? throw new SupplyNotFoundException(id);
 
-            var isDeleted = _unitOfWork.SupplyRepository.DeleteSupply(supply);
+            bool isDeleted = _unitOfWork.SupplyRepository.DeleteSupply(supply);
             if (isDeleted) 
             {
                 await _unitOfWork.SaveChangesAsync();
