@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Text;
 using WorkshopManager.DTOs.AccountDTOs;
 using WorkshopManager.Exceptions.AccountExceptions;
-using WorkshopManager.Exceptions.WorkerExceptions;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 using WorkshopManager.Models;
 
