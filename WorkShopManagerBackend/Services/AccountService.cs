@@ -64,7 +64,7 @@ namespace WorkshopManager.Services
         public async Task<string> LoginAsync(LoginDTO loginDTO)
         {
             if (loginDTO == null || string.IsNullOrEmpty(loginDTO.Email) || string.IsNullOrEmpty(loginDTO.Password))
-                throw new ArgumentException("Email and password are required.");            
+                throw new ArgumentException("Email and password are required.");
 
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
             if (user is null)
@@ -88,10 +88,14 @@ namespace WorkshopManager.Services
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? "unknown-email"),
-                new Claim(ClaimTypes.Name, user.UserName ?? "unknown-username")
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id)
             };
+
+            if (!string.IsNullOrEmpty(user.Email))
+                claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+
+            if (!string.IsNullOrEmpty(user.UserName))
+                claims.Add(new Claim(ClaimTypes.Name, user.UserName));
 
             var roles = await _userManager.GetRolesAsync(user);
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
@@ -99,7 +103,7 @@ namespace WorkshopManager.Services
             var keyValue = jwtSettings["Key"];
             if (string.IsNullOrEmpty(keyValue))
                 throw new KeyNotFoundException("JWT secret key is missing in the configuration.");
-            
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyValue));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
