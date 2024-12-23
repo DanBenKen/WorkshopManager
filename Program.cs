@@ -8,9 +8,6 @@ using WorkshopManager.Middlewares;
 using WorkshopManager.Models;
 using WorkshopManager.Repositories;
 using WorkshopManager.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using WorkshopManager.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,36 +49,9 @@ builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IWorkerService, WorkerService>();
 builder.Services.AddScoped<ISupplyService, SupplyService>();
 
-// Token configuration
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
-    };
-});
-
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("Admin", policy => policy.RequireRole("Admin"))
-    .AddPolicy("User", policy => policy.RequireRole("User"));
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddSwaggerWithJwt();
+builder.Services.AddSwaggerWithJwt(builder.Configuration);
 
 var app = builder.Build();
 

@@ -1,10 +1,15 @@
-﻿using Microsoft.OpenApi.Models;
+﻿// Extensions/ServiceCollectionExtensions.cs
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace WorkshopManager.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSwaggerWithJwt(this IServiceCollection services)
+        // Swagger Configuration
+        public static IServiceCollection AddSwaggerWithJwt(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSwaggerGen(c =>
             {
@@ -38,6 +43,43 @@ namespace WorkshopManager.Extensions
                         new string[] {}
                     }
                 });
+            });
+
+            // JWT Authentication
+            var jwtSettings = configuration.GetSection("JwtSettings");
+
+            var key = jwtSettings["Key"];
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new InvalidOperationException("JWT Key is not set in the configuration.");
+            }
+
+            var issuer = jwtSettings["Issuer"];
+            var audience = jwtSettings["Audience"];
+            if (string.IsNullOrEmpty(issuer) || string.IsNullOrEmpty(audience))
+            {
+                throw new InvalidOperationException("JWT Issuer or Audience is not set in the configuration.");
+            }
+
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = signingKey
+                };
             });
 
             return services;
