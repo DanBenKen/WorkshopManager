@@ -34,11 +34,11 @@ namespace WorkshopManager.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _accountService.LoginAsync(loginDTO);
-            if (result.Succeeded)
-                return Ok(new { message = "Login successful." });
+            var token = await _accountService.LoginAsync(loginDTO);
+            if (token == null)
+                return Unauthorized("Invalid login attempt.");
 
-            return Unauthorized("Invalid login attempt.");
+            return Ok(new { Token = token });
         }
 
         [HttpPost("logout")]

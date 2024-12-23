@@ -1,4 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using WorkshopManager.DTOs.AccountDTOs;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 using WorkshopManager.Models;
@@ -9,11 +14,13 @@ namespace WorkshopManager.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IConfiguration _configuration;
 
-        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _configuration = configuration;
         }
 
         public async Task<IdentityResult> RegisterAsync(RegisterDTO registerDTO)
@@ -53,24 +60,47 @@ namespace WorkshopManager.Services
             return errors.Count != 0 ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
         }
 
-        public async Task<SignInResult> LoginAsync(LoginDTO loginDTO)
+        public async Task<string> LoginAsync(LoginDTO loginDTO)
         {
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
-            if (user is null)
-                return SignInResult.Failed;
+            if (user is null || !(await _userManager.CheckPasswordAsync(user, loginDTO.Password)))
+            {
+                return null;
+            }
 
-            var passwordValid = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
-            if (!passwordValid)
-                return SignInResult.Failed;
-
-            await _signInManager.SignInAsync(user, isPersistent: loginDTO.RememberMe);
-
-            return SignInResult.Success;
+            return await GenerateJwtTokenAsync(user);
         }
 
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
+        {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+
+            var claims = new List<Claim>    {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName)
+            };
+
+            var roles = await _userManager.GetRolesAsync(user);
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(double.Parse(jwtSettings["TokenExpirationInMinutes"])),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
