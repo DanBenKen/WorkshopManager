@@ -18,6 +18,9 @@ namespace WorkshopManager.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateJob([FromBody] RequestCreateJobDTO requestCreateJob)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createJob = await _jobService.CreateJobAsync(requestCreateJob);
             return CreatedAtAction(nameof(GetJob), new { id = createJob.Id }, createJob);
         }
