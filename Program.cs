@@ -51,7 +51,7 @@ builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IWorkerService, WorkerService>();
 builder.Services.AddScoped<ISupplyService, SupplyService>();
 
-// Token konfiguracija
+// Token configuration
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 
 builder.Services.AddAuthentication(options =>
@@ -84,7 +84,6 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 
-    // Dodavanje sigurnosne definicije za JWT
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -95,7 +94,6 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\n\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\""
     });
 
-    // Dodavanje sigurnosnog zahteva za sve API rute
     c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
     {
         {
