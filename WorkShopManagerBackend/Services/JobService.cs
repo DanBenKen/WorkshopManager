@@ -20,6 +20,8 @@ namespace WorkshopManager.Services
 
         public async Task<JobDTO> CreateJobAsync(RequestCreateJobDTO createJob)
         {
+            // null object pattern???
+
             JobDTO? jobCreate = null;
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
