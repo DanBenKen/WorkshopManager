@@ -4,6 +4,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WorkshopManager.DTOs.AccountDTOs;
+using WorkshopManager.Exceptions.AccountExceptions;
+using WorkshopManager.Exceptions.WorkerExceptions;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 using WorkshopManager.Models;
 
@@ -61,11 +63,16 @@ namespace WorkshopManager.Services
 
         public async Task<string> LoginAsync(LoginDTO loginDTO)
         {
+            if (loginDTO == null || string.IsNullOrEmpty(loginDTO.Email) || string.IsNullOrEmpty(loginDTO.Password))
+                throw new ArgumentException("Email and password are required.");            
+
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
-            if (user is null || !(await _userManager.CheckPasswordAsync(user, loginDTO.Password)))
-            {
-                return null;
-            }
+            if (user is null)
+                throw new UserNotFoundException();
+
+            var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
+            if (!isPasswordCorrect)
+                throw new UnauthorizedAccessException("Invalid password.");
 
             return await GenerateJwtTokenAsync(user);
         }
@@ -82,21 +89,32 @@ namespace WorkshopManager.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? "unknown-email"),
+                new Claim(ClaimTypes.Name, user.UserName ?? "unknown-username")
             };
 
             var roles = await _userManager.GetRolesAsync(user);
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
+            var keyValue = jwtSettings["Key"];
+            if (string.IsNullOrEmpty(keyValue))
+                throw new KeyNotFoundException("JWT secret key is missing in the configuration.");
+            
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyValue));
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var expirationInMinutesString = jwtSettings["TokenExpirationInMinutes"];
+            if (string.IsNullOrEmpty(expirationInMinutesString) || !double.TryParse(expirationInMinutesString, out var expirationInMinutes))
+            {
+                expirationInMinutes = 30.0;
+            }
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],
                 audience: jwtSettings["Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(double.Parse(jwtSettings["TokenExpirationInMinutes"])),
+                expires: DateTime.Now.AddMinutes(expirationInMinutes),
                 signingCredentials: creds
             );
 
