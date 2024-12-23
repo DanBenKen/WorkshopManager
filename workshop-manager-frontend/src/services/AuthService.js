@@ -18,43 +18,48 @@ const setAuthHeader = () => {
     }
 };
 
-
 const register = async (userData) => {
     try {
-        const response = await axios.post(`${API_URL}/register`, userData);
+        const response = await api.post('/register', userData);
         return response.data;
     } catch (error) {
-        throw new Error('Registration failed');
+        console.error(error);
+        throw new Error(error.response?.data?.message || 'Registration failed');
     }
 };
 
 const login = async (credentials) => {
     try {
-        const response = await axios.post(`${API_URL}/login`, credentials);
+        const response = await api.post('/login', credentials);
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
+            setAuthHeader();
         }
         return response.data;
     } catch (error) {
-        throw new Error('Login failed');
+        console.error(error);
+        throw new Error(error.response?.data?.message || 'Login failed');
     }
 };
 
 const logout = async () => {
     try {
-        await axios.post(`${API_URL}/logout`);
+        await api.post('/logout');
         localStorage.removeItem('token');
+        setAuthHeader();
         window.location.href = '/login';
     } catch (error) {
-        throw new Error('Logout failed');
+        console.error(error);
+        throw new Error(error.response?.data?.message || 'Logout failed');
     }
 };
+
+setAuthHeader();
 
 const AuthService = {
     register,
     login,
     logout,
-    setAuthHeader,
 };
 
 export default AuthService;

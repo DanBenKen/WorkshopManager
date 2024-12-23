@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 import RegisterForm from '../components/RegisterForm';
 
@@ -12,6 +12,7 @@ const Register = () => {
     });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,7 +34,7 @@ const Register = () => {
             if (result) {
                 setSuccess('Registration successful! Please login.');
                 setError('');
-                window.location.href = '/login';
+                navigate('/login');
             } else {
                 setError('Registration failed: ' + result?.message || 'Unknown error.');
             }

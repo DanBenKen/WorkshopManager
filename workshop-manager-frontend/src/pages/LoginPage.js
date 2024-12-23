@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 import AuthService from '../services/AuthService';
 import "../assets/LoginRegisterStyle.css";
@@ -7,19 +7,20 @@ import "../assets/LoginRegisterStyle.css";
 const LoginPage = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async (loginData) => {
         try {
             const result = await AuthService.login(loginData);
+
             if (result && result.token) {
-                localStorage.setItem('token', result.token);
                 setSuccess('Login successful!');
-                window.location.href = '/';
+                navigate('/');
             } else {
                 setError('Invalid login attempt.');
             }
         } catch (err) {
-            setError('Error during login.');
+            setError('Error during login. Please try again.');
         }
     };
 
