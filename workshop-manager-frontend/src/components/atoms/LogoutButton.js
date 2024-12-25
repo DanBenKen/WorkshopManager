@@ -1,5 +1,5 @@
 import React from 'react';
-import AuthService from '../services/AuthService';
+import AuthService from '../../services/AuthorizationService';
 
 const LogoutButton = () => {
 

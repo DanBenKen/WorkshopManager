@@ -56,10 +56,10 @@ const logout = async () => {
 
 setAuthHeader();
 
-const AuthService = {
+const AuthorizationService = {
     register,
     login,
     logout,
 };
 
-export default AuthService;
+export default AuthorizationService;

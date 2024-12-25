@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SubmitButton from './SubmitButton';
+import SubmitButton from '../atoms/SubmitButton';
 
 const LoginForm = ({ onLogin }) => {
     const [loginData, setLoginData] = useState({ email: '', password: '' });

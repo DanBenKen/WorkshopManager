@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import AuthService from '../services/AuthService';
+import AuthService from '../services/AuthorizationService';
 
 const useAuth = () => {
     const [loading, setLoading] = useState(false);
@@ -32,11 +32,11 @@ const useAuth = () => {
         }
     };
 
-    const register = async (userData) => {
+    const register = async (registerData) => {
         setLoading(true);
         setError(null);
         try {
-            const newUser = await AuthService.register(userData);
+            const newUser = await AuthService.register(registerData);
             setUser(newUser);
         } catch (err) {
             setError('Registration failed: ' + err.message);

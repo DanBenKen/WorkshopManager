@@ -1,28 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import LoginForm from '../components/LoginForm';
-import AuthService from '../services/AuthService';
+import LoginForm from '../components/molecules/LoginForm';
+import useAuth from '../hooks/useAuth';
 import "../assets/LoginRegisterStyle.css";
 
 const LoginPage = () => {
-    const [error, setError] = useState('');
+    const { login, error, user } = useAuth();
     const [success, setSuccess] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (loginData) => {
-        try {
-            const result = await AuthService.login(loginData);
-
-            if (result && result.token) {
-                setSuccess('Login successful!');
-                navigate('/');
-            } else {
-                setError('Invalid login attempt.');
-            }
-        } catch (err) {
-            setError('Error during login. Please try again.');
-        }
+        await login(loginData);
     };
+
+    useEffect(() => {
+        if (user) {
+            setSuccess('Login successful!');
+            navigate('/');
+        }
+    }, [user, navigate]);
 
     return (
         <div className="page-container">

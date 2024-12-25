@@ -1,7 +1,7 @@
 import React from 'react';
-import SubmitButton from './SubmitButton';
+import SubmitButton from '../atoms/SubmitButton';
 
-const RegisterForm = ({ registerData, onChange, onSubmit }) => {
+const RegisterForm = ({ registerData, onChange, onSubmit, loading }) => {
     return (
         <form onSubmit={onSubmit}>
             <div className="mb-4">
@@ -48,7 +48,9 @@ const RegisterForm = ({ registerData, onChange, onSubmit }) => {
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                 />
             </div>
-            <SubmitButton label="Register" />
+            <SubmitButton label="Register" disabled={loading} >
+                {loading ? 'Registering...' : 'Register'}
+            </SubmitButton>
         </form>
     );
 };

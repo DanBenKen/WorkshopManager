@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../services/AuthService';
-import LogoutButton from '../components/LogoutButton';
-import TransparentWhiteButton from '../components/TransparentWhiteButton';
+import AuthService from '../services/AuthorizationService';
+import LogoutButton from '../components/atoms/LogoutButton';
+import TransparentWhiteButton from '../components/atoms/TransparentWhiteButton';
 
 const Home = () => {
     const navigate = useNavigate();
