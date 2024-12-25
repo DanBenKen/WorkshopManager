@@ -5,7 +5,6 @@ using WorkshopManager.Interfaces.ServiceInterfaces;
 
 namespace WorkshopManager.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class JobController : ControllerBase
@@ -25,6 +24,13 @@ namespace WorkshopManager.Controllers
 
             var createJob = await _jobService.CreateJobAsync(requestCreateJob);
             return CreatedAtAction(nameof(GetJob), new { id = createJob.Id }, createJob);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllJobs()
+        {
+            var getAllJobs = await _jobService.GetAllJobs();
+            return Ok(getAllJobs);
         }
 
         [HttpGet("{id}")]

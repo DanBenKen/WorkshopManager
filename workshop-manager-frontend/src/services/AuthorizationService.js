@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const API_URL = 'http://localhost:5189/api/Account';
 
@@ -9,22 +10,39 @@ const api = axios.create({
     },
 });
 
-const setAuthHeader = () => {
+const handleTokenExpiration = () => {
     const token = localStorage.getItem('token');
     if (token) {
+        const decodedToken = jwtDecode(token);
+        if (decodedToken.exp < Date.now() / 1000) {
+            localStorage.removeItem('token');
+            return false;
+        }
+    }
+    return true;
+};
+
+const setAuthHeader = () => {
+    if (handleTokenExpiration()) {
+        const token = localStorage.getItem('token');
         api.defaults.headers['Authorization'] = `Bearer ${token}`;
     } else {
         delete api.defaults.headers['Authorization'];
     }
 };
 
-const register = async (userData) => {
+const register = async (registerData) => {
     try {
-        const response = await api.post('/register', userData);
+        const response = await api.post('/register', {
+            username: registerData.userName,
+            email: registerData.email,
+            password: registerData.password,
+            confirmPassword: registerData.confirmPassword,
+        });
         return response.data;
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.message || 'Registration failed');
+        console.error("Error during registration:", error);
+        throw error;
     }
 };
 
@@ -47,7 +65,7 @@ const logout = async () => {
         await api.post('/logout');
         localStorage.removeItem('token');
         setAuthHeader();
-        window.location.href = '/login';
+        window.location.href = '/account/login';
     } catch (error) {
         console.error(error);
         throw new Error(error.response?.data?.message || 'Logout failed');

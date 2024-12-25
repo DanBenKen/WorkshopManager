@@ -96,6 +96,16 @@ namespace WorkshopManager.Services
             return getJob;
         }
 
+        public async Task<IEnumerable<JobDTO>> GetAllJobs()
+        {
+            var jobs = await _unitOfWork.JobRepository.GetAllJobsAsync();
+
+            var jobDtos = _mapper.Map<IEnumerable<JobDTO>>(jobs);
+
+            return jobDtos;
+        }
+
+
         private async Task<string> GetWorkerFullNameAsync(int workerId)
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(workerId)

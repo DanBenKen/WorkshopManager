@@ -1,5 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AuthService from '../services/AuthorizationService';
+
+class AuthError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'AuthError';
+    }
+}
 
 const useAuth = () => {
     const [loading, setLoading] = useState(false);
@@ -11,9 +18,13 @@ const useAuth = () => {
         setError(null);
         try {
             const userData = await AuthService.login(credentials);
-            setUser(userData);
+            if (userData && userData.token) {
+                setUser(userData);
+            } else {
+                throw new AuthError('No token received');
+            }
         } catch (err) {
-            setError('Login failed: ' + err.message);
+            setError(err instanceof AuthError ? err.message : 'Invalid credentials.');
         } finally {
             setLoading(false);
         }
@@ -26,24 +37,26 @@ const useAuth = () => {
             await AuthService.logout();
             setUser(null);
         } catch (err) {
-            setError('Logout failed: ' + err.message);
+            setError(`Logout failed: ${err.message}`);
         } finally {
             setLoading(false);
         }
     };
 
     const register = async (registerData) => {
-        setLoading(true);
-        setError(null);
         try {
-            const newUser = await AuthService.register(registerData);
-            setUser(newUser);
+            const response = await AuthService.register(registerData);
+            return response.data;
         } catch (err) {
-            setError('Registration failed: ' + err.message);
-        } finally {
-            setLoading(false);
+            throw err;
         }
     };
+
+    useEffect(() => {
+        if (user) {
+            // Perform actions on successful login (e.g., navigate)
+        }
+    }, [user]);
 
     return { login, logout, register, loading, error, user };
 };

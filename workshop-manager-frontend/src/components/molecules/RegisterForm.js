@@ -1,56 +1,73 @@
-import React from 'react';
-import SubmitButton from '../atoms/SubmitButton';
+import React, { useState } from 'react';
+import Button from '../atoms/Button';
+import { Link } from 'react-router-dom';
 
-const RegisterForm = ({ registerData, onChange, onSubmit, loading }) => {
+const RegisterForm = ({ onSubmit, isSubmitting, error }) => {
+    const [registerData, setRegisterData] = useState({
+        userName: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
+
+    const fields = [
+        { name: 'userName', type: 'text', label: 'Username' },
+        { name: 'email', type: 'email', label: 'Email Address' },
+        { name: 'password', type: 'password', label: 'Password' },
+        { name: 'confirmPassword', type: 'password', label: 'Confirm Password' }
+    ];
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setRegisterData({ ...registerData, [name]: value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await onSubmit(registerData);
+    };
+
     return (
-        <form onSubmit={onSubmit}>
-            <div className="mb-4">
-                <input
-                    type="text"
-                    name="userName"
-                    value={registerData.userName}
-                    onChange={onChange}
-                    placeholder="Username"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
-                />
+        <form onSubmit={handleSubmit} className="space-y-6 border-none">
+            {fields.map(({ name, type, label }) => (
+                <div key={name} className="relative">
+                    <input
+                        type={type}
+                        name={name}
+                        value={registerData[name]}
+                        onChange={handleChange}
+                        placeholder={label}
+                        required
+                        className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none"
+                    />
+                    <label
+                        htmlFor={name}
+                        className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                    >
+                        {label}
+                    </label>
+
+                    {error && error[name] && Array.isArray(error[name]) && (
+                        <div className="text-red-600 text-sm">{error[name][0]}</div>
+                    )}
+                </div>
+            ))}
+
+            <Button
+                type="submit"
+                className={`w-full ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500'} text-white`}
+                label={isSubmitting ? 'Registering...' : 'Register'}
+                disabled={isSubmitting}
+            />
+
+            <div className="text-center mt-4">
+                <p className="text-sm text-gray-600">
+                    Already have an account?{' '}
+                    <Link to="/account/login" className="text-blue-500 hover:underline">
+                        Login here
+                    </Link>
+                </p>
             </div>
-            <div className="mb-4">
-                <input
-                    type="email"
-                    name="email"
-                    value={registerData.email}
-                    onChange={onChange}
-                    placeholder="Email"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
-                />
-            </div>
-            <div className="mb-4">
-                <input
-                    type="password"
-                    name="password"
-                    value={registerData.password}
-                    onChange={onChange}
-                    placeholder="Password"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
-                />
-            </div>
-            <div className="mb-6">
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    value={registerData.confirmPassword}
-                    onChange={onChange}
-                    placeholder="Confirm Password"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
-                />
-            </div>
-            <SubmitButton label="Register" disabled={loading} >
-                {loading ? 'Registering...' : 'Register'}
-            </SubmitButton>
         </form>
     );
 };

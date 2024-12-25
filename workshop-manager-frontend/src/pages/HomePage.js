@@ -1,43 +1,51 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../services/AuthorizationService';
-import LogoutButton from '../components/atoms/LogoutButton';
-import TransparentWhiteButton from '../components/atoms/TransparentWhiteButton';
+import Button from '../components/atoms/Button';
+import useAuth from '../hooks/useAuth';
 
 const Home = () => {
     const navigate = useNavigate();
+    const { logout, user } = useAuth();
 
-    const handleLogout = async () => {
-        try {
-            await AuthService.logout();
-            navigate('/login');
-        } catch (err) {
-            console.error("Logout error:", err);
-            alert('Error during logout. Please try again.');
-        }
+    const handleJobCreateClick = () => {
+        navigate('/job/create');
+    };
+
+    const handleJobIndexClick = () => {
+        navigate('/job');
+    };
+
+    const handleLogoutClick = async () => {
+        await logout();
+        navigate('/account/login');
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-green-400 via-blue-500 to-purple-600">
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-r">
             <div className="text-center text-white px-6 py-12">
                 <h1 className="text-5xl font-extrabold mb-4">Welcome to Our Application</h1>
+                {user && <p className="text-lg mb-6">Logged in as: <span className="font-semibold">{user.email}</span></p>}
                 <p className="text-lg mb-6">We are glad to have you here. Explore our features and get started today!</p>
-                
+
                 <div className="space-x-4 mb-8">
-                    <TransparentWhiteButton aria-label="Get Started">
-                        Get Started
-                    </TransparentWhiteButton>
-                    <TransparentWhiteButton aria-label="Learn More">
-                        Learn More
-                    </TransparentWhiteButton>
+                    <Button
+                        label="Job Index"
+                        aria-label="Get Started"
+                        onClick={handleJobIndexClick}>
+                    </Button>
+                    <Button
+                        label="Create Job"
+                        aria-label="Job page"
+                        onClick={handleJobCreateClick}>
+                    </Button>
                 </div>
 
-                <div className="mt-8">
-                    <LogoutButton
-                        onClick={handleLogout}
-                        > Logout
-                    </LogoutButton>
-                </div>
+                <Button
+                    label="Logout"
+                    aria-label="Logout"
+                    onClick={handleLogoutClick}
+                    className="bg-red-500 hover:bg-red-600">
+                </Button>
             </div>
         </div>
     );

@@ -25,7 +25,8 @@ namespace WorkshopManager.Controllers
             if (result.Succeeded)
                 return CreatedAtAction(nameof(Register), new { email = registerDTO.Email }, registerDTO);
 
-            return BadRequest(result.Errors);
+            var errorMessages = result.Errors.Select(e => e.Description).ToList();
+            return BadRequest(new { errors = errorMessages });
         }
 
         [HttpPost("login")]
