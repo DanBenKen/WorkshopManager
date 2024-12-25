@@ -27,11 +27,8 @@ const LoginOrganism = ({ onLoginSuccess }) => {
                 onLoginSuccess();
                 navigate('/');
             }, 1000);
-        } else if (error) {
-            setErrorMessages([error]);
         }
     }, [user, error, navigate, onLoginSuccess, setErrorMessages, setSuccessMessage]);
-
 
     return (
         <FormContainer

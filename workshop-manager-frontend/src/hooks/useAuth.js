@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import AuthService from '../services/AuthorizationService';
 
 class AuthError extends Error {
@@ -51,12 +51,6 @@ const useAuth = () => {
             throw err;
         }
     };
-
-    useEffect(() => {
-        if (user) {
-            // Perform actions on successful login (e.g., navigate)
-        }
-    }, [user]);
 
     return { login, logout, register, loading, error, user };
 };

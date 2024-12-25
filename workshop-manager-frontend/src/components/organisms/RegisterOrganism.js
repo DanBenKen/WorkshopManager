@@ -46,12 +46,6 @@ const RegisterOrganism = () => {
         }
     }, [successMessage, navigate]);
 
-    useEffect(() => {
-        if (errorMessages.length > 0) {
-            console.error('Registration error:', errorMessages);
-        }
-    }, [errorMessages]);
-
     return (
         <FormContainer
             title="Register"
