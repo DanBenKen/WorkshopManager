@@ -4,7 +4,7 @@ import Login from './pages/AccountPages/LoginPage';
 import Register from './pages/AccountPages/RegisterPage';
 import JobCreate from './pages/JobPages/JobCreatePage';
 import JobPage from './pages/JobPages/JobIndexPage';
-import AdminDashboardPage from './pages/AccountPages/AdminDashboardPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 
 const App = () => {
     return (
