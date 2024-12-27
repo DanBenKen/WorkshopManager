@@ -1,30 +1,26 @@
 import React, { useState } from 'react';
-import Button from '../atoms/Button';
+import Button from '../../atoms/Button';
 import { Link } from 'react-router-dom';
 
-const RegisterForm = ({ onSubmit, isSubmitting, error }) => {
-    const [registerData, setRegisterData] = useState({
-        userName: '',
+const LoginForm = ({ onLogin, isSubmitting, error }) => {
+    const [loginData, setLoginData] = useState({
         email: '',
-        password: '',
-        confirmPassword: ''
+        password: ''
     });
 
     const fields = [
-        { name: 'userName', type: 'text', label: 'Username' },
         { name: 'email', type: 'email', label: 'Email Address' },
-        { name: 'password', type: 'password', label: 'Password' },
-        { name: 'confirmPassword', type: 'password', label: 'Confirm Password' }
+        { name: 'password', type: 'password', label: 'Password' }
     ];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setRegisterData({ ...registerData, [name]: value });
+        setLoginData({ ...loginData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await onSubmit(registerData);
+        await onLogin(loginData);
     };
 
     return (
@@ -34,7 +30,7 @@ const RegisterForm = ({ onSubmit, isSubmitting, error }) => {
                     <input
                         type={type}
                         name={name}
-                        value={registerData[name]}
+                        value={loginData[name]}
                         onChange={handleChange}
                         placeholder={label}
                         required
@@ -48,7 +44,7 @@ const RegisterForm = ({ onSubmit, isSubmitting, error }) => {
                     </label>
 
                     {error && error[name] && Array.isArray(error[name]) && (
-                        <div className="text-red-600 text-sm">{error[name][0]}</div>
+                        <div className="border-y-0 text-red-600 text-sm">{error[name][0]}</div>
                     )}
                 </div>
             ))}
@@ -56,15 +52,15 @@ const RegisterForm = ({ onSubmit, isSubmitting, error }) => {
             <Button
                 type="submit"
                 className={`w-full ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500'} text-white`}
-                label={isSubmitting ? 'Registering...' : 'Register'}
+                label={isSubmitting ? 'Logging in...' : 'Login'}
                 disabled={isSubmitting}
             />
 
             <div className="text-center mt-4">
                 <p className="text-sm text-gray-600">
-                    Already have an account?{' '}
-                    <Link to="/account/login" className="text-blue-500 hover:underline">
-                        Login here
+                    Don't have an account?{' '}
+                    <Link to="/account/register" className="text-blue-500 hover:underline">
+                        Register here
                     </Link>
                 </p>
             </div>
@@ -72,4 +68,4 @@ const RegisterForm = ({ onSubmit, isSubmitting, error }) => {
     );
 };
 
-export default RegisterForm;
+export default LoginForm;

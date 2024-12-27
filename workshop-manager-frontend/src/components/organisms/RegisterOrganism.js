@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import RegisterForm from '../molecules/RegisterForm';
+import RegisterForm from '../molecules/AccountMolecules/RegisterForm';
 import useAuth from '../../hooks/useAuth';
 import useMessages from '../../hooks/useMessages';
 import handleError from '../../utils/errorHandler';

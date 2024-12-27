@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import LoginForm from '../molecules/LoginForm';
+import LoginForm from '../molecules/AccountMolecules/LoginForm';
 import useAuth from '../../hooks/useAuth';
 import useMessages from '../../hooks/useMessages';
 import { useNavigate } from 'react-router-dom';
