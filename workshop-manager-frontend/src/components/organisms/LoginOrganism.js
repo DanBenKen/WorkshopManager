@@ -5,7 +5,7 @@ import useMessages from '../../hooks/useMessages';
 import { useNavigate } from 'react-router-dom';
 import FormContainer from '../containers/FormContainer';
 
-const LoginOrganism = ({ onLoginSuccess }) => {
+const LoginOrganism = () => {
     const { login, loading, error, user } = useAuth();
     const { successMessage, errorMessages, setSuccessMessage, setErrorMessages } = useMessages();
     const navigate = useNavigate();
@@ -24,11 +24,10 @@ const LoginOrganism = ({ onLoginSuccess }) => {
         if (user) {
             setSuccessMessage('Login successful!');
             setTimeout(() => {
-                onLoginSuccess();
                 navigate('/');
             }, 1000);
         }
-    }, [user, error, navigate, onLoginSuccess, setErrorMessages, setSuccessMessage]);
+    }, [user, error, navigate, setErrorMessages, setSuccessMessage]);
 
     return (
         <FormContainer

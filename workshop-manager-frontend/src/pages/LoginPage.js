@@ -3,13 +3,10 @@ import LoginOrganism from '../components/organisms/LoginOrganism';
 import AuthTemplate from '../components/templates/AuthTemplate';
 
 const LoginPage = () => {
-    const handleLoginSuccess = () => {
-        console.log('Login successful, navigating...');
-    };
 
     return (
         <AuthTemplate>
-            <LoginOrganism onLoginSuccess={handleLoginSuccess} />
+            <LoginOrganism />
         </AuthTemplate>
     );
 };
