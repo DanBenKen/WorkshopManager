@@ -27,17 +27,13 @@ namespace WorkshopManager.Services
         {
             var passwordValidationResult = await ValidatePasswordAsync(registerDTO.Password);
             if (!passwordValidationResult.Succeeded)
-            {
-                return passwordValidationResult;
-            }
+                return passwordValidationResult;            
 
             var user = new ApplicationUser { UserName = registerDTO.UserName, Email = registerDTO.Email };
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
             if (result.Succeeded)
-            {
                 await _userManager.AddToRoleAsync(user, "Admin");
-            }
-
+            
             return result;
         }
 
@@ -52,9 +48,7 @@ namespace WorkshopManager.Services
             {
                 var result = await validator.ValidateAsync(_userManager, user, password);
                 if (!result.Succeeded)
-                {
-                    errors.AddRange(result.Errors);
-                }
+                    errors.AddRange(result.Errors);                
             }
 
             return errors.Count != 0 ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
@@ -85,10 +79,7 @@ namespace WorkshopManager.Services
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
 
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id)
-            };
+            var claims = new List<Claim> { new Claim(JwtRegisteredClaimNames.Sub, user.Id) };
 
             if (!string.IsNullOrEmpty(user.Email))
                 claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));

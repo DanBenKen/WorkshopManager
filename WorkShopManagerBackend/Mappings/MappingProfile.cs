@@ -10,7 +10,10 @@ namespace WorkshopManager.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<Job, JobDTO>();
+            CreateMap<Job, JobDTO>()
+                .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker != null ? src.Worker.FullName : null))
+                .ForMember(dest => dest.SupplyId, opt => opt.MapFrom(src => src.SupplyId));
+
             CreateMap<JobDTO, Job>();
             CreateMap<RequestCreateJobDTO, JobDTO>();
             CreateMap<RequestUpdateJobDTO, JobDTO>();

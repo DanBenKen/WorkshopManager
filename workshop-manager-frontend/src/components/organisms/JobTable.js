@@ -2,7 +2,7 @@ import Table from "../molecules/Table";
 import JobRow from "../molecules/JobMolecules/JobRow";
 
 const JobTable = ({ jobs, onEdit, onDelete }) => {
-    const headers = ["Job Title", "Description", "Status", "Actions"];
+    const headers = ["Job Title", "Description", "Status", "Worker", "Actions"];
 
     return (
         <Table headers={headers}>

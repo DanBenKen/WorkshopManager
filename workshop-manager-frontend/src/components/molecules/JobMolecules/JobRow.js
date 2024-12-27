@@ -5,6 +5,7 @@ const JobRow = ({ job, onEdit, onDelete }) => (
         <TableRowCell className="text-gray-800">{job.jobName}</TableRowCell>
         <TableRowCell className="text-gray-600">{job.description}</TableRowCell>
         <TableRowCell className="text-gray-500">{job.status}</TableRowCell>
+        <TableRowCell className="text-gray-800">{job.workerName || "N/A"}</TableRowCell>
         <TableRowCell>
             <button
                 className="text-blue-500 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md px-2 py-1"

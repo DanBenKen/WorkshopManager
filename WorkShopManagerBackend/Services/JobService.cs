@@ -105,7 +105,6 @@ namespace WorkshopManager.Services
             return jobDtos;
         }
 
-
         private async Task<string> GetWorkerFullNameAsync(int workerId)
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(workerId)

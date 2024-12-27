@@ -16,16 +16,11 @@ namespace WorkshopManager.Repositories
             return await _context.Jobs.FirstOrDefaultAsync(j => j.Id == id);
         }
 
-        public async Task<IEnumerable<Job>> GetJobsByWorkerIdAsync(int workerId)
-        {
-            return await _context.Jobs
-                .Where(j => j.WorkerId == workerId)
-                .ToListAsync();
-        }
-
         public async Task<IEnumerable<Job>> GetAllJobsAsync()
         {
-            return await _context.Jobs.ToListAsync();
+            return await _context.Jobs
+                .Include(j => j.Worker)
+                .ToListAsync();
         }
 
         public async Task<Job> AddJobAsync(JobDTO jobDTO)

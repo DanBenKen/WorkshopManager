@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useJobs from '../../hooks/useJobs';
 import JobForm from '../../components/molecules/JobMolecules/JobForm';
 
 const JobCreate = () => {
+    const navigate = useNavigate();
     const [newJob, setNewJob] = useState({
         jobName: '',
         description: '',
@@ -38,6 +40,7 @@ const JobCreate = () => {
 
             await createJob(jobToCreate);
             alert('Job created successfully!');
+            navigate('/job');
         } catch (err) {
             console.error('Failed to create job:', err);
         }
