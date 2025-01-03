@@ -1,12 +1,12 @@
 import React from 'react';
 import RegisterForm from '../../components/organism/RegisterForm';
+import AuthPageLayout from '../../components/layouts/AuthPageLayout';
 
 const RegisterPage = () => {
     return (
-        <div>
-            <h1>Register for WorkshopManager</h1>
+        <AuthPageLayout title="Register for WorkshopManager">
             <RegisterForm />
-        </div>
+        </AuthPageLayout>
     );
 };
 

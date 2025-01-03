@@ -5,7 +5,7 @@ import ErrorMessage from '../atoms/ErrorMessage';
 
 const FormField = ({ label, type, name, value, onChange, errorMessage, placeholder }) => {
     return (
-        <div className="form-field">
+        <div className="mb-4">
             <Label htmlFor={name}>{label}</Label>
             <Input
                 type={type}
@@ -14,7 +14,7 @@ const FormField = ({ label, type, name, value, onChange, errorMessage, placehold
                 onChange={onChange}
                 placeholder={placeholder}
             />
-            {errorMessage && <ErrorMessage message={errorMessage} />}
+            {errorMessage && ( ErrorMessage ({errorMessage}) )}
         </div>
     );
 };
