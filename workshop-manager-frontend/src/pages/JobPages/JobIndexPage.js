@@ -5,28 +5,13 @@ import JobTable from "../../components/organisms/JobTable";
 import { useNavigate } from "react-router-dom";
 
 const JobIndex = () => {
-    const [jobs, setJobs] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [jobs] = useState([]);
+    const [loading] = useState(true);
     const navigate = useNavigate();
 
     const handleNewCreateClick = () => {
         navigate("/job/create");
     };
-
-    useEffect(() => {
-        const fetchJobs = async () => {
-            try {
-                const data = await JobService.getJobs();
-                setJobs(data);
-            } catch (error) {
-                console.error("Error fetching jobs:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchJobs();
-    }, []);
 
     if (loading) {
         return <div>Loading...</div>;
