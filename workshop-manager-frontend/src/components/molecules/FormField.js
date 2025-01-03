@@ -14,7 +14,7 @@ const FormField = ({ label, type, name, value, onChange, errorMessage, placehold
                 onChange={onChange}
                 placeholder={placeholder}
             />
-            {errorMessage && ( ErrorMessage ({errorMessage}) )}
+            {errorMessage && <ErrorMessage message={errorMessage} />}
         </div>
     );
 };

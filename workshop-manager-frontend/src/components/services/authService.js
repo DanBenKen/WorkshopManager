@@ -7,11 +7,7 @@ export const register = async (userData) => {
         const response = await axios.post(`${API_URL}/register`, userData);
         return response.data;
     } catch (error) {
-        if (error?.response?.data?.errors) {
-            throw error.response.data.errors;
-        } else {
-            throw error.response?.data || "An unknown error occurred";
-        }
+        throw handleAuthError(error);
     }
 };
 
@@ -20,10 +16,13 @@ export const login = async (loginData) => {
         const response = await axios.post(`${API_URL}/login`, loginData);
         return response.data;
     } catch (error) {
-        if (error?.response?.data?.errors) {
-            throw error.response.data.errors;
-        } else {
-            throw error.response?.data || "An unknown error occurred";
-        }
+        throw handleAuthError(error);
     }
+};
+
+const handleAuthError = (error) => {
+    if (error?.response?.data?.errors) {
+        return error.response.data.errors;
+    }
+    return error.response?.data || "An unknown error occurred";
 };

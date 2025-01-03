@@ -3,6 +3,7 @@ import { login } from '../services/authService';
 import Button from '../atoms/Button';
 import { useNavigate } from 'react-router-dom';
 import FormField from '../molecules/FormField';
+import ErrorMessage from '../atoms/ErrorMessage';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
@@ -21,7 +22,7 @@ const LoginForm = () => {
             setError('');
             navigate('/');
         } catch (err) {
-            setError(err.message || "An error occurred");
+            setError(err);
         }
     };
 
@@ -41,9 +42,12 @@ const LoginForm = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
+
             <Button type="submit">Login</Button>
 
-            {error && <p>{error}</p>}
+            {error && (Array.isArray(error) ? (error.map((errMsg, index) => <ErrorMessage key={index} message={errMsg} />))
+                : (<ErrorMessage message={error} />)
+            )}
         </form>
     );
 };

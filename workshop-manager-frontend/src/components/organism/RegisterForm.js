@@ -3,13 +3,14 @@ import { register } from '../services/authService';
 import Button from '../atoms/Button';
 import { useNavigate } from 'react-router-dom';
 import FormField from '../molecules/FormField';
+import ErrorMessage from '../atoms/ErrorMessage';
 
 const RegisterForm = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
+    const [error, setError] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
 
@@ -17,7 +18,7 @@ const RegisterForm = () => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
-            setError("Passwords must match");
+            setError(["Passwords must match"]);
             return;
         }
 
@@ -26,14 +27,10 @@ const RegisterForm = () => {
         try {
             await register(userData);
             setSuccessMessage("Registration successful! Please log in.");
-            setError('');
+            setError([]);
             navigate('/account/login');
         } catch (err) {
-            if (Array.isArray(err)) {
-                setError(err.join(", "));
-            } else {
-                setError(err.message || "An error occurred");
-            }
+            setError(Array.isArray(err) ? err : [err.message || "An unknown error occurred"]);
         }
     };
 
@@ -70,7 +67,10 @@ const RegisterForm = () => {
 
             <Button type="submit">Register</Button>
 
-            {error && <p>{error}</p>}
+            {error.length > 0 && error.map((errMsg, index) => (
+                <ErrorMessage key={index} message={errMsg} />
+            ))}
+            
             {successMessage && <p>{successMessage}</p>}
         </form>
     );
