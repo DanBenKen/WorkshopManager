@@ -22,7 +22,7 @@ const LoginForm = () => {
             setError('');
             navigate('/');
         } catch (err) {
-            setError(err);
+            setError(err.message || "Invalid Login Attempt");
         }
     };
 
@@ -45,9 +45,7 @@ const LoginForm = () => {
 
             <Button type="submit">Login</Button>
 
-            {error && (Array.isArray(error) ? (error.map((errMsg, index) => <ErrorMessage key={index} message={errMsg} />))
-                : (<ErrorMessage message={error} />)
-            )}
+            {error && <ErrorMessage message={error} />}
         </form>
     );
 };
