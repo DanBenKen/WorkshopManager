@@ -20,6 +20,11 @@ export const login = async (loginData) => {
     }
 };
 
+export const logout = async () => {
+    localStorage.removeItem('authToken');
+    await axios.post(`${API_URL}/logout`); 
+};
+
 const handleAuthError = (error) => {
     if (error?.response?.data?.errors) {
         return error.response.data.errors;
