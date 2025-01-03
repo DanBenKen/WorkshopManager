@@ -4,8 +4,8 @@ import FrontPage from './pages/FrontPage';
 import Jobs from './pages/Jobs';
 import Workers from './pages/Workers';
 import Supplies from './pages/Supplies';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
 
 const App = () => {
     return (

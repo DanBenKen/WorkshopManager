@@ -17,7 +17,7 @@ const LoginForm = () => {
 
         try {
             const response = await login(loginData);
-            localStorage.setItem('authToken', response.token); // Čuvanje JWT tokena u localStorage
+            localStorage.setItem('authToken', response.token);
             setError('');
             navigate('/');
         } catch (err) {
