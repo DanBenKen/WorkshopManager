@@ -33,7 +33,6 @@ const LoginForm = () => {
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                errorMessage={error}
             />
             <FormField
                 label="Password"
@@ -41,7 +40,6 @@ const LoginForm = () => {
                 name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                errorMessage={error}
             />
             <Button type="submit">Login</Button>
 
