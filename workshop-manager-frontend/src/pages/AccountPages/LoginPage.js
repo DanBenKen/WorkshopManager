@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginOrganism from '../../components/organisms/LoginOrganism';
+import LoginOrganism from '../../components/organisms/Login';
 import AuthTemplate from '../../components/templates/AuthTemplate';
 
 const LoginPage = () => {

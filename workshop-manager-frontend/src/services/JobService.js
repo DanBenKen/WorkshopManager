@@ -27,7 +27,7 @@ const handleError = (error) => {
 };
 
 const JobService = {
-  getJobs: async (jobId) => {
+  getJobs: async () => {
     try {
       const response = await axios.get(`${API_URL}`, getAuthHeaders());
       return response.data;

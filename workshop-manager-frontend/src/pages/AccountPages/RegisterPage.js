@@ -1,5 +1,5 @@
 import React from 'react';
-import RegisterOrganism from '../../components/organisms/RegisterOrganism';
+import RegisterOrganism from '../../components/organisms/Register';
 import AuthTemplate from '../../components/templates/AuthTemplate';
 
 const RegisterPage = () => {

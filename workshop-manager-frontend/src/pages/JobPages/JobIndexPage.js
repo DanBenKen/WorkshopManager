@@ -13,14 +13,6 @@ const JobIndex = () => {
         navigate("/job/create");
     };
 
-    const handleEdit = (id) => {
-        console.log("Edit job with ID:", id);
-    };
-
-    const handleDelete = (id) => {
-        console.log("Delete job with ID:", id);
-    };
-
     useEffect(() => {
         const fetchJobs = async () => {
             try {
@@ -42,11 +34,8 @@ const JobIndex = () => {
 
     return (
         <div className="w-full max-w-5xl mx-auto p-8 rounded-xl">
-            <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-                All Jobs
-            </h1>
             <Button onClick={handleNewCreateClick} label="Create New Job" />
-            <JobTable jobs={jobs} onEdit={handleEdit} onDelete={handleDelete} />
+            <JobTable jobs={jobs} />
         </div>
     );
 };

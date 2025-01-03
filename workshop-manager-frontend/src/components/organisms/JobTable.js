@@ -1,7 +1,7 @@
 import Table from "../molecules/Table";
 import JobRow from "../molecules/JobMolecules/JobRow";
 
-const JobTable = ({ jobs, onEdit, onDelete }) => {
+const JobTable = ({ jobs, onRefresh }) => {
     const headers = ["Job Title", "Description", "Status", "Worker", "Actions"];
 
     return (
@@ -17,8 +17,8 @@ const JobTable = ({ jobs, onEdit, onDelete }) => {
                     <JobRow
                         key={job.id}
                         job={job}
-                        onEdit={onEdit}
-                        onDelete={onDelete}
+                        onDelete={onRefresh}
+                        onUpdate={onRefresh}
                     />
                 ))
             )}
