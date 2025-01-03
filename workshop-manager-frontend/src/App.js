@@ -1,20 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './pages/AccountPages/LoginPage';
-import Register from './pages/AccountPages/RegisterPage';
-import JobCreate from './pages/JobPages/JobCreatePage';
-import JobPage from './pages/JobPages/JobIndexPage';
-import AdminDashboardPage from './pages/AdminDashboardPage';
+import FrontPage from './pages/FrontPage';
+import Jobs from './pages/Jobs';
+import Workers from './pages/Workers';
+import Supplies from './pages/Supplies';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/account/login" element={<Login />} />
-                <Route path="/account/register" element={<Register />} />
-                <Route path="/job/create" element={<JobCreate />} />
-                <Route path="/job" element={<JobPage />} />
-                <Route path="/" element={<AdminDashboardPage />} />
+                <Route path="/" element={<FrontPage />} />
+                <Route path="/jobs" element={<Jobs />} />
+                <Route path="/supplies" element={<Supplies />} />
+                <Route path="/workers" element={<Workers />} />
+                <Route path="/account/login" element={<LoginPage />} />
+                <Route path="/account/register" element={<RegisterPage />} />
             </Routes>
         </Router>
     );
