@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { login as loginService, register as registerService, logout as logoutService } from '../services/authService';
+import { login as loginService, register as registerService, logout as logoutService, handleAuthError, setToken } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 
 const useAuth = () => {
@@ -13,8 +13,8 @@ const useAuth = () => {
 
         try {
             const response = await loginService(loginData);
-            localStorage.setItem('authToken', response.token);
-            navigate('/');
+            setToken(response.token);
+            return response;
         } catch (error) {
             setAuthError(handleAuthError(error));
             throw error;
@@ -42,7 +42,6 @@ const useAuth = () => {
 
         try {
             await logoutService();
-            localStorage.removeItem('authToken');
             navigate('/account/login');
         } catch (error) {
             setAuthError(handleAuthError(error));
@@ -50,13 +49,6 @@ const useAuth = () => {
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const handleAuthError = (error) => {
-        if (error?.response?.data?.errors) {
-            return error.response.data.errors;
-        }
-        return error.response?.data || "An unknown error occurred";
     };
 
     return {

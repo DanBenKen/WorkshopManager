@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = "http://localhost:5189/api/Account";
+const TOKEN_KEY = 'authToken';
 
 export const register = async (userData) => {
         const response = await axios.post(`${API_URL}/register`, userData);
@@ -13,6 +14,25 @@ export const login = async (loginData) => {
 };
 
 export const logout = async () => {
-    localStorage.removeItem('authToken');
+    removeToken();
     await axios.post(`${API_URL}/logout`); 
+};
+
+export const setToken = (token) => {
+    localStorage.setItem(TOKEN_KEY, token);
+};
+
+export const getToken = () => {
+    return localStorage.getItem(TOKEN_KEY);
+};
+
+export const removeToken = () => {
+    localStorage.removeItem(TOKEN_KEY);
+};
+
+export const handleAuthError = (error) => {
+    if (error?.response?.data?.errors) {
+        return error.response.data.errors;
+    }
+    return error.response?.data || "An unknown error occurred";
 };

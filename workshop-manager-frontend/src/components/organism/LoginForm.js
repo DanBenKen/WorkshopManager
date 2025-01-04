@@ -3,15 +3,18 @@ import useAuth from '../hooks/useAuth';
 import Button from '../atoms/Button';
 import FormField from '../molecules/FormField';
 import ErrorMessage from '../atoms/ErrorMessage';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const { handleLogin, authError, isLoading } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
         handleLogin({ email, password });
+        navigate('/');
     };
 
     return (
