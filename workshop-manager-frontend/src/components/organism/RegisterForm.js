@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { register } from '../services/authService';
+import useAuth from '../hooks/useAuth'; // Koristi useAuth
 import Button from '../atoms/Button';
 import { useNavigate } from 'react-router-dom';
 import FormField from '../molecules/FormField';
@@ -10,7 +10,7 @@ const RegisterForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState([]);
+    const { handleRegister, authError, isLoading } = useAuth();
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
 
@@ -18,20 +18,15 @@ const RegisterForm = () => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
-            setError(["Passwords must match"]);
+            setSuccessMessage('');
             return;
         }
 
         const userData = { username, email, password, confirmPassword };
 
-        try {
-            await register(userData);
-            setSuccessMessage("Registration successful! Please log in.");
-            setError([]);
-            navigate('/account/login');
-        } catch (err) {
-            setError(Array.isArray(err) ? err : [err.message || "An unknown error occurred"]);
-        }
+        await handleRegister(userData);
+        setSuccessMessage("Registration successful! Please log in.");
+        navigate('/account/login');
     };
 
     return (
@@ -65,13 +60,12 @@ const RegisterForm = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
-            <Button type="submit">Register</Button>
+            <Button type="submit" disabled={isLoading}>
+                {isLoading ? 'Registering...' : 'Register'}
+            </Button>
 
-            {error.length > 0 && error.map((errMsg, index) => (
-                <ErrorMessage key={index} message={errMsg} />
-            ))}
-            
-            {successMessage && <p>{successMessage}</p>}
+            {authError && <ErrorMessage message={authError} />}
+            {successMessage && <p className="text-green-500">{successMessage}</p>}
         </form>
     );
 };

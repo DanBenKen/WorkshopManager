@@ -1,29 +1,17 @@
 import React, { useState } from 'react';
-import { login } from '../services/authService';
+import useAuth from '../hooks/useAuth';
 import Button from '../atoms/Button';
-import { useNavigate } from 'react-router-dom';
 import FormField from '../molecules/FormField';
 import ErrorMessage from '../atoms/ErrorMessage';
 
 const LoginForm = () => {
+    const { handleLogin, authError, isLoading } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
-        const loginData = { email, password };
-
-        try {
-            const response = await login(loginData);
-            localStorage.setItem('authToken', response.token);
-            setError('');
-            navigate('/');
-        } catch (err) {
-            setError(err.message || "Invalid Login Attempt");
-        }
+        handleLogin({ email, password });
     };
 
     return (
@@ -43,9 +31,11 @@ const LoginForm = () => {
                 onChange={(e) => setPassword(e.target.value)}
             />
 
-            <Button type="submit">Login</Button>
+            <Button type="submit" disabled={isLoading}>
+                {isLoading ? 'Loading...' : 'Login'}
+            </Button>
 
-            {error && <ErrorMessage message={error} />}
+            {authError && <ErrorMessage message={authError} />}
         </form>
     );
 };

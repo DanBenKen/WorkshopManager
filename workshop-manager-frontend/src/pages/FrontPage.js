@@ -1,19 +1,14 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../components/services/authService';
+import { Link } from 'react-router-dom';
 import Button from '../components/atoms/Button';
+import useAuth from '../components/hooks/useAuth';
 
 const FrontPage = () => {
-    const navigate = useNavigate();
-
-    const handleLogout = async () => {
-        await logout();
-        navigate('/account/login');
-    };
+    const { handleLogout, isLoading } = useAuth();
 
     return (
         <div className="text-center">
-            <h1 className="text-4xl font-bold my-4">Welcome to WorkshopManager</h1>            
+            <h1 className="text-4xl font-bold my-4">Welcome to WorkshopManager</h1>
             <div className="space-x-4">
                 <Link
                     to="/jobs"
@@ -38,6 +33,7 @@ const FrontPage = () => {
             <div className="mt-8">
                 <Button
                     onClick={handleLogout}
+                    disabled={isLoading}
                     className="inline-block px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-500"
                 >
                     Logout
