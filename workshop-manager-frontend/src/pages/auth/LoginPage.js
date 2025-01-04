@@ -1,6 +1,6 @@
 import React from 'react';
 import LoginForm from '../../components/organism/LoginForm';
-import AuthPageLayout from '../../components/layouts/AuthPageLayout';
+import AuthPageLayout from '../../layouts/FormPageLayout';
 
 const LoginPage = () => {
     return (

@@ -3,11 +3,12 @@ import Label from '../atoms/Label';
 import Input from '../atoms/Input';
 import ErrorMessage from '../atoms/ErrorMessage';
 
-const FormField = ({ label, type, name, value, onChange, errorMessage, placeholder }) => {
+const FormField = ({ label, type, id, name, value, onChange, errorMessage, placeholder }) => {
     return (
         <div className="mb-4">
-            <Label htmlFor={name}>{label}</Label>
+            <Label htmlFor={id}>{label}</Label>
             <Input
+                id={id}
                 type={type}
                 name={name}
                 value={value}

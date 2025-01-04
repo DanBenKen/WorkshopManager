@@ -1,43 +1,81 @@
-import React, { useState } from 'react';
-import { addWorker } from '../../services/workerService';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import FormField from '../molecules/FormField';
+import useWorkers from '../../hooks/useWorkers';
+import ErrorMessage from '../atoms/ErrorMessage';
 
-const WorkerForm = ({ onSave }) => {
-    const [name, setName] = useState('');
+const WorkerForm = () => {
+    const { workerId } = useParams(); // Get workerId from URL params
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [position, setPosition] = useState('');
+    
+    const { workers, handleCreateWorker, handleUpdateWorker, isLoading, error } = useWorkers(workerId);
+    const navigate = useNavigate();
+
+    const isEditMode = !!workerId;
+
+    useEffect(() => {
+        if (workers && workers.firstName) {
+            setFirstName(workers.firstName);
+            setLastName(workers.lastName);
+            setPosition(workers.position);
+        }
+    }, [workers]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const newWorker = { name, position };
-            await addWorker(newWorker);
-            onSave();
-        } catch (error) {
-            console.error("Error adding worker:", error);
+        const workerData = { firstName, lastName, position };
+
+        if (isEditMode) {
+            await handleUpdateWorker(workerId, workerData);
+        } else {
+            await handleCreateWorker(workerData);
         }
+        navigate('/workers');
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Name:
-                <input
+        <div>
+            <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Worker' : 'Create New Worker'}</h2>
+            {error && <ErrorMessage message={error} />}
+            <form onSubmit={handleSubmit}>
+                <FormField
+                    label="First Name"
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
+                    id="FirstName"
+                    name="firstName"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Enter first name"
                 />
-            </label>
-            <label>
-                Position:
-                <input
+                <FormField
+                    label="Last Name"
                     type="text"
+                    id="LastName"
+                    name="lastName"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Enter last name"
+                />
+                <FormField
+                    label="Position"
+                    type="text"
+                    id="Position"
+                    name="position"
                     value={position}
                     onChange={(e) => setPosition(e.target.value)}
-                    required
+                    placeholder="Enter position"
                 />
-            </label>
-            <button type="submit">Save</button>
-        </form>
+                <button
+                    type="submit"
+                    className="bg-blue-500 text-white p-2 rounded"
+                    disabled={isLoading}
+                >
+                    {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Worker' : 'Create Worker')}
+                </button>
+            </form>
+        </div>
     );
 };
 

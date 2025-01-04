@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AuthPageLayout = ({ title, children }) => {
+const FormPageLayout = ({ title, children }) => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
@@ -11,4 +11,4 @@ const AuthPageLayout = ({ title, children }) => {
     );
 };
 
-export default AuthPageLayout;
+export default FormPageLayout;

@@ -13,10 +13,10 @@ const useAuth = () => {
 
         try {
             const response = await loginService(loginData);
-            setToken(response.token); // Spremi token
-            navigate('/'); // Preusmeravanje na početnu stranicu
+            setToken(response.token);
+            navigate('/');
         } catch (error) {
-            setAuthError(handleAuthError(error)); // Postavljanje greške
+            setAuthError(handleAuthError(error));
             throw error;
         } finally {
             setIsLoading(false);
@@ -29,9 +29,9 @@ const useAuth = () => {
 
         try {
             await registerService(userData);
-            navigate('/'); // Usmerenje nakon registracije
+            navigate('/');
         } catch (error) {
-            setAuthError(handleAuthError(error)); // Postavljanje greške
+            setAuthError(handleAuthError(error));
             throw error;
         } finally {
             setIsLoading(false);
@@ -43,9 +43,9 @@ const useAuth = () => {
 
         try {
             await logoutService();
-            navigate('/account/login'); // Preusmeravanje na login stranicu
+            navigate('/account/login');
         } catch (error) {
-            setAuthError(handleAuthError(error)); // Postavljanje greške
+            setAuthError(handleAuthError(error));
             throw error;
         } finally {
             setIsLoading(false);
