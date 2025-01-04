@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { login as loginService, register as registerService, logout as logoutService, handleAuthError, setToken } from '../services/authService';
+import { login as loginService, register as registerService, logout as logoutService, setToken, handleAuthError } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 
 const useAuth = () => {
@@ -13,10 +13,10 @@ const useAuth = () => {
 
         try {
             const response = await loginService(loginData);
-            setToken(response.token);
-            return response;
+            setToken(response.token); // Spremi token
+            navigate('/'); // Preusmeravanje na početnu stranicu
         } catch (error) {
-            setAuthError(handleAuthError(error));
+            setAuthError(handleAuthError(error)); // Postavljanje greške
             throw error;
         } finally {
             setIsLoading(false);
@@ -29,8 +29,9 @@ const useAuth = () => {
 
         try {
             await registerService(userData);
+            navigate('/'); // Usmerenje nakon registracije
         } catch (error) {
-            setAuthError(handleAuthError(error));
+            setAuthError(handleAuthError(error)); // Postavljanje greške
             throw error;
         } finally {
             setIsLoading(false);
@@ -42,9 +43,9 @@ const useAuth = () => {
 
         try {
             await logoutService();
-            navigate('/account/login');
+            navigate('/account/login'); // Preusmeravanje na login stranicu
         } catch (error) {
-            setAuthError(handleAuthError(error));
+            setAuthError(handleAuthError(error)); // Postavljanje greške
             throw error;
         } finally {
             setIsLoading(false);

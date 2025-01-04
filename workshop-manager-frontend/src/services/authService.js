@@ -1,21 +1,21 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
+import { API_ROUTES } from '../config/apiConfig';
 
-const API_URL = "http://localhost:5189/api/Account";
 const TOKEN_KEY = 'authToken';
 
 export const register = async (userData) => {
-        const response = await axios.post(`${API_URL}/register`, userData);
-        return response.data;
+    const response = await axiosInstance.post(`${API_ROUTES.ACCOUNT}/register`, userData);
+    return response.data;
 };
 
 export const login = async (loginData) => {
-        const response = await axios.post(`${API_URL}/login`, loginData);
-        return response.data;
+    const response = await axiosInstance.post(`${API_ROUTES.ACCOUNT}/login`, loginData);
+    return response.data;
 };
 
 export const logout = async () => {
     removeToken();
-    await axios.post(`${API_URL}/logout`); 
+    await axiosInstance.post(`${API_ROUTES.ACCOUNT}/logout`);
 };
 
 export const setToken = (token) => {
