@@ -13,6 +13,10 @@ const WorkersList = () => {
         navigate(`/workers/edit/${worker.id}`)
     };
 
+    const handleDetails = (worker) => {
+        navigate(`/workers/details/${worker.id}`);
+    };
+
     const columns = [
         { label: 'Full Name', field: 'fullName' },
         { label: 'Position', field: 'position' },
@@ -35,6 +39,7 @@ const WorkersList = () => {
                     columns={columns}
                     onEdit={handleEdit}
                     onDelete={handleDeleteWorker}
+                    onDetails={handleDetails}
                 />
             )}
         </div>

@@ -7,7 +7,8 @@ const TableActions = ({ onEdit, onDelete, onDetails }) => {
             <Button
                 className="bg-green-500 hover:bg-green-600 mr-2"
                 onClick={onDetails}
-                type="button">
+                type="button"
+                >
                 Details
             </Button>
             <Button

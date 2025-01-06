@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { createWorker, getWorkers, updateWorker, getWorkerById, deleteWorker } from '../services/workerService';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
-const useWorkers = (workerId) => {
+const useWorkers = () => {
     const [workers, setWorkers] = useState([]);
+    const [worker, setWorker] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { workerId } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,19 +30,19 @@ const useWorkers = (workerId) => {
     }, []);
 
     useEffect(() => {
-        const fetchWorker = async () => {
-            setIsLoading(true);
-            try {
-                const data = await getWorkerById(workerId);
-                setWorkers(data)
-            } catch (error) {
-                setError('Failed to load worker details.');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         if (workerId) {
+            const fetchWorker = async () => {
+                setIsLoading(true);
+                try {
+                    const data = await getWorkerById(workerId);
+                    setWorker(data);
+                } catch (error) {
+                    setError('Failed to load worker details.');
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
             fetchWorker();
         }
     }, [workerId]);
@@ -90,7 +92,7 @@ const useWorkers = (workerId) => {
         setIsLoading(true);
         try {
             await deleteWorker(id);
-            setWorkers((prevSupplies) => prevSupplies.filter(supply => supply.id !== id));
+            setWorkers((prevWorkers) => prevWorkers.filter(worker => worker.id !== id));
         } catch (err) {
             setError(err.message);
         } finally {
@@ -100,6 +102,7 @@ const useWorkers = (workerId) => {
 
     return {
         workers,
+        worker,
         isLoading,
         error,
         handleCreateWorker,
