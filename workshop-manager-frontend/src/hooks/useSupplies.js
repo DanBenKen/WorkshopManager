@@ -71,7 +71,6 @@ const useSupplies = (supplyId) => {
     };
 
     const handleDeleteSupply = async (id) => {
-        console.log('Deleting supply with id:', id);
         setIsLoading(true);
         try {
             await deleteSupply(id);
