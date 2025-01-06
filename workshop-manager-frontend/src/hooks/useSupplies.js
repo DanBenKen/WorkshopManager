@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { createSupply, getSupplies, updateSupply, getSupplyById, deleteSupply } from '../services/supplyService';
+import { useParams } from 'react-router-dom';
 
-const useSupplies = (supplyId) => {
+const useSupplies = () => {
     const [supplies, setSupplies] = useState([]);
     const [supply, setSupply] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { supplyId } = useParams();
 
     useEffect(() => {
         const fetchSupplies = async () => {

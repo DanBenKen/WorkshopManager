@@ -8,6 +8,7 @@ import WorkersPage from './pages/worker/WorkersPage';
 import WorkersCreatePage from './pages/worker/WorkerCreatePage';
 import SuppliesPage from './pages/supply/SupplyPage';
 import SupplyCreatePage from './pages/supply/SupplyCreatePage';
+import SupplyDetailsPage from './pages/supply/SupplyDetailsPage';
 
 const App = () => {
     return (
@@ -20,6 +21,7 @@ const App = () => {
                     <Route path="/workers" element={<WorkersPage />} />
                     <Route path="/supplies" element={<SuppliesPage />} />
                     <Route path="/supplies/create" element={<SupplyCreatePage />} />
+                    <Route path="/supplies/details/:supplyId" element={<SupplyDetailsPage />} />
                     <Route path="/supplies/edit/:supplyId" element={<SupplyCreatePage />} />
                     <Route path="/jobs" element={<Jobs />} />
                     <Route path="/workers/create" element={<WorkersCreatePage />} />

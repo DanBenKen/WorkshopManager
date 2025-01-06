@@ -5,13 +5,17 @@ import Button from '../../atoms/Button';
 import useSupplies from '../../../hooks/useSupplies';
 import List from '../../molecules/List';
 
-const SuppliesList = () => {
+const SupplyList = () => {
     const { supplies, isLoading, error, handleDeleteSupply } = useSupplies();
     const navigate = useNavigate();
 
     const handleEdit = (supply) => {
         navigate(`/supplies/edit/${supply.id}`);
     };
+
+    const handleDetails = (supply) => {
+        navigate(`/supplies/details/${supply.id}`);
+    };    
 
     const columns = [
         { label: 'Name', field: 'name' },
@@ -36,10 +40,11 @@ const SuppliesList = () => {
                     columns={columns}
                     onEdit={handleEdit}
                     onDelete={handleDeleteSupply}
+                    onDetails={handleDetails}
                 />
             )}
         </div>
     );
 };
 
-export default SuppliesList;
+export default SupplyList;

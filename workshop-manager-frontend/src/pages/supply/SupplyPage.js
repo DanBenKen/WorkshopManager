@@ -1,11 +1,11 @@
 import React from 'react';
 import TablePageLayout from '../../layouts/TablePageLayout';
-import SuppliesList from '../../components/organism/supply/SuppliesList';
+import SupplyList from '../../components/organism/supply/SupplyList';
 
 const SuppliesPage = () => {
     return (
         <TablePageLayout>
-            <SuppliesList></SuppliesList>
+            <SupplyList></SupplyList>
         </TablePageLayout>
     );
 };
