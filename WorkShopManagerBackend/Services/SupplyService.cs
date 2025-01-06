@@ -3,6 +3,7 @@ using WorkshopManager.DTOs.SupplyDTOs;
 using WorkshopManager.Exceptions.SupplyExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
+using WorkshopManager.Models;
 
 namespace WorkshopManager.Services
 {
@@ -32,6 +33,11 @@ namespace WorkshopManager.Services
                 throw new SupplyCreateNullException();
 
             return supplyDTO;
+        }
+
+        public async Task<IEnumerable<Supply>> GetAllSppliesAsync()
+        {
+            return await _unitOfWork.SupplyRepository.GetAllSuppliesAsync();
         }
 
         public async Task<SupplyDTO> GetSupplyAsync(int id)
@@ -66,7 +72,7 @@ namespace WorkshopManager.Services
 
             if (updateSupply is null)
                 throw new SupplyUpdateNullException();
-                      
+
             return updateSupply;
         }
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WorkshopManager.DTOs.SupplyDTOs;
 using WorkshopManager.Interfaces.ServiceInterfaces;
+using WorkshopManager.Services;
 
 namespace WorkshopManager.Controllers
 {
@@ -22,6 +23,13 @@ namespace WorkshopManager.Controllers
         {
             var supply = await _supplyService.CreateSupplyAsync(supplyCreateDTO);
             return CreatedAtAction(nameof(GetSupply), new { id = supply.Id }, supply);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllWorkers()
+        {
+            var supplies = await _supplyService.GetAllSppliesAsync();
+            return Ok(supplies);
         }
 
         [HttpGet("{id}")]

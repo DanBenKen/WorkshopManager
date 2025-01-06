@@ -17,6 +17,11 @@ namespace WorkshopManager.Repositories
             _mapper = mapper;
         }
 
+        public async Task<IEnumerable<Supply>> GetAllSuppliesAsync()
+        {
+            return await _context.Supplies.ToListAsync();
+        }
+
         public async Task<Supply?> GetSupplyByIdAsync(int id)
         {
             return await _context.Supplies.FirstOrDefaultAsync(s => s.Id == id);

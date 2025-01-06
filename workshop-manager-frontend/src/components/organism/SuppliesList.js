@@ -2,31 +2,32 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../atoms/ErrorMessage';
 import Button from '../atoms/Button';
-import useWorkers from '../../hooks/useWorkers';
+import useSupplies from '../../hooks/useSupplies';
 import List from '../molecules/List';
 
-const WorkersList = () => {
-    const { workers, isLoading, error } = useWorkers();
+const SuppliesList = () => {
+    const { supplies, isLoading, error } = useSupplies();
     const navigate = useNavigate();
 
-    const handleDelete = (worker) => {
-        console.log(worker.id);
+    const handleDelete = (supply) => {
+        console.log(supply.id);
     };
 
-    const handleEdit = (worker) => {
-        navigate(`/workers/edit/${worker.id}`)
+    const handleEdit = (supply) => {
+        navigate(`/supplies/edit/${supply.id}`);
     };
 
     const columns = [
-        { label: 'Full Name', field: 'fullName' },
-        { label: 'Position', field: 'position' },
+        { label: 'Name', field: 'name' },
+        { label: 'Quantity', field: 'quantity' },
+        { label: 'Type', field: 'type' },
     ];
 
     return (
         <div className="mx-auto px-4 py-8">
-            <h2 className="text-3xl font-bold mb-4">Workers</h2>
-            <Link to="/workers/create" className="inline-block mb-4">
-                <Button>Add New Worker</Button>
+            <h2 className="text-3xl font-bold mb-4">Supplies</h2>
+            <Link to="/supplies/create" className="inline-block mb-4">
+                <Button>Add New Supply</Button>
             </Link>
 
             {isLoading ? (
@@ -35,7 +36,7 @@ const WorkersList = () => {
                 <ErrorMessage message={error} />
             ) : (
                 <List
-                    data={workers}
+                    data={supplies}
                     columns={columns}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
@@ -45,4 +46,4 @@ const WorkersList = () => {
     );
 };
 
-export default WorkersList;
+export default SuppliesList;
