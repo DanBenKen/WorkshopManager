@@ -1,17 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import ErrorMessage from '../atoms/ErrorMessage';
-import Button from '../atoms/Button';
-import useWorkers from '../../hooks/useWorkers';
-import List from '../molecules/List';
+import ErrorMessage from '../../atoms/ErrorMessage';
+import Button from '../../atoms/Button';
+import useWorkers from '../../../hooks/useWorkers';
+import List from '../../molecules/List';
 
 const WorkersList = () => {
-    const { workers, isLoading, error } = useWorkers();
+    const { workers, isLoading, error, handleDeleteWorker } = useWorkers();
     const navigate = useNavigate();
-
-    const handleDelete = (worker) => {
-        console.log(worker.id);
-    };
 
     const handleEdit = (worker) => {
         navigate(`/workers/edit/${worker.id}`)
@@ -38,7 +34,7 @@ const WorkersList = () => {
                     data={workers}
                     columns={columns}
                     onEdit={handleEdit}
-                    onDelete={handleDelete}
+                    onDelete={handleDeleteWorker}
                 />
             )}
         </div>

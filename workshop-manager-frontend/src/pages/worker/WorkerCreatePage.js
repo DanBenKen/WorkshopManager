@@ -1,6 +1,6 @@
 import React from 'react';
 import FormPageLayout from '../../layouts/FormPageLayout';
-import WorkerForm from '../../components/organism/WorkerForm';
+import WorkerForm from '../../components/organism/worker/WorkerForm';
 
 const WorkersCreatePage = () => {
     return (

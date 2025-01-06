@@ -1,6 +1,6 @@
 import React from 'react';
 import TablePageLayout from '../../layouts/TablePageLayout';
-import SuppliesList from '../../components/organism/SuppliesList';
+import SuppliesList from '../../components/organism/supply/SuppliesList';
 
 const SuppliesPage = () => {
     return (

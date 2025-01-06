@@ -10,7 +10,9 @@ const Row = ({ data, columns, onEdit, onDelete }) => {
                 <TableCell key={col} className="px-4 py-2">{data[col]}</TableCell>
             ))}
             <TableCell className="flex justify-end space-x-2">
-                <TableActions onEdit={() => onEdit(data)} onDelete={() => onDelete(data)} />
+                <TableActions 
+                    onEdit={() => onEdit(data)} 
+                    onDelete={() => onDelete(data.id)}/>
             </TableCell>
         </TableRow>
     );

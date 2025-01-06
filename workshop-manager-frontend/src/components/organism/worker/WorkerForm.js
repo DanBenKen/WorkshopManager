@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import FormField from '../molecules/FormField';
-import useWorkers from '../../hooks/useWorkers';
-import ErrorMessage from '../atoms/ErrorMessage';
-import Button from '../atoms/Button';
+import FormField from '../../molecules/FormField';
+import useWorkers from '../../../hooks/useWorkers';
+import ErrorMessage from '../../atoms/ErrorMessage';
+import Button from '../../atoms/Button';
 
 const WorkerForm = () => {
     const { workerId } = useParams();

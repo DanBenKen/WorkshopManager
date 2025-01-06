@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createSupply, getSupplies, updateSupply, getSupplyById } from '../services/supplyService';
+import { createSupply, getSupplies, updateSupply, getSupplyById, deleteSupply } from '../services/supplyService';
 
 const useSupplies = (supplyId) => {
     const [supplies, setSupplies] = useState([]);
@@ -70,13 +70,27 @@ const useSupplies = (supplyId) => {
         }
     };
 
+    const handleDeleteSupply = async (id) => {
+        console.log('Deleting supply with id:', id);
+        setIsLoading(true);
+        try {
+            await deleteSupply(id);
+            setSupplies((prevSupplies) => prevSupplies.filter(supply => supply.id !== id));
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return {
-        supplies,
         supply,
-        isLoading,
-        error,
+        supplies,
         handleCreateSupply,
         handleUpdateSupply,
+        handleDeleteSupply,
+        isLoading,
+        error,
     };
 };
 

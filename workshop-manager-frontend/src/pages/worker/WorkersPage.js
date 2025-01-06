@@ -1,6 +1,6 @@
 import React from 'react';
 import TablePageLayout from '../../layouts/TablePageLayout';
-import WorkerList from '../../components/organism/WorkerList';
+import WorkerList from '../../components/organism/worker/WorkerList';
 
 const WorkersPage = () => {
     return (

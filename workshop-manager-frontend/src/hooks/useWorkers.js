@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createWorker, getWorkers, updateWorker, getWorkerById } from '../services/workerService';
+import { createWorker, getWorkers, updateWorker, getWorkerById, deleteWorker } from '../services/workerService';
 import { useNavigate } from 'react-router-dom';
 
 const useWorkers = (workerId) => {
@@ -86,12 +86,25 @@ const useWorkers = (workerId) => {
         }
     };
 
+    const handleDeleteWorker = async (id) => {
+        setIsLoading(true);
+        try {
+            await deleteWorker(id);
+            setWorkers((prevSupplies) => prevSupplies.filter(supply => supply.id !== id));
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return {
         workers,
         isLoading,
         error,
         handleCreateWorker,
         handleUpdateWorker,
+        handleDeleteWorker,
     };
 };
 

@@ -1,17 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import ErrorMessage from '../atoms/ErrorMessage';
-import Button from '../atoms/Button';
-import useSupplies from '../../hooks/useSupplies';
-import List from '../molecules/List';
+import ErrorMessage from '../../atoms/ErrorMessage';
+import Button from '../../atoms/Button';
+import useSupplies from '../../../hooks/useSupplies';
+import List from '../../molecules/List';
 
 const SuppliesList = () => {
-    const { supplies, isLoading, error } = useSupplies();
+    const { supplies, isLoading, error, handleDeleteSupply } = useSupplies();
     const navigate = useNavigate();
-
-    const handleDelete = (supply) => {
-        console.log(supply.id);
-    };
 
     const handleEdit = (supply) => {
         navigate(`/supplies/edit/${supply.id}`);
@@ -39,7 +35,7 @@ const SuppliesList = () => {
                     data={supplies}
                     columns={columns}
                     onEdit={handleEdit}
-                    onDelete={handleDelete}
+                    onDelete={handleDeleteSupply}
                 />
             )}
         </div>
