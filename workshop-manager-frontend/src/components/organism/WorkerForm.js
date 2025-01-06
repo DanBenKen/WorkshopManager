@@ -3,9 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import FormField from '../molecules/FormField';
 import useWorkers from '../../hooks/useWorkers';
 import ErrorMessage from '../atoms/ErrorMessage';
+import Button from '../atoms/Button';
 
 const WorkerForm = () => {
-    const { workerId } = useParams(); // Get workerId from URL params
+    const { workerId } = useParams();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [position, setPosition] = useState('');
@@ -67,13 +68,13 @@ const WorkerForm = () => {
                     onChange={(e) => setPosition(e.target.value)}
                     placeholder="Enter position"
                 />
-                <button
+                <Button
                     type="submit"
                     className="bg-blue-500 text-white p-2 rounded"
                     disabled={isLoading}
                 >
                     {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Worker' : 'Create Worker')}
-                </button>
+                </Button>
             </form>
         </div>
     );

@@ -1,11 +1,11 @@
 import React from 'react';
 import TablePageLayout from '../../layouts/TablePageLayout';
-import WorkersList from '../../components/organism/WorkersList';
+import WorkerList from '../../components/organism/WorkerList';
 
 const WorkersPage = () => {
     return (
         <TablePageLayout>
-            <WorkersList></WorkersList>
+            <WorkerList></WorkerList>
         </TablePageLayout>
     );
 };
