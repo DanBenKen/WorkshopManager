@@ -6,7 +6,7 @@ import useJobs from '../../../hooks/useJobs';
 import List from '../../molecules/List';
 
 const JobList = () => {
-    const { jobs, isLoading, error, handleDeleteJob } = useJobs();
+    const { jobs, isLoading, error } = useJobs();
     const navigate = useNavigate();
 
     const handleEdit = (job) => {
@@ -14,7 +14,7 @@ const JobList = () => {
     };
 
     const handleDelete = (job) => {
-        handleDeleteJob(job.id);
+        navigate(`/jobs/delete/${job.id}`);
     };
 
     const handleDetails = (job) => {
