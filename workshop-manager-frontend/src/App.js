@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import AdminDashboard from './pages/AdminDashboard';
-import Jobs from './pages/Jobs';
 import WorkersPage from './pages/worker/WorkersPage';
 import WorkersCreatePage from './pages/worker/WorkerCreatePage';
 import SuppliesPage from './pages/supply/SupplyPage';
@@ -12,6 +11,9 @@ import SupplyDetailsPage from './pages/supply/SupplyDetailsPage';
 import WorkerDetailsPage from './pages/worker/WorkerDetailsPage';
 import WorkerDeletePage from './pages/worker/WorkerDeletePage';
 import SupplyDeletePage from './pages/supply/SupplyDeletePage';
+import JobPage from './pages/job/JobPage';
+import JobFormPage from './pages/job/JobFormPage';
+import JobDetailsPage from './pages/job/JobDetailsPage';
 
 const App = () => {
     return (
@@ -27,7 +29,10 @@ const App = () => {
                     <Route path="/supplies/details/:supplyId" element={<SupplyDetailsPage />} />
                     <Route path="/supplies/edit/:supplyId" element={<SupplyCreatePage />} />
                     <Route path="/supplies/delete/:supplyId" element={<SupplyDeletePage />} />
-                    <Route path="/jobs" element={<Jobs />} />
+                    <Route path="/jobs" element={<JobPage />} />
+                    <Route path="/jobs/create" element={<JobFormPage />} />
+                    <Route path="/jobs/edit/:jobId" element={<JobFormPage />} />
+                    <Route path="/jobs/details/:jobId" element={<JobDetailsPage />} />
                     <Route path="/workers/create" element={<WorkersCreatePage />} />
                     <Route path="/workers/details/:workerId" element={<WorkerDetailsPage />} />
                     <Route path="/workers/edit/:workerId" element={<WorkersCreatePage />} />

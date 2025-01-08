@@ -1,0 +1,67 @@
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import ErrorMessage from '../../atoms/ErrorMessage';
+import Details from '../../molecules/Details';
+import Button from '../../atoms/Button';
+import Text from '../../atoms/Text';
+import useJobs from '../../../hooks/useJobs';
+
+const JobDetails = () => {
+    const { jobId } = useParams();
+    const { jobs, isLoading, error } = useJobs(jobId);
+    const navigate = useNavigate();
+
+    const handleBack = () => {
+        navigate(`/jobs`);
+    };
+
+    if (error) {
+        return (
+            <div className="mx-auto px-4 py-8">
+                <ErrorMessage message={error} />
+                <Button className="mt-4" onClick={handleBack}>Back to List</Button>
+            </div>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <div className="mx-auto px-4 py-8">
+                <Text content="Loading..." />
+            </div>
+        );
+    }
+
+    if (!jobs || jobs.length === 0) {
+        return (
+            <div className="mx-auto px-4 py-8">
+                <Text content="No details found." />
+                <Button className="mt-4" onClick={handleBack}>Back to List</Button>
+            </div>
+        );
+    }
+
+    const job = jobs[0];
+
+    return (
+        <div className="mx-auto max-w-4xl px-6 py-8 bg-white rounded-lg">
+            <h2 className="text-3xl font-semibold text-gray-800 mb-6">Job Details</h2>
+
+            <div className="space-y-6">
+                {Object.entries(job).map(([key, value]) => (
+                    <Details key={key} label={key} value={value} />
+                ))}
+            </div>
+
+            <div className="mt-6">
+                <Button
+                    className="mt-4"
+                    onClick={handleBack}>
+                    Back to List
+                </Button>
+            </div>
+        </div>
+    );
+};
+
+export default JobDetails;
