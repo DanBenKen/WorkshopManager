@@ -1,6 +1,6 @@
 import React from 'react';
-import RegisterForm from '../../components/organism/RegisterForm';
 import AuthPageLayout from '../../layouts/FormPageLayout';
+import RegisterForm from '../../components/organism/auth/RegisterForm';
 
 const RegisterPage = () => {
     return (

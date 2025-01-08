@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import useAuth from '../../hooks/useAuth'; // Koristi useAuth
-import Button from '../atoms/Button';
+import useAuth from '../../../hooks/useAuth';
+import Button from '../../atoms/Button';
 import { useNavigate } from 'react-router-dom';
-import FormField from '../molecules/FormField';
-import ErrorMessage from '../atoms/ErrorMessage';
+import FormField from '../../molecules/FormField';
+import ErrorMessage from '../../atoms/ErrorMessage';
 
 const RegisterForm = () => {
     const [username, setUsername] = useState('');
