@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import useAuth from '../../../hooks/useAuth';
 import Button from '../../atoms/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Dodajte Link komponentu
 import FormField from '../../molecules/FormField';
 import ErrorMessage from '../../atoms/ErrorMessage';
 
@@ -66,6 +66,15 @@ const RegisterForm = () => {
 
             {authError && <ErrorMessage message={authError} />}
             {successMessage && <p className="text-green-500">{successMessage}</p>}
+
+            <div className="mt-4">
+                <p>
+                    Already have an account?{' '}
+                    <Link to="/account/login" className="text-blue-600 hover:underline">
+                        Login here
+                    </Link>
+                </p>
+            </div>
         </form>
     );
 };

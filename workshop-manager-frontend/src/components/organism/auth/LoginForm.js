@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useAuth from '../../../hooks/useAuth';
 import Button from '../../atoms/Button';
 import FormField from '../../molecules/FormField';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 
 const LoginForm = () => {
@@ -39,6 +39,15 @@ const LoginForm = () => {
             </Button>
 
             {authError && <ErrorMessage message={authError} />}
+
+            <div className="mt-4">
+                <p>
+                    Don't have an account?{' '}
+                    <Link to="/account/register" className="text-blue-600 hover:underline">
+                        Register here
+                    </Link>
+                </p>
+            </div>
         </form>
     );
 };
