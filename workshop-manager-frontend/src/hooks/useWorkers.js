@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react';
 import { createWorker, getWorkers, updateWorker, getWorkerById, deleteWorker } from '../services/workerService';
-import { useParams, useNavigate } from 'react-router-dom';
 
-const useWorkers = () => {
+const useWorkers = (workerId) => {
     const [workers, setWorkers] = useState([]);
     const [worker, setWorker] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { workerId } = useParams();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchWorkers = async () => {
@@ -51,15 +48,8 @@ const useWorkers = () => {
         setIsLoading(true);
         setError('');
 
-        if (!workerData.firstName || !workerData.lastName || !workerData.position) {
-            setError('First Name, Last Name, and Position are required');
-            setIsLoading(false);
-            return;
-        }
-
         try {
             await createWorker(workerData);
-            navigate('/workers');
         } catch (error) {
             setError('Failed to create worker. Please try again later.');
         } finally {
@@ -71,15 +61,8 @@ const useWorkers = () => {
         setIsLoading(true);
         setError(null);
 
-        if (!workerData.firstName || !workerData.lastName || !workerData.position) {
-            setError('First Name, Last Name, and Position are required');
-            setIsLoading(false);
-            return;
-        }
-
         try {
             await updateWorker(id, workerData);
-            navigate('/workers');
         } catch (error) {
             console.error('Failed to update worker:', error);
             setError('Failed to update worker. Please try again later.');

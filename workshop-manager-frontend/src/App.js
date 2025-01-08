@@ -10,6 +10,8 @@ import SuppliesPage from './pages/supply/SupplyPage';
 import SupplyCreatePage from './pages/supply/SupplyCreatePage';
 import SupplyDetailsPage from './pages/supply/SupplyDetailsPage';
 import WorkerDetailsPage from './pages/worker/WorkerDetailsPage';
+import WorkerDeletePage from './pages/worker/WorkerDeletePage';
+import SupplyDeletePage from './pages/supply/SupplyDeletePage';
 
 const App = () => {
     return (
@@ -24,10 +26,12 @@ const App = () => {
                     <Route path="/supplies/create" element={<SupplyCreatePage />} />
                     <Route path="/supplies/details/:supplyId" element={<SupplyDetailsPage />} />
                     <Route path="/supplies/edit/:supplyId" element={<SupplyCreatePage />} />
+                    <Route path="/supplies/delete/:supplyId" element={<SupplyDeletePage />} />
                     <Route path="/jobs" element={<Jobs />} />
                     <Route path="/workers/create" element={<WorkersCreatePage />} />
                     <Route path="/workers/details/:workerId" element={<WorkerDetailsPage />} />
                     <Route path="/workers/edit/:workerId" element={<WorkersCreatePage />} />
+                    <Route path="/workers/delete/:workerId" element={<WorkerDeletePage />} />
                 </Route>
             </Routes>
         </Router>

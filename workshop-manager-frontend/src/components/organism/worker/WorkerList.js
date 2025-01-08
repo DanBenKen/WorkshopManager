@@ -6,11 +6,15 @@ import useWorkers from '../../../hooks/useWorkers';
 import List from '../../molecules/List';
 
 const WorkersList = () => {
-    const { workers, isLoading, error, handleDeleteWorker } = useWorkers();
+    const { workers, isLoading, error } = useWorkers();
     const navigate = useNavigate();
 
     const handleEdit = (worker) => {
         navigate(`/workers/edit/${worker.id}`)
+    };
+
+    const handleDelete = (worker) => {
+        navigate(`/workers/delete/${worker.id}`)
     };
 
     const handleDetails = (worker) => {
@@ -38,7 +42,7 @@ const WorkersList = () => {
                     data={workers}
                     columns={columns}
                     onEdit={handleEdit}
-                    onDelete={handleDeleteWorker}
+                    onDelete={handleDelete}
                     onDetails={handleDetails}
                 />
             )}

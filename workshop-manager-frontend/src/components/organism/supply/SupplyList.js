@@ -6,7 +6,7 @@ import useSupplies from '../../../hooks/useSupplies';
 import List from '../../molecules/List';
 
 const SupplyList = () => {
-    const { supplies, isLoading, error, handleDeleteSupply } = useSupplies();
+    const { supplies, isLoading, error } = useSupplies();
     const navigate = useNavigate();
 
     const handleEdit = (supply) => {
@@ -15,7 +15,11 @@ const SupplyList = () => {
 
     const handleDetails = (supply) => {
         navigate(`/supplies/details/${supply.id}`);
-    };    
+    };
+
+    const handleDelete = (supply) => {
+        navigate(`/supplies/delete/${supply.id}`);
+    };
 
     const columns = [
         { label: 'Name', field: 'name' },
@@ -39,7 +43,7 @@ const SupplyList = () => {
                     data={supplies}
                     columns={columns}
                     onEdit={handleEdit}
-                    onDelete={handleDeleteSupply}
+                    onDelete={handleDelete}
                     onDetails={handleDetails}
                 />
             )}

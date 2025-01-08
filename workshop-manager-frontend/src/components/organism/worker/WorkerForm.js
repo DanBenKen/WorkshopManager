@@ -10,19 +10,19 @@ const WorkerForm = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [position, setPosition] = useState('');
-    
-    const { workers, handleCreateWorker, handleUpdateWorker, isLoading, error } = useWorkers(workerId);
+
+    const { worker, handleCreateWorker, handleUpdateWorker, isLoading, error } = useWorkers(workerId);
     const navigate = useNavigate();
 
     const isEditMode = !!workerId;
 
     useEffect(() => {
-        if (workers && workers.firstName) {
-            setFirstName(workers.firstName);
-            setLastName(workers.lastName);
-            setPosition(workers.position);
+        if (worker) {
+            setFirstName(worker.firstName);
+            setLastName(worker.lastName);
+            setPosition(worker.position);
         }
-    }, [workers]);
+    }, [worker]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -81,3 +81,4 @@ const WorkerForm = () => {
 };
 
 export default WorkerForm;
+
