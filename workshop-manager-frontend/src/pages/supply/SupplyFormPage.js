@@ -2,7 +2,7 @@ import React from 'react';
 import FormPageLayout from '../../layouts/FormPageLayout';
 import SupplyForm from '../../components/organism/supply/SupplyForm';
 
-const SupplyCreatePage = () => {
+const SupplyFormPage = () => {
     return (
         <FormPageLayout>
             <SupplyForm></SupplyForm>
@@ -10,4 +10,4 @@ const SupplyCreatePage = () => {
     );
 };
 
-export default SupplyCreatePage;
+export default SupplyFormPage;

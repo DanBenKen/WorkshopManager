@@ -2,7 +2,7 @@ import React from 'react';
 import FormPageLayout from '../../layouts/FormPageLayout';
 import WorkerForm from '../../components/organism/worker/WorkerForm';
 
-const WorkersCreatePage = () => {
+const WorkersFormPage = () => {
     return (
         <FormPageLayout>
             <WorkerForm></WorkerForm>
@@ -10,4 +10,4 @@ const WorkersCreatePage = () => {
     );
 };
 
-export default WorkersCreatePage;
+export default WorkersFormPage;
