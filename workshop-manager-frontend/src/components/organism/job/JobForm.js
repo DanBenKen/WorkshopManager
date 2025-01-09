@@ -9,7 +9,7 @@ const JobForm = () => {
     const { jobId } = useParams();
     const [jobName, setJobName] = useState('');
     const [description, setDescription] = useState('');
-    const [status, setStatus] = useState('');
+    const [status, setStatus] = useState('InProgress');
     const [workerId, setWorkerId] = useState('');
     const [supplyId, setSupplyId] = useState('');
 
