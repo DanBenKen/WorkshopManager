@@ -5,7 +5,7 @@ import TableBody from '../atoms/TableBody';
 import TableCell from '../atoms/TableCell';
 import Row from './Row';
 
-const List = ({ data, columns, onEdit, onDelete, onDetails }) => {
+const List = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob }) => {
     return (
         <Table>
             <TableHeader>
@@ -19,10 +19,11 @@ const List = ({ data, columns, onEdit, onDelete, onDetails }) => {
                     <Row
                         key={item.id}
                         data={item}
-                        columns={columns.map(col => col.field)}
+                        columns={columns}
                         onEdit={onEdit}
                         onDelete={onDelete}
                         onDetails={onDetails}
+                        onCompleteJob={onCompleteJob}
                     />
                 ))}
             </TableBody>

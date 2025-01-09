@@ -90,6 +90,15 @@ const useJobs = (jobId) => {
         }
     };
 
+    const handleSetCompleted = async (job) => {
+        try {
+            await updateJob(job.id, { ...job, status: 'Completed' });
+        } catch (error) {
+            console.error('Failed to update job status:', error);
+            alert('Failed to set job to Completed. Please try again.');
+        }
+    };
+    
     return {
         jobs,
         job,
@@ -98,6 +107,7 @@ const useJobs = (jobId) => {
         handleCreateJob,
         handleUpdateJob,
         handleDeleteJob,
+        handleSetCompleted,
     };
 };
 
