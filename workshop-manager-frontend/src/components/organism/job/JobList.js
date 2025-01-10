@@ -9,7 +9,7 @@ import Pagination from '../../molecules/Pagination';
 
 const JobList = () => {
     const { jobs, isLoading, error, handleSetCompleted } = useJobs();
-    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(jobs, 5); // Paginacija sa 5 elemenata po stranici
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(jobs, 5);
     const navigate = useNavigate();
 
     const handleEdit = (job) => {
@@ -55,7 +55,7 @@ const JobList = () => {
             ) : (
                 <>
                     <List
-                        data={getPaginatedData(jobs)} // Renderujemo paginirane podatke
+                        data={getPaginatedData(jobs)}
                         columns={columns}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
