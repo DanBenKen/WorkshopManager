@@ -8,7 +8,7 @@ import useJobs from '../../../hooks/useJobs';
 
 const JobDetails = () => {
     const { jobId } = useParams();
-    const { jobs, isLoading, error } = useJobs(jobId);
+    const { job, isLoading, error } = useJobs(jobId);
     const navigate = useNavigate();
 
     const handleBack = () => {
@@ -32,7 +32,7 @@ const JobDetails = () => {
         );
     }
 
-    if (!jobs || jobs.length === 0) {
+    if (!job) {
         return (
             <div className="mx-auto px-4 py-8">
                 <Text content="No details found." />
@@ -40,8 +40,6 @@ const JobDetails = () => {
             </div>
         );
     }
-
-    const job = jobs[0];
 
     return (
         <div className="mx-auto max-w-4xl px-6 py-8 bg-white rounded-lg">

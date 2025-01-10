@@ -11,10 +11,16 @@ const SupplyForm = () => {
     const [quantity, setQuantity] = useState(0);
     const [type, setType] = useState('');
 
-    const { supply, handleCreateSupply, handleUpdateSupply, isLoading, error } = useSupplies(supplyId);
+    const { supply, fetchSupplyById, handleCreateSupply, handleUpdateSupply, isLoading, error } = useSupplies();
     const navigate = useNavigate();
 
     const isEditMode = !!supplyId;
+
+    useEffect(() => {
+        if (isEditMode && !supply) {
+            fetchSupplyById(supplyId);
+        }
+    }, [supplyId, isEditMode, supply, fetchSupplyById]);
 
     useEffect(() => {
         if (supply && supply.name) {

@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { createSupply, getSupplies, updateSupply, getSupplyById, deleteSupply } from '../services/supplyService';
-import { useParams } from 'react-router-dom';
 
 const useSupplies = () => {
     const [supplies, setSupplies] = useState([]);
     const [supply, setSupply] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const { supplyId } = useParams();
 
     useEffect(() => {
         const fetchSupplies = async () => {
@@ -28,31 +26,30 @@ const useSupplies = () => {
         fetchSupplies();
     }, []);
 
-    useEffect(() => {
-        if (supplyId) {
-            const fetchSupply = async () => {
-                setIsLoading(true);
-                try {
-                    const data = await getSupplyById(supplyId);
-                    setSupply(data);
-                } catch (error) {
-                    setError('Failed to load supply details.');
-                } finally {
-                    setIsLoading(false);
-                }
-            };
+    const fetchSupplyById = async (id) => {
+        setIsLoading(true);
+        setError(null);
 
-            fetchSupply();
+        try {
+            const data = await getSupplyById(id);
+            setSupply(data);
+        } catch (error) {
+            console.error('Error fetching supply:', error);
+            setError('Failed to fetch supply details.');
+        } finally {
+            setIsLoading(false);
         }
-    }, [supplyId]);
+    };
 
     const handleCreateSupply = async (supplyData) => {
         setIsLoading(true);
         setError('');
 
         try {
-            await createSupply(supplyData);
+            const createdSupply = await createSupply(supplyData);
+            setSupplies((prev) => [...prev, createdSupply]);
         } catch (error) {
+            console.error('Error creating supply:', error);
             setError('Failed to create supply. Please try again later.');
         } finally {
             setIsLoading(false);
@@ -64,9 +61,37 @@ const useSupplies = () => {
         setError(null);
 
         try {
-            await updateSupply(id, supplyData);
+            const updatedSupply = await updateSupply(id, supplyData);
+            setSupplies((prev) =>
+                prev.map((supply) => (supply.id === id ? updatedSupply : supply))
+            );
         } catch (error) {
+            console.error('Error updating supply:', error);
             setError('Failed to update supply. Please try again later.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleUpdateQuantity = async (id, quantity) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const supply = await getSupplyById(id);
+            if (supply.quantity < quantity) {
+                throw new Error('Insufficient stock quantity.');
+            }
+
+            const updatedSupply = { ...supply, quantity: supply.quantity - quantity };
+            await updateSupply(id, updatedSupply);
+
+            setSupplies((prev) =>
+                prev.map((item) => (item.id === id ? updatedSupply : item))
+            );
+        } catch (error) {
+            console.error('Error updating supply quantity:', error);
+            setError(error.message || 'Failed to update quantity.');
         } finally {
             setIsLoading(false);
         }
@@ -74,11 +99,13 @@ const useSupplies = () => {
 
     const handleDeleteSupply = async (id) => {
         setIsLoading(true);
+
         try {
             await deleteSupply(id);
-            setSupplies((prevSupplies) => prevSupplies.filter(supply => supply.id !== id));
+            setSupplies((prev) => prev.filter((supply) => supply.id !== id));
         } catch (err) {
-            setError(err.message);
+            console.error('Error deleting supply:', err);
+            setError('Failed to delete supply.');
         } finally {
             setIsLoading(false);
         }
@@ -87,8 +114,10 @@ const useSupplies = () => {
     return {
         supply,
         supplies,
+        fetchSupplyById,
         handleCreateSupply,
         handleUpdateSupply,
+        handleUpdateQuantity,
         handleDeleteSupply,
         isLoading,
         error,

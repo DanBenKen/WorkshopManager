@@ -12,6 +12,8 @@ const JobForm = () => {
     const [status, setStatus] = useState('InProgress');
     const [workerId, setWorkerId] = useState('');
     const [supplyId, setSupplyId] = useState('');
+    const [quantity, setQuantity] = useState('');
+    const [formErrors, setFormErrors] = useState({});
 
     const { job, handleCreateJob, handleUpdateJob, isLoading, error } = useJobs(jobId);
     const navigate = useNavigate();
@@ -28,16 +30,36 @@ const JobForm = () => {
         }
     }, [job]);
 
+    const validateForm = () => {
+        const errors = {};
+        if (!jobName) errors.jobName = 'Job name is required';
+        if (!description) errors.description = 'Description is required';
+        if (!workerId) errors.workerId = 'Worker ID is required';
+        if (supplyId && !quantity) errors.quantity = 'Quantity is required if Supply ID is provided';
+        if (quantity && isNaN(quantity)) errors.quantity = 'Quantity must be a valid number';
+        setFormErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        if (!validateForm()) return;
+    
         const jobData = { jobName, description, status, workerId, supplyId: supplyId || null };
-
-        if (isEditMode) {
-            await handleUpdateJob(jobId, jobData);
-        } else {
-            await handleCreateJob(jobData);
+    
+        try {
+            const success = isEditMode
+                ? await handleUpdateJob(jobId, jobData, quantity, supplyId)
+                : await handleCreateJob(jobData, quantity, supplyId);
+    
+            if (success) {
+                navigate('/jobs');
+            }
+        } catch (err) {
+            console.error('Error in handleSubmit:', err);
+            setFormErrors(err.message || 'An error occurred. Please try again later.');
         }
-        navigate('/jobs');
     };
 
     return (
@@ -53,6 +75,7 @@ const JobForm = () => {
                     value={jobName}
                     onChange={(e) => setJobName(e.target.value)}
                     placeholder="Enter job name"
+                    errorMessage={formErrors.jobName}
                 />
                 <FormField
                     label="Description"
@@ -62,6 +85,7 @@ const JobForm = () => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter job description"
+                    errorMessage={formErrors.description}
                 />
                 <FormField
                     label="Status"
@@ -80,6 +104,7 @@ const JobForm = () => {
                     value={workerId}
                     onChange={(e) => setWorkerId(e.target.value)}
                     placeholder="Enter worker ID"
+                    errorMessage={formErrors.workerId}
                 />
                 <FormField
                     label="Supply ID"
@@ -90,12 +115,27 @@ const JobForm = () => {
                     onChange={(e) => setSupplyId(e.target.value)}
                     placeholder="Enter supply ID"
                 />
+                <FormField
+                    label="Supply Quantity"
+                    type="number"
+                    id="Quantity"
+                    name="quantity"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    placeholder="Enter quantity of supply needed"
+                    errorMessage={formErrors.quantity}
+                />
+
                 <Button
                     type="submit"
                     className="bg-blue-500 text-white p-2 rounded"
                     disabled={isLoading}
                 >
-                    {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Job' : 'Create Job')}
+                    {isLoading
+                        ? (isEditMode ? 'Updating...' : 'Creating...')
+                        : isEditMode
+                            ? 'Update Job'
+                            : 'Create Job'}
                 </Button>
             </form>
         </div>

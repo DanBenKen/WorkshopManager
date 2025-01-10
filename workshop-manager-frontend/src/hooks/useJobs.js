@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { createJob, getJobs, updateJob, getJobById, deleteJob } from '../services/jobService';
+import { getSupplyById, updateSupply } from '../services/supplyService';
 
 const useJobs = (jobId) => {
     const [jobs, setJobs] = useState([]);
     const [job, setJob] = useState(null);
+    const [supply, setSupply] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -35,6 +37,10 @@ const useJobs = (jobId) => {
                 try {
                     const data = await getJobById(jobId);
                     setJob(data);
+                    if (data.supplyId) {
+                        const supplyData = await getSupplyById(data.supplyId);
+                        setSupply(supplyData);
+                    }
                 } catch (error) {
                     console.error('Error fetching job details:', error);
                     setError('Failed to load job details.');
@@ -47,33 +53,56 @@ const useJobs = (jobId) => {
         }
     }, [jobId]);
 
-    const handleCreateJob = async (jobData) => {
+    const handleCreateJob = async (jobData, quantity, supplyId) => {
         setIsLoading(true);
         setError(null);
 
         try {
+            const supply = await getSupplyById(supplyId);
+
+            if (supply.quantity < quantity) {
+                throw new Error('Entered quantity exceeds available stock.');
+            }
+
+            const updatedSupply = { ...supply, quantity: supply.quantity - quantity };
+            await updateSupply(supplyId, updatedSupply);
+
             await createJob(jobData);
+            return true;
         } catch (error) {
             console.error('Error creating job:', error);
-            setError('Failed to create job. Please try again later.');
+            setError(error.message || 'Failed to create job. Please try again later.');
+            return false;
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleUpdateJob = async (id, jobData) => {
+    const handleUpdateJob = async (id, jobData, quantity, supplyId) => {
         setIsLoading(true);
         setError(null);
 
         try {
+            const supply = await getSupplyById(supplyId);
+
+            if (supply.quantity < quantity) {
+                throw new Error('Entered quantity exceeds available stock.');
+            }
+
+            const updatedSupply = { ...supply, quantity: supply.quantity - quantity };
+            await updateSupply(supplyId, updatedSupply);
+
             await updateJob(id, jobData);
+            return true;
         } catch (error) {
             console.error('Error updating job:', error);
-            setError('Failed to update job. Please try again later.');
+            setError(error.message || 'Failed to update job. Please try again later.');
+            return false;
         } finally {
             setIsLoading(false);
         }
     };
+
 
     const handleDeleteJob = async (id) => {
         setIsLoading(true);
@@ -90,24 +119,15 @@ const useJobs = (jobId) => {
         }
     };
 
-    const handleSetCompleted = async (job) => {
-        try {
-            await updateJob(job.id, { ...job, status: 'Completed' });
-        } catch (error) {
-            console.error('Failed to update job status:', error);
-            alert('Failed to set job to Completed. Please try again.');
-        }
-    };
-    
     return {
         jobs,
         job,
+        supply,
         isLoading,
         error,
         handleCreateJob,
         handleUpdateJob,
         handleDeleteJob,
-        handleSetCompleted,
     };
 };
 
