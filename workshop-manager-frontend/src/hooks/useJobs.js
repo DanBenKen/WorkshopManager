@@ -122,7 +122,6 @@ const useJobs = (jobId) => {
         }
     };
     
-
     const handleDeleteJob = async (id) => {
         setIsLoading(true);
         setError(null);
@@ -138,6 +137,23 @@ const useJobs = (jobId) => {
         }
     };
 
+    const handleSetCompleted = async (job) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const updatedJob = { ...job, status: 'Completed' };
+            await updateJob(job.id, updatedJob);
+            
+            setJobs((prevJobs) => prevJobs.map((j) => (j.id === job.id ? updatedJob : j)));
+        } catch (error) {
+            console.error('Error completing job:', error);
+            setError('Failed to mark job as completed. Please try again later.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return {
         jobs,
         job,
@@ -146,6 +162,7 @@ const useJobs = (jobId) => {
         handleCreateJob,
         handleUpdateJob,
         handleDeleteJob,
+        handleSetCompleted,
     };
 };
 

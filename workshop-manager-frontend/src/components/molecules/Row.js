@@ -12,7 +12,7 @@ const Row = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob }) => {
                     {col.render ? col.render(data) : data[col.field]}
                 </TableCell>
             ))}
-            <TableCell className="flex justify-end space-x-2">
+            <TableCell className="flex space-x-2">
                 <TableActions
                     onEdit={() => onEdit(data)}
                     onDelete={() => onDelete(data)}
