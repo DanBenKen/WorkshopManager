@@ -1,58 +1,64 @@
 import { useState } from 'react';
-import AuthService from '../services/AuthorizationService';
-
-class AuthError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = 'AuthError';
-    }
-}
+import { login as loginService, register as registerService, logout as logoutService, setToken, handleAuthError } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
 
 const useAuth = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [user, setUser] = useState(null);
+    const [authError, setAuthError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const login = async (credentials) => {
-        setLoading(true);
-        setError(null);
+    const handleLogin = async (loginData) => {
+        setIsLoading(true);
+        setAuthError(null);
+
         try {
-            const userData = await AuthService.login(credentials);
-            if (userData && userData.token) {
-                setUser(userData);
-            } else {
-                throw new AuthError('No token received');
-            }
-        } catch (err) {
-            setError(err instanceof AuthError ? err.message : 'Invalid credentials.');
+            const response = await loginService(loginData);
+            setToken(response.token);
+            navigate('/');
+        } catch (error) {
+            setAuthError(handleAuthError(error));
+            throw error;
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
-    const logout = async () => {
-        setLoading(true);
-        setError(null);
+    const handleRegister = async (userData) => {
+        setIsLoading(true);
+        setAuthError(null);
+
         try {
-            await AuthService.logout();
-            setUser(null);
-        } catch (err) {
-            setError(`Logout failed: ${err.message}`);
+            await registerService(userData);
+            navigate('/');
+        } catch (error) {
+            setAuthError(handleAuthError(error));
+            throw error;
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
-    const register = async (registerData) => {
+    const handleLogout = async () => {
+        setIsLoading(true);
+
         try {
-            const response = await AuthService.register(registerData);
-            return response.data;
-        } catch (err) {
-            throw err;
+            await logoutService();
+            navigate('/account/login');
+        } catch (error) {
+            setAuthError(handleAuthError(error));
+            throw error;
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    return { login, logout, register, loading, error, user };
+    return {
+        handleLogin,
+        handleRegister,
+        handleLogout,
+        authError,
+        isLoading,
+    };
 };
 
 export default useAuth;

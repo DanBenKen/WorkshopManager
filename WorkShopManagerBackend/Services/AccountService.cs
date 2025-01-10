@@ -27,13 +27,13 @@ namespace WorkshopManager.Services
         {
             var passwordValidationResult = await ValidatePasswordAsync(registerDTO.Password);
             if (!passwordValidationResult.Succeeded)
-                return passwordValidationResult;            
+                return passwordValidationResult;
 
             var user = new ApplicationUser { UserName = registerDTO.UserName, Email = registerDTO.Email };
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
             if (result.Succeeded)
                 await _userManager.AddToRoleAsync(user, "Admin");
-            
+
             return result;
         }
 
@@ -48,7 +48,7 @@ namespace WorkshopManager.Services
             {
                 var result = await validator.ValidateAsync(_userManager, user, password);
                 if (!result.Succeeded)
-                    errors.AddRange(result.Errors);                
+                    errors.AddRange(result.Errors);
             }
 
             return errors.Count != 0 ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
@@ -59,9 +59,8 @@ namespace WorkshopManager.Services
             if (loginDTO == null || string.IsNullOrEmpty(loginDTO.Email) || string.IsNullOrEmpty(loginDTO.Password))
                 throw new ArgumentException("Email and password are required.");
 
-            var user = await _userManager.FindByEmailAsync(loginDTO.Email);
-            if (user is null)
-                throw new UserNotFoundException();
+            var user = await _userManager.FindByEmailAsync(loginDTO.Email)
+                ?? throw new UserNotFoundException();
 
             var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
             if (!isPasswordCorrect)

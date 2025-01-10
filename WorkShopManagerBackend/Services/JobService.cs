@@ -88,6 +88,12 @@ namespace WorkshopManager.Services
 
                 getJob = _mapper.Map<JobDTO>(job);
                 getJob.WorkerName = workerFullName;
+
+                if (job.SupplyId.HasValue)
+                {
+                    var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(job.SupplyId.Value);
+                    getJob.SupplyName = supply?.Name;
+                }
             });
 
             if (getJob is null)

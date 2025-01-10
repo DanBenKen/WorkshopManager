@@ -1,0 +1,11 @@
+import React from 'react';
+
+const TablePageLayout = ({ children }) => {
+    return (
+            <div className="flex justify-center items-center w-full p-6 bg-white rounded-lg">
+                {children}
+            </div>
+    );
+};
+
+export default TablePageLayout;

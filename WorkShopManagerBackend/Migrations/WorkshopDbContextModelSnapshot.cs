@@ -241,6 +241,9 @@ namespace WorkshopManager.Migrations
                     b.Property<int?>("SupplyId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SupplyQuantity")
+                        .HasColumnType("int");
+
                     b.Property<int>("WorkerId")
                         .HasColumnType("int");
 
