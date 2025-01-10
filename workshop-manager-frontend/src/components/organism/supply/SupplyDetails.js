@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Details from '../../molecules/Details';
 import Button from '../../atoms/Button';
@@ -7,8 +7,15 @@ import Text from '../../atoms/Text';
 import useSupplies from '../../../hooks/useSupplies';
 
 const SupplyDetails = () => {
-    const { supply, isLoading, error } = useSupplies();
+    const { supplyId } = useParams();
+    const { supply, isLoading, error, fetchSupplyById } = useSupplies();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (supplyId && !supply) {
+            fetchSupplyById(supplyId);
+        }
+    }, [supplyId, supply, fetchSupplyById]);
 
     const handleBack = () => {
         navigate(`/supplies`);
