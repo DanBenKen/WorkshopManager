@@ -4,9 +4,13 @@ import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
 import useSupplies from '../../../hooks/useSupplies';
 import List from '../../molecules/List';
+import usePagination from '../../../hooks/usePagination';
+import Pagination from '../../molecules/Pagination';
 
 const SupplyList = () => {
     const { supplies, isLoading, error, handleAddMoreQuantity } = useSupplies();
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(supplies, 5);
+
     const navigate = useNavigate();
 
     const handleEdit = (supply) => {
@@ -49,14 +53,22 @@ const SupplyList = () => {
             ) : error ? (
                 <ErrorMessage message={error} />
             ) : (
-                <List
-                    data={supplies}
-                    columns={columns}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    onDetails={handleDetails}
-                    getCustomAction={onAddQuantity}
-                />
+                <>
+                    <List
+                        data={getPaginatedData(supplies)}
+                        columns={columns}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onDetails={handleDetails}
+                        getCustomAction={onAddQuantity}
+                    />
+
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        goToPage={goToPage}
+                    />
+                </>
             )}
         </div>
     );

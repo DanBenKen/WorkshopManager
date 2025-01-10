@@ -4,9 +4,12 @@ import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
 import useJobs from '../../../hooks/useJobs';
 import List from '../../molecules/List';
+import usePagination from '../../../hooks/usePagination';
+import Pagination from '../../molecules/Pagination';
 
 const JobList = () => {
     const { jobs, isLoading, error, handleSetCompleted } = useJobs();
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(jobs, 5); // Paginacija sa 5 elemenata po stranici
     const navigate = useNavigate();
 
     const handleEdit = (job) => {
@@ -50,14 +53,22 @@ const JobList = () => {
             ) : error ? (
                 <ErrorMessage message={error} />
             ) : (
-                <List
-                    data={jobs}
-                    columns={columns}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    onDetails={handleDetails}
-                    getCustomAction={handleComplete}
-                />
+                <>
+                    <List
+                        data={getPaginatedData(jobs)} // Renderujemo paginirane podatke
+                        columns={columns}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onDetails={handleDetails}
+                        getCustomAction={handleComplete}
+                    />
+
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        goToPage={goToPage}
+                    />
+                </>
             )}
         </div>
     );
