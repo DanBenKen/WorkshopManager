@@ -111,6 +111,40 @@ const useSupplies = () => {
         }
     };
 
+    const handleAddMoreQuantity = async (supply, quantityToAdd) => {
+        if (quantityToAdd <= 0) {
+            setError("Quantity to add must be a positive number.");
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const updatedSupply = { ...supply, quantity: supply.quantity + quantityToAdd };
+
+            setSupplies((prevSupplies) =>
+                prevSupplies.map((item) =>
+                    item.id === supply.id ? updatedSupply : item
+                )
+            );
+
+            await updateSupply(supply.id, updatedSupply);
+
+        } catch (error) {
+            console.error("Error updating supply quantity:", error);
+            setError("Failed to update supply quantity. Please try again later.");
+
+            setSupplies((prevSupplies) =>
+                prevSupplies.map((item) =>
+                    item.id === supply.id ? supply : item
+                )
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return {
         supply,
         supplies,
@@ -119,6 +153,7 @@ const useSupplies = () => {
         handleUpdateSupply,
         handleUpdateQuantity,
         handleDeleteSupply,
+        handleAddMoreQuantity,
         isLoading,
         error,
     };

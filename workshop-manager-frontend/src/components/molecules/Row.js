@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import TableRow from '../atoms/TableRow';
 import TableCell from '../atoms/TableCell';
 import TableActions from './TableActions';
 import Button from '../atoms/Button';
 
-const Row = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob }) => {
+const Row = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob, onAddMore }) => {
+    const location = useLocation();
+    const isSupplyPage = location.pathname.includes('supplies');
+    const [quantity, setQuantity] = useState(0);
+
+    const handleAddMore = () => {
+        if (quantity > 0) {
+            console.log('Adding more: ', quantity);
+            onAddMore(data, quantity);
+            setQuantity(0);
+        }
+    };
+
     return (
         <TableRow>
             {columns.map((col, index) => (
@@ -18,6 +31,18 @@ const Row = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob }) => {
                     onDelete={() => onDelete(data)}
                     onDetails={() => onDetails(data)}
                 />
+                {isSupplyPage && (
+                    <div className="flex items-center space-x-2">
+                        <input
+                            type="number"
+                            value={quantity}
+                            onChange={(e) => setQuantity(Number(e.target.value))}
+                            className="p-2 border border-gray-300 rounded"
+                            placeholder="Quantity"
+                        />
+                        <Button onClick={handleAddMore}>Add Quantity</Button>
+                    </div>
+                )}
                 {data.status !== 'Completed' && onCompleteJob && (
                     <Button
                         onClick={() => onCompleteJob(data)}
