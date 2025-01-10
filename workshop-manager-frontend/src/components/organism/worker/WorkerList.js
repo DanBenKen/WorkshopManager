@@ -4,17 +4,21 @@ import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
 import useWorkers from '../../../hooks/useWorkers';
 import List from '../../molecules/List';
+import usePagination from '../../../hooks/usePagination';
+import Pagination from '../../molecules/Pagination';
 
 const WorkersList = () => {
     const { workers, isLoading, error } = useWorkers(null, 'all');
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(workers, 5);
+    
     const navigate = useNavigate();
 
     const handleEdit = (worker) => {
-        navigate(`/workers/edit/${worker.id}`)
+        navigate(`/workers/edit/${worker.id}`);
     };
 
     const handleDelete = (worker) => {
-        navigate(`/workers/delete/${worker.id}`)
+        navigate(`/workers/delete/${worker.id}`);
     };
 
     const handleDetails = (worker) => {
@@ -41,13 +45,21 @@ const WorkersList = () => {
             ) : error ? (
                 <ErrorMessage message={error} />
             ) : (
-                <List
-                    data={workers}
-                    columns={columns}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    onDetails={handleDetails}
-                />
+                <>
+                    <List
+                        data={getPaginatedData(workers)}
+                        columns={columns}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onDetails={handleDetails}
+                    />
+
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        goToPage={goToPage}
+                    />
+                </>
             )}
         </div>
     );
