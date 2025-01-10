@@ -4,7 +4,7 @@ import React from 'react';
 const Filter = ({ type, options, value, onChange, placeholder, className }) => {
     if (type === 'select') {
         return (
-            <div className="mb-4">
+            <div className={`${className}`}>
                 <select value={value} onChange={(e) => onChange(e.target.value)} className="border p-2">
                     <option value="">All</option>
                     {options.map((option) => (

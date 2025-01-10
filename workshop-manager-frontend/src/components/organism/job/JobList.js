@@ -10,7 +10,7 @@ import Filter from '../../molecules/Filter';
 
 const JobList = () => {
     const { jobs, isLoading, error, handleSetCompleted } = useJobs();
-    
+
     const [statusFilter, setStatusFilter] = useState('');
     const [nameFilter, setNameFilter] = useState('');
     const navigate = useNavigate();
@@ -65,21 +65,24 @@ const JobList = () => {
                 <Button>Add New Job</Button>
             </Link>
 
-            <Filter
-                type="input"
-                value={nameFilter}
-                onChange={setNameFilter}
-                placeholder="Filter by name"
-                className={"mb-4 w-1/4"}
-            />
+            <div className='flex'>
+                <Filter
+                    type="select"
+                    options={statusOptions}
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                    placeholder="Filter by status"
+                    className={"mb-4"}
+                />
 
-            <Filter
-                type="select"
-                options={statusOptions}
-                value={statusFilter}
-                onChange={setStatusFilter}
-                placeholder="Filter by status"
-            />
+                <Filter
+                    type="input"
+                    value={nameFilter}
+                    onChange={setNameFilter}
+                    placeholder="Filter by name"
+                    className={"mb-4 ms-2 w-1/4"}
+                />
+            </div>
 
             {isLoading ? (
                 <p className="text-gray-600">Loading...</p>

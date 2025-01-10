@@ -10,7 +10,7 @@ import Filter from '../../molecules/Filter';
 
 const SupplyList = () => {
     const { supplies, isLoading, error, handleAddMoreQuantity } = useSupplies();
-    
+
     const [nameFilter, setNameFilter] = useState('');
     const [typeFilter, setTypeFilter] = useState('');
     const navigate = useNavigate();
@@ -58,20 +58,24 @@ const SupplyList = () => {
                 <Button>Add New Supply</Button>
             </Link>
 
-            <Filter
-                type="input"
-                value={nameFilter}
-                onChange={setNameFilter}
-                placeholder="Filter by name"
-                className={"mb-4 w-1/4"}
-            />
+            <div className='flex'>
+                <Filter
+                    type="input"
+                    value={nameFilter}
+                    onChange={setNameFilter}
+                    placeholder="Filter by name"
+                    className={"mb-4 w-1/4 me-2"}
+                />
 
-            <Filter
-                type="input"
-                value={typeFilter}
-                onChange={setTypeFilter}
-                placeholder="Filter by type"
-            />
+                <Filter
+                    type="input"
+                    value={typeFilter}
+                    onChange={setTypeFilter}
+                    placeholder="Filter by type"
+                    className={"mb-4 w-1/4"}
+                />
+            </div>
+
 
             {isLoading ? (
                 <p className="text-gray-600">Loading...</p>
