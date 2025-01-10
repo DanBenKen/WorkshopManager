@@ -18,7 +18,7 @@ const Pagination = ({ currentPage, totalPages, goToPage }) => {
                 Previous
             </PaginationButton>
 
-            {pageNumbers.slice(Math.max(currentPage - 3, 0), Math.min(currentPage + 3, totalPages)).map(number => (
+            {pageNumbers.slice(0, 1).map(number => (
                 <PageNumberButton
                     key={number}
                     onClick={() => goToPage(number)}
@@ -27,6 +27,19 @@ const Pagination = ({ currentPage, totalPages, goToPage }) => {
                     {number}
                 </PageNumberButton>
             ))}
+
+            {pageNumbers
+                .slice(Math.max(currentPage - 3, 1), Math.min(currentPage + 3, totalPages))
+                .filter(number => number !== 1)
+                .map(number => (
+                    <PageNumberButton
+                        key={number}
+                        onClick={() => goToPage(number)}
+                        isActive={currentPage === number}
+                    >
+                        {number}
+                    </PageNumberButton>
+                ))}
 
             <PaginationButton
                 onClick={() => goToPage(currentPage + 1)}
