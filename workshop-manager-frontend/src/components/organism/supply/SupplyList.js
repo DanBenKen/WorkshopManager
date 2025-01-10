@@ -21,6 +21,12 @@ const SupplyList = () => {
         navigate(`/supplies/delete/${supply.id}`);
     };
 
+    const onAddQuantity = (supply) => ({
+        label: 'Add Quantity',
+        onClick: (quantity) => handleAddMore(supply, quantity),
+        requiresInput: true,
+    });
+
     const handleAddMore = (supply, quantity) => {
         handleAddMoreQuantity(supply, quantity);
     };
@@ -49,7 +55,7 @@ const SupplyList = () => {
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onDetails={handleDetails}
-                    onAddMore={handleAddMore}
+                    getCustomAction={onAddQuantity}
                 />
             )}
         </div>

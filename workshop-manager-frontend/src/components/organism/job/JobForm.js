@@ -27,6 +27,7 @@ const JobForm = () => {
             setStatus(job.status);
             setWorkerId(job.workerId);
             setSupplyId(job.supplyId || '');
+            setQuantity(job.supplyQuantity || '');
         }
     }, [job]);
 
@@ -43,9 +44,9 @@ const JobForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (!validateForm()) return;
-    
+
         const jobData = {
             jobName,
             description,
@@ -54,12 +55,12 @@ const JobForm = () => {
             supplyId: supplyId || null,
             supplyQuantity: quantity,
         };
-    
+
         try {
             const success = isEditMode
                 ? await handleUpdateJob(jobId, jobData)
                 : await handleCreateJob(jobData);
-    
+
             if (success) {
                 navigate('/jobs');
             }
@@ -68,7 +69,6 @@ const JobForm = () => {
             setFormErrors(err.message || 'An error occurred. Please try again later.');
         }
     };
-    
 
     return (
         <div>

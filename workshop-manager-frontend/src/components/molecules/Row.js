@@ -1,24 +1,19 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import TableRow from '../atoms/TableRow';
 import TableCell from '../atoms/TableCell';
 import TableActions from './TableActions';
 
-const Row = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob, onAddMore }) => {
-    const location = useLocation();
-    const isSupplyPage = location.pathname.includes('supplies');
+const Row = ({ data, columns, onEdit, onDelete, onDetails, customAction }) => {
     const [quantity, setQuantity] = useState(0);
 
-    const handleIncreaseQuantity = () => {
-        if (quantity > 0) {
-            onAddMore(data, quantity);
+    const handleCustomActionClick = () => {
+        if (customAction?.requiresInput && quantity > 0) {
+            customAction.onClick(quantity);
             setQuantity(0);
+        } else if (customAction) {
+            customAction.onClick();
         }
     };
-
-    const isActionAvailable = isSupplyPage || (data.status !== 'Completed' && onCompleteJob);
-    const customAction = isSupplyPage ? handleIncreaseQuantity : (data.status !== 'Completed' ? () => onCompleteJob(data) : null);
-    const buttonLabel = isSupplyPage ? 'Add Quantity' : (data.status !== 'Completed' ? 'Complete Job' : null);
 
     return (
         <TableRow>
@@ -32,21 +27,17 @@ const Row = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob, onAddM
                     onEdit={() => onEdit(data)}
                     onDelete={() => onDelete(data)}
                     onDetails={() => onDetails(data)}
-                    onCustomAction={customAction}
-                    customButtonLabel={buttonLabel}
+                    onCustomAction={customAction ? handleCustomActionClick : null}
+                    customButtonLabel={customAction?.label}
                 />
-                {isActionAvailable && (
-                    <div className="flex items-center space-x-2">
-                        {isSupplyPage && (
-                            <input
-                                type="number"
-                                value={quantity}
-                                onChange={(e) => setQuantity(Number(e.target.value))}
-                                className="p-2 border border-gray-300 rounded"
-                                placeholder="Quantity"
-                            />
-                        )}
-                    </div>
+                {customAction?.requiresInput && (
+                    <input
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
+                        className="p-2 border border-gray-300 rounded"
+                        placeholder="Quantity"
+                    />
                 )}
             </TableCell>
         </TableRow>

@@ -21,8 +21,15 @@ const JobList = () => {
         navigate(`/jobs/details/${job.id}`);
     };
 
-    const handleCompleteJob = (job) => {
-        handleSetCompleted(job);
+    const handleComplete = (job) => {
+        if (job.status !== 'Completed') {
+            return {
+                label: 'Complete Job',
+                onClick: () => handleSetCompleted(job),
+                requiresInput: false,
+            };
+        }
+        return null;
     };
 
     const columns = [
@@ -49,7 +56,7 @@ const JobList = () => {
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onDetails={handleDetails}
-                    onCompleteJob={handleCompleteJob}
+                    getCustomAction={handleComplete}
                 />
             )}
         </div>

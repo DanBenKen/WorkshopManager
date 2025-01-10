@@ -5,28 +5,31 @@ import TableBody from '../atoms/TableBody';
 import TableCell from '../atoms/TableCell';
 import Row from './Row';
 
-const List = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob, onAddMore }) => {
+const List = ({ data, columns, onEdit, onDelete, onDetails, getCustomAction }) => {
     return (
         <Table>
             <TableHeader>
-                {columns && columns.map((col, index) => (
+                {columns.map((col, index) => (
                     <TableCell key={index}>{col.label}</TableCell>
                 ))}
                 <TableCell>Actions</TableCell>
             </TableHeader>
             <TableBody>
-                {data.map(item => (
-                    <Row
-                        key={item.id}
-                        data={item}
-                        columns={columns}
-                        onEdit={onEdit}
-                        onDelete={onDelete}
-                        onDetails={onDetails}
-                        onCompleteJob={onCompleteJob}
-                        onAddMore={onAddMore}
-                    />
-                ))}
+                {data.map((item) => {
+                    const customAction = getCustomAction ? getCustomAction(item) : null;
+
+                    return (
+                        <Row
+                            key={item.id}
+                            data={item}
+                            columns={columns}
+                            onEdit={onEdit}
+                            onDelete={onDelete}
+                            onDetails={onDetails}
+                            customAction={customAction}
+                        />
+                    );
+                })}
             </TableBody>
         </Table>
     );
