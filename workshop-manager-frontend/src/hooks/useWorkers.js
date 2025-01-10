@@ -1,30 +1,34 @@
 import { useState, useEffect } from 'react';
-import { createWorker, getWorkers, updateWorker, getWorkerById, deleteWorker } from '../services/workerService';
+import { createWorker, getWorkers, updateWorker, getWorkerById, deleteWorker, getWorkersWithJobs } from '../services/workerService';
 
-const useWorkers = (workerId) => {
+const useWorkers = (workerId, fetchType = 'all') => {
     const [workers, setWorkers] = useState([]);
     const [worker, setWorker] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchWorkers = async () => {
+        const fetchData = async () => {
             setIsLoading(true);
             setError(null);
 
             try {
-                const data = await getWorkers();
-                setWorkers(data);
+                if (fetchType === 'withJobs') {
+                    const data = await getWorkersWithJobs();
+                    setWorkers(data);
+                } else if (fetchType === 'all') {
+                    const data = await getWorkers();
+                    setWorkers(data);
+                }
             } catch (error) {
-                console.error("Error fetching workers:", error);
-                setError("Failed to load workers. Please try again later.");
+                setError('Failed to fetch workers. Please try again later.');
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchWorkers();
-    }, []);
+        fetchData();
+    }, [fetchType]);
 
     useEffect(() => {
         if (workerId) {

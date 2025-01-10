@@ -15,6 +15,7 @@ import JobDetailsPage from './pages/job/JobDetailsPage';
 import JobDeletePage from './pages/job/JobDeletePage';
 import SupplyFormPage from './pages/supply/SupplyFormPage';
 import WorkersFormPage from './pages/worker/WorkerFormPage';
+import WorkersListWithJobsPage from './pages/worker/WorkersListWithJobsPage';
 
 const App = () => {
     return (
@@ -36,6 +37,7 @@ const App = () => {
                     <Route path="/jobs/details/:jobId" element={<JobDetailsPage />} />
                     <Route path="/jobs/delete/:jobId" element={<JobDeletePage />} />
                     <Route path="/workers/create" element={<WorkersFormPage />} />
+                    <Route path="/workers/with-jobs" element={<WorkersListWithJobsPage />} />
                     <Route path="/workers/details/:workerId" element={<WorkerDetailsPage />} />
                     <Route path="/workers/edit/:workerId" element={<WorkersFormPage />} />
                     <Route path="/workers/delete/:workerId" element={<WorkerDeletePage />} />

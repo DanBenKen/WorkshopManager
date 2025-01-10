@@ -6,7 +6,7 @@ import useWorkers from '../../../hooks/useWorkers';
 import List from '../../molecules/List';
 
 const WorkersList = () => {
-    const { workers, isLoading, error } = useWorkers();
+    const { workers, isLoading, error } = useWorkers(null, 'all');
     const navigate = useNavigate();
 
     const handleEdit = (worker) => {
@@ -31,6 +31,9 @@ const WorkersList = () => {
             <h2 className="text-3xl font-bold mb-4">Workers</h2>
             <Link to="/workers/create" className="inline-block mb-4">
                 <Button>Add New Worker</Button>
+            </Link>
+            <Link to="/workers/with-jobs" className="inline-block ms-2 mb-4">
+                <Button>Workers with Jobs</Button>
             </Link>
 
             {isLoading ? (

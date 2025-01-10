@@ -13,6 +13,11 @@ export const getWorkerById = async (id) => {
     return response.data;
 };
 
+export const getWorkersWithJobs = async () => {
+    const response = await axiosInstance.get(`${API_URL}/workers-with-jobs`);
+    return response.data;
+};
+
 export const createWorker = async (workerData) => {
     const response = await axiosInstance.post(API_URL, workerData);
     return response.data;
