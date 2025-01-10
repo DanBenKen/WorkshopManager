@@ -9,7 +9,6 @@ const Row = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob, onAddM
     const isSupplyPage = location.pathname.includes('supplies');
     const [quantity, setQuantity] = useState(0);
 
-    // Custom action to handle quantity increase
     const handleIncreaseQuantity = () => {
         if (quantity > 0) {
             onAddMore(data, quantity);
