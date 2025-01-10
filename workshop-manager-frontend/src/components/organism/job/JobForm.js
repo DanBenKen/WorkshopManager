@@ -9,7 +9,7 @@ const JobForm = () => {
     const { jobId } = useParams();
     const [jobName, setJobName] = useState('');
     const [description, setDescription] = useState('');
-    const [status, setStatus] = useState('InProgress');
+    const [status, setStatus] = useState('1');
     const [workerId, setWorkerId] = useState('');
     const [supplyId, setSupplyId] = useState('');
     const [quantity, setQuantity] = useState('');
@@ -97,13 +97,18 @@ const JobForm = () => {
                 />
                 <FormField
                     label="Status"
-                    type="text"
+                    type="select"
                     id="Status"
                     name="status"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    placeholder="Enter job status"
+                    options={[
+                        { value: '0', label: 'Pending' },
+                        { value: '1', label: 'InProgress' },
+                        { value: '2', label: 'Completed' }
+                    ]}
                 />
+
                 <FormField
                     label="Worker ID"
                     type="number"

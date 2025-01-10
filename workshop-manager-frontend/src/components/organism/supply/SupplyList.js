@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
@@ -6,12 +6,22 @@ import useSupplies from '../../../hooks/useSupplies';
 import List from '../../molecules/List';
 import usePagination from '../../../hooks/usePagination';
 import Pagination from '../../molecules/Pagination';
+import Filter from '../../molecules/Filter';
 
 const SupplyList = () => {
     const { supplies, isLoading, error, handleAddMoreQuantity } = useSupplies();
-    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(supplies, 5);
-
+    
+    const [nameFilter, setNameFilter] = useState('');
+    const [typeFilter, setTypeFilter] = useState('');
     const navigate = useNavigate();
+
+    const filteredSupplies = supplies.filter((supply) => {
+        const matchesName = nameFilter ? supply.name.toLowerCase().includes(nameFilter.toLowerCase()) : true;
+        const matchesType = typeFilter ? supply.type.toLowerCase().includes(typeFilter.toLowerCase()) : true;
+        return matchesName && matchesType;
+    });
+
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredSupplies, 5);
 
     const handleEdit = (supply) => {
         navigate(`/supplies/edit/${supply.id}`);
@@ -48,6 +58,20 @@ const SupplyList = () => {
                 <Button>Add New Supply</Button>
             </Link>
 
+            <Filter
+                type="input"
+                value={nameFilter}
+                onChange={setNameFilter}
+                placeholder="Filter by name"
+            />
+
+            <Filter
+                type="input"
+                value={typeFilter}
+                onChange={setTypeFilter}
+                placeholder="Filter by type"
+            />
+
             {isLoading ? (
                 <p className="text-gray-600">Loading...</p>
             ) : error ? (
@@ -55,7 +79,7 @@ const SupplyList = () => {
             ) : (
                 <>
                     <List
-                        data={getPaginatedData(supplies)}
+                        data={getPaginatedData(filteredSupplies)}
                         columns={columns}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
