@@ -1,14 +1,14 @@
 import React from 'react';
 import Button from '../atoms/Button';
 
-const TableActions = ({ onEdit, onDelete, onDetails }) => {
+const TableActions = ({ onEdit, onDelete, onDetails, onCustomAction, customButtonLabel }) => {
     return (
-        <div>
+        <div className="flex space-x-2">
             <Button
                 className="bg-green-500 hover:bg-green-600 mr-2"
                 onClick={onDetails}
                 type="button"
-                >
+            >
                 Details
             </Button>
             <Button
@@ -25,6 +25,15 @@ const TableActions = ({ onEdit, onDelete, onDetails }) => {
             >
                 Delete
             </Button>
+            {onCustomAction && (
+                <Button
+                    className="bg-blue-500 hover:bg-blue-600"
+                    onClick={onCustomAction}
+                    type="button"
+                >
+                    {customButtonLabel}
+                </Button>
+            )}
         </div>
     );
 };

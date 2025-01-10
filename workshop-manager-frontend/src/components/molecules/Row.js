@@ -3,20 +3,23 @@ import { useLocation } from 'react-router-dom';
 import TableRow from '../atoms/TableRow';
 import TableCell from '../atoms/TableCell';
 import TableActions from './TableActions';
-import Button from '../atoms/Button';
 
 const Row = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob, onAddMore }) => {
     const location = useLocation();
     const isSupplyPage = location.pathname.includes('supplies');
     const [quantity, setQuantity] = useState(0);
 
-    const handleAddMore = () => {
+    // Custom action to handle quantity increase
+    const handleIncreaseQuantity = () => {
         if (quantity > 0) {
-            console.log('Adding more: ', quantity);
             onAddMore(data, quantity);
             setQuantity(0);
         }
     };
+
+    const isActionAvailable = isSupplyPage || (data.status !== 'Completed' && onCompleteJob);
+    const customAction = isSupplyPage ? handleIncreaseQuantity : (data.status !== 'Completed' ? () => onCompleteJob(data) : null);
+    const buttonLabel = isSupplyPage ? 'Add Quantity' : (data.status !== 'Completed' ? 'Complete Job' : null);
 
     return (
         <TableRow>
@@ -30,25 +33,21 @@ const Row = ({ data, columns, onEdit, onDelete, onDetails, onCompleteJob, onAddM
                     onEdit={() => onEdit(data)}
                     onDelete={() => onDelete(data)}
                     onDetails={() => onDetails(data)}
+                    onCustomAction={customAction}
+                    customButtonLabel={buttonLabel}
                 />
-                {isSupplyPage && (
+                {isActionAvailable && (
                     <div className="flex items-center space-x-2">
-                        <input
-                            type="number"
-                            value={quantity}
-                            onChange={(e) => setQuantity(Number(e.target.value))}
-                            className="p-2 border border-gray-300 rounded"
-                            placeholder="Quantity"
-                        />
-                        <Button onClick={handleAddMore}>Add Quantity</Button>
+                        {isSupplyPage && (
+                            <input
+                                type="number"
+                                value={quantity}
+                                onChange={(e) => setQuantity(Number(e.target.value))}
+                                className="p-2 border border-gray-300 rounded"
+                                placeholder="Quantity"
+                            />
+                        )}
                     </div>
-                )}
-                {data.status !== 'Completed' && onCompleteJob && (
-                    <Button
-                        onClick={() => onCompleteJob(data)}
-                    >
-                        Complete Job
-                    </Button>
                 )}
             </TableCell>
         </TableRow>
