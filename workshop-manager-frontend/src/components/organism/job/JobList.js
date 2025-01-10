@@ -23,7 +23,6 @@ const JobList = () => {
 
     const handleCompleteJob = (job) => {
         handleSetCompleted(job);
-        navigate(0);
     };
 
     const columns = [
@@ -31,7 +30,7 @@ const JobList = () => {
         { label: 'Description', field: 'description' },
         { label: 'Status', field: 'status' },
     ];
-    
+
     return (
         <div className="mx-auto px-4 py-8">
             <h2 className="text-3xl font-bold mb-4">Jobs</h2>
