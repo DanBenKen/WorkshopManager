@@ -46,12 +46,19 @@ const JobForm = () => {
     
         if (!validateForm()) return;
     
-        const jobData = { jobName, description, status, workerId, supplyId: supplyId || null };
+        const jobData = {
+            jobName,
+            description,
+            status,
+            workerId,
+            supplyId: supplyId || null,
+            supplyQuantity: quantity,
+        };
     
         try {
             const success = isEditMode
-                ? await handleUpdateJob(jobId, jobData, quantity, supplyId)
-                : await handleCreateJob(jobData, quantity, supplyId);
+                ? await handleUpdateJob(jobId, jobData)
+                : await handleCreateJob(jobData);
     
             if (success) {
                 navigate('/jobs');
@@ -61,6 +68,7 @@ const JobForm = () => {
             setFormErrors(err.message || 'An error occurred. Please try again later.');
         }
     };
+    
 
     return (
         <div>

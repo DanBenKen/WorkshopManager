@@ -11,8 +11,7 @@ namespace WorkshopManager.Mappings
         public MappingProfile()
         {
             CreateMap<Job, JobDTO>()
-                .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker != null ? src.Worker.FullName : null))
-                .ForMember(dest => dest.SupplyQuantity, opt => opt.MapFrom(src => src.Supply != null ? src.Supply.Quantity : (int?)null));
+                .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker != null ? src.Worker.FullName : null));
 
             CreateMap<JobDTO, Job>();
             CreateMap<RequestCreateJobDTO, JobDTO>();

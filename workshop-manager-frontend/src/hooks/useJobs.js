@@ -5,7 +5,6 @@ import { getSupplyById, updateSupply } from '../services/supplyService';
 const useJobs = (jobId) => {
     const [jobs, setJobs] = useState([]);
     const [job, setJob] = useState(null);
-    const [supply, setSupply] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -29,43 +28,43 @@ const useJobs = (jobId) => {
     }, []);
 
     useEffect(() => {
-        if (jobId) {
-            const fetchJob = async () => {
-                setIsLoading(true);
-                setError(null);
+        const fetchJob = async () => {
+            if (!jobId) return;
 
-                try {
-                    const data = await getJobById(jobId);
-                    setJob(data);
-                    if (data.supplyId) {
-                        const supplyData = await getSupplyById(data.supplyId);
-                        setSupply(supplyData);
-                    }
-                } catch (error) {
-                    console.error('Error fetching job details:', error);
-                    setError('Failed to load job details.');
-                } finally {
-                    setIsLoading(false);
-                }
-            };
+            setIsLoading(true);
+            setError(null);
 
-            fetchJob();
-        }
+            try {
+                const data = await getJobById(jobId);
+                setJob(data);
+            } catch (error) {
+                console.error('Error fetching job details:', error);
+                setError('Failed to load job details.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchJob();
     }, [jobId]);
 
-    const handleCreateJob = async (jobData, quantity, supplyId) => {
+    const handleCreateJob = async (jobData) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            const supply = await getSupplyById(supplyId);
+            const { supplyId, supplyQuantity } = jobData;
 
-            if (supply.quantity < quantity) {
-                throw new Error('Entered quantity exceeds available stock.');
+            if (supplyId) {
+                const supply = await getSupplyById(supplyId);
+
+                if (supply.quantity < supplyQuantity) {
+                    throw new Error('Entered quantity exceeds available stock.');
+                }
+
+                const updatedSupply = { ...supply, quantity: supply.quantity - supplyQuantity };
+                await updateSupply(supplyId, updatedSupply);
             }
-
-            const updatedSupply = { ...supply, quantity: supply.quantity - quantity };
-            await updateSupply(supplyId, updatedSupply);
 
             await createJob(jobData);
             return true;
@@ -78,20 +77,40 @@ const useJobs = (jobId) => {
         }
     };
 
-    const handleUpdateJob = async (id, jobData, quantity, supplyId) => {
+    const handleUpdateJob = async (id, jobData) => {
         setIsLoading(true);
         setError(null);
-
+    
         try {
-            const supply = await getSupplyById(supplyId);
+            const { supplyId, supplyQuantity } = jobData;
+    
+            if (supplyId) {
+                const currentJob = await getJobById(id);
+    
+                if (currentJob) {
+                    const oldSupplyQuantity = currentJob.supplyQuantity;
 
-            if (supply.quantity < quantity) {
-                throw new Error('Entered quantity exceeds available stock.');
+                    if (supplyQuantity < oldSupplyQuantity) {
+                        const quantityToReturn = oldSupplyQuantity - supplyQuantity;
+                        const supply = await getSupplyById(supplyId);
+    
+                        const updatedSupply = { ...supply, quantity: supply.quantity + quantityToReturn };
+                        await updateSupply(supplyId, updatedSupply);
+                    }
+                    else if (supplyQuantity > oldSupplyQuantity) {
+                        const quantityToDeduct = supplyQuantity - oldSupplyQuantity;
+                        const supply = await getSupplyById(supplyId);
+    
+                        if (supply.quantity < quantityToDeduct) {
+                            throw new Error('Entered quantity exceeds available stock.');
+                        }
+    
+                        const updatedSupply = { ...supply, quantity: supply.quantity - quantityToDeduct };
+                        await updateSupply(supplyId, updatedSupply);
+                    }
+                }
             }
-
-            const updatedSupply = { ...supply, quantity: supply.quantity - quantity };
-            await updateSupply(supplyId, updatedSupply);
-
+    
             await updateJob(id, jobData);
             return true;
         } catch (error) {
@@ -102,7 +121,7 @@ const useJobs = (jobId) => {
             setIsLoading(false);
         }
     };
-
+    
 
     const handleDeleteJob = async (id) => {
         setIsLoading(true);
@@ -122,7 +141,6 @@ const useJobs = (jobId) => {
     return {
         jobs,
         job,
-        supply,
         isLoading,
         error,
         handleCreateJob,

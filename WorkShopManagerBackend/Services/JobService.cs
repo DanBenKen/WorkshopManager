@@ -92,7 +92,6 @@ namespace WorkshopManager.Services
                 if (job.SupplyId.HasValue)
                 {
                     var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(job.SupplyId.Value);
-                    getJob.SupplyQuantity = supply?.Quantity;
                     getJob.SupplyName = supply?.Name;
                 }
             });

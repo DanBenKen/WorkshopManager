@@ -7,6 +7,7 @@ namespace WorkshopManager.Models
     {
         public int Id { get; set; }
         public int? SupplyId { get; set; }
+        public int SupplyQuantity { get; set; }
         public required string JobName { get; set; } = string.Empty;
         public required string Description { get; set; } = string.Empty;
 
