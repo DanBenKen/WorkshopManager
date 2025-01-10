@@ -1,7 +1,7 @@
 import Input from '../atoms/Input';
 import React from 'react';
 
-const Filter = ({ type, options, value, onChange, placeholder }) => {
+const Filter = ({ type, options, value, onChange, placeholder, className }) => {
     if (type === 'select') {
         return (
             <div className="mb-4">
@@ -19,13 +19,13 @@ const Filter = ({ type, options, value, onChange, placeholder }) => {
 
     if (type === 'input') {
         return (
-            <div className="mb-4 size-1/4">
+            <div className={`${className}`}>
                 <Input
                     type="text"
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}
-                    className="border p-2"
+                    className={`border p-2 ${className}`}
                 />
             </div>
         );

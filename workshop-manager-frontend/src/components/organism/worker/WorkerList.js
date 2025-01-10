@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
@@ -6,12 +6,19 @@ import useWorkers from '../../../hooks/useWorkers';
 import List from '../../molecules/List';
 import usePagination from '../../../hooks/usePagination';
 import Pagination from '../../molecules/Pagination';
+import Filter from '../../molecules/Filter';
 
 const WorkersList = () => {
     const { workers, isLoading, error } = useWorkers(null, 'all');
-    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(workers, 5);
+    const [nameFilter, setNameFilter] = useState('');
     
     const navigate = useNavigate();
+
+    const filteredWorkers = workers.filter((worker) =>
+        nameFilter ? worker.fullName.toLowerCase().includes(nameFilter.toLowerCase()) : true
+    );
+
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 5);
 
     const handleEdit = (worker) => {
         navigate(`/workers/edit/${worker.id}`);
@@ -40,6 +47,14 @@ const WorkersList = () => {
                 <Button>Workers with Jobs</Button>
             </Link>
 
+            <Filter
+                type="input"
+                value={nameFilter}
+                onChange={setNameFilter}
+                placeholder="Filter by name"
+                className={"mb-4 w-1/4"}
+            />
+
             {isLoading ? (
                 <p className="text-gray-600">Loading...</p>
             ) : error ? (
@@ -47,7 +62,7 @@ const WorkersList = () => {
             ) : (
                 <>
                     <List
-                        data={getPaginatedData(workers)}
+                        data={getPaginatedData(filteredWorkers)}
                         columns={columns}
                         onEdit={handleEdit}
                         onDelete={handleDelete}

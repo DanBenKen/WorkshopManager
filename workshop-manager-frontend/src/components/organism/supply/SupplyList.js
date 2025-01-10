@@ -63,6 +63,7 @@ const SupplyList = () => {
                 value={nameFilter}
                 onChange={setNameFilter}
                 placeholder="Filter by name"
+                className={"mb-4 w-1/4"}
             />
 
             <Filter
