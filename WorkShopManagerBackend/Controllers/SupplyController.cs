@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WorkshopManager.DTOs.SupplyDTOs;
 using WorkshopManager.Interfaces.ServiceInterfaces;
-using WorkshopManager.Services;
 
 namespace WorkshopManager.Controllers
 {
