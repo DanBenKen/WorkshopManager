@@ -5,7 +5,7 @@ import ErrorMessage from '../atoms/ErrorMessage';
 
 const FormField = ({ label, type, id, name, value, onChange, errorMessage, placeholder, options }) => {
     return (
-        <div className="mb-4">
+        <div className="mb-4 w-full">
             <Label htmlFor={id}>{label}</Label>
             {type === 'select' ? (
                 <select
@@ -29,6 +29,7 @@ const FormField = ({ label, type, id, name, value, onChange, errorMessage, place
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                 />
             )}
             {errorMessage && <ErrorMessage message={errorMessage} />}

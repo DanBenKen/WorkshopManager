@@ -18,7 +18,7 @@ const LoginForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
             <FormField
                 label="Email"
                 type="email"
@@ -40,8 +40,8 @@ const LoginForm = () => {
 
             {authError && <ErrorMessage message={authError} />}
 
-            <div className="mt-4">
-                <p>
+            <div className="mt-4 text-center">
+                <p className="text-sm md:text-base">
                     Don't have an account?{' '}
                     <Link to="/account/register" className="text-blue-600 hover:underline">
                         Register here

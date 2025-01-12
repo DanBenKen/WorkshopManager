@@ -30,7 +30,10 @@ const RegisterForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form
+            onSubmit={handleSubmit}
+            className="max-w-lg mx-auto p-6 bg-white rounded space-y-4"
+        >
             <FormField
                 label="Username"
                 type="text"
@@ -67,8 +70,8 @@ const RegisterForm = () => {
             {authError && <ErrorMessage message={authError} />}
             {successMessage && <p className="text-green-500">{successMessage}</p>}
 
-            <div className="mt-4">
-                <p>
+            <div className="mt-4 text-center">
+                <p className="text-sm md:text-base">
                     Already have an account?{' '}
                     <Link to="/account/login" className="text-blue-600 hover:underline">
                         Login here
