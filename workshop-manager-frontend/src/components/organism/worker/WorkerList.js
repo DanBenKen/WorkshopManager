@@ -52,7 +52,7 @@ const WorkersList = () => {
                 value={nameFilter}
                 onChange={setNameFilter}
                 placeholder="Filter by name"
-                className={"mb-4 w-1/4"}
+                className={"mb-4 w-2/3"}
             />
 
             {isLoading ? (

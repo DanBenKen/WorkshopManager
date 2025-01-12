@@ -59,20 +59,21 @@ const JobList = () => {
     ];
 
     return (
-        <div className="mx-auto px-4 py-8">
+        <div className="mx-auto p-2">
             <h2 className="text-3xl font-bold mb-4">Jobs</h2>
+
             <Link to="/jobs/create" className="inline-block mb-4">
                 <Button>Add New Job</Button>
             </Link>
 
-            <div className='flex'>
+            <div className='flex flex-col sm:flex-row gap-4 mb-4'>
                 <Filter
                     type="select"
                     options={statusOptions}
                     value={statusFilter}
                     onChange={setStatusFilter}
                     placeholder="Filter by status"
-                    className={"mb-4"}
+                    className="w-full sm:w-1/4"
                 />
 
                 <Filter
@@ -80,7 +81,7 @@ const JobList = () => {
                     value={nameFilter}
                     onChange={setNameFilter}
                     placeholder="Filter by name"
-                    className={"mb-4 ms-2 w-1/4"}
+                    className="w-full sm:w-1/4"
                 />
             </div>
 

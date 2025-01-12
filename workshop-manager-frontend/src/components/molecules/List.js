@@ -7,18 +7,18 @@ import Row from './Row';
 
 const List = ({ data, columns, onEdit, onDelete, onDetails, getCustomAction }) => {
     return (
-        <Table>
-            <TableHeader>
-                {columns.map((col, index) => (
-                    <TableCell key={index}>{col.label}</TableCell>
-                ))}
-                <TableCell>Actions</TableCell>
-            </TableHeader>
-            <TableBody>
-                {data.map((item) => {
-                    const customAction = getCustomAction ? getCustomAction(item) : null;
-
-                    return (
+        <div className="overflow-x-auto">
+            <Table className="min-w-full">
+                <TableHeader>
+                    {columns.map((col, index) => (
+                        <TableCell key={index} className="text-sm md:text-base font-semibold">
+                            {col.label}
+                        </TableCell>
+                    ))}
+                    <TableCell className="text-sm lg:text-base font-semibold">Actions</TableCell>
+                </TableHeader>
+                <TableBody>
+                    {data.map((item) => (
                         <Row
                             key={item.id}
                             data={item}
@@ -26,12 +26,12 @@ const List = ({ data, columns, onEdit, onDelete, onDetails, getCustomAction }) =
                             onEdit={onEdit}
                             onDelete={onDelete}
                             onDetails={onDetails}
-                            customAction={customAction}
+                            customAction={getCustomAction ? getCustomAction(item) : null}
                         />
-                    );
-                })}
-            </TableBody>
-        </Table>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
     );
 };
 
