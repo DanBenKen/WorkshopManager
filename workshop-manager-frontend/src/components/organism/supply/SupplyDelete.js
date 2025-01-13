@@ -13,16 +13,15 @@ const SupplyDelete = () => {
         navigate('/supplies');
     };
 
-    const handleCancel = () => {
-        navigate('/supplies');
+    const handleCancel = (supplyId) => {
+        navigate(`/supplies/details/${supplyId}`);
     };
 
     return (
         <DeleteConfirmation
             itemName={`Supply #${supplyId}`}
             onConfirm={handleConfirm}
-            onCancel={handleCancel}
-        />
+            onCancel={() => handleCancel(supplyId)} />
     );
 };
 

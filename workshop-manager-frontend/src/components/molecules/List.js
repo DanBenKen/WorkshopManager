@@ -5,7 +5,7 @@ import TableBody from '../atoms/TableBody';
 import TableCell from '../atoms/TableCell';
 import Row from './Row';
 
-const List = ({ data, columns, onEdit, onDelete, onDetails, getCustomAction }) => {
+const List = ({ data, columns, onDetails, getCustomAction }) => {
     return (
         <div className="overflow-x-auto">
             <Table className="min-w-full">
@@ -23,8 +23,6 @@ const List = ({ data, columns, onEdit, onDelete, onDetails, getCustomAction }) =
                             key={item.id}
                             data={item}
                             columns={columns}
-                            onEdit={onEdit}
-                            onDelete={onDelete}
                             onDetails={onDetails}
                             customAction={getCustomAction ? getCustomAction(item) : null}
                         />

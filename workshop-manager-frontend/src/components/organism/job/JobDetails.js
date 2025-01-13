@@ -5,6 +5,7 @@ import Details from '../../molecules/Details';
 import Button from '../../atoms/Button';
 import Text from '../../atoms/Text';
 import useJobs from '../../../hooks/useJobs';
+import DetailsButtons from '../../molecules/DetailsButtons';
 
 const JobDetails = () => {
     const { jobId } = useParams();
@@ -13,6 +14,14 @@ const JobDetails = () => {
 
     const handleBack = () => {
         navigate(`/jobs`);
+    };
+
+    const handleEdit = (job) => {
+        navigate(`/jobs/edit/${job.id}`);
+    };
+
+    const handleDelete = (job) => {
+        navigate(`/jobs/delete/${job.id}`);
     };
 
     if (error) {
@@ -51,13 +60,11 @@ const JobDetails = () => {
                 ))}
             </div>
 
-            <div className="mt-6">
-                <Button
-                    className="mt-4"
-                    onClick={handleBack}>
-                    Back to List
-                </Button>
-            </div>
+            <DetailsButtons
+                onBack={handleBack}
+                onEdit={() => handleEdit(job)}
+                onDelete={() => handleDelete(job)}
+            />
         </div>
     );
 };

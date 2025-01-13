@@ -5,6 +5,7 @@ import Details from '../../molecules/Details';
 import Button from '../../atoms/Button';
 import Text from '../../atoms/Text';
 import useSupplies from '../../../hooks/useSupplies';
+import DetailsButtons from '../../molecules/DetailsButtons';
 
 const SupplyDetails = () => {
     const { supplyId } = useParams();
@@ -18,7 +19,15 @@ const SupplyDetails = () => {
     }, [supplyId, supply, fetchSupplyById]);
 
     const handleBack = () => {
-        navigate(`/supplies`);
+        navigate(`/supplies/`);
+    };
+
+    const handleEdit = (supply) => {
+        navigate(`/supplies/edit/${supply.id}`);
+    };
+
+    const handleDelete = (supply) => {
+        navigate(`/supplies/delete/${supply.id}`);
     };
 
     if (error) {
@@ -57,13 +66,11 @@ const SupplyDetails = () => {
                 ))}
             </div>
 
-            <div className="mt-6">
-                <Button
-                    className="mt-4"
-                    onClick={handleBack}>
-                    Back to List
-                </Button>
-            </div>
+            <DetailsButtons
+                onBack={handleBack}
+                onEdit={() => handleEdit(supply)}
+                onDelete={() => handleDelete(supply)}
+            />
         </div>
     );
 };

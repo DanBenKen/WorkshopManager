@@ -4,6 +4,7 @@ import FormField from '../../molecules/FormField';
 import useWorkers from '../../../hooks/useWorkers';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
+import ButtonCancel from '../../atoms/ButtonCancel';
 
 const WorkerForm = () => {
     const { workerId } = useParams();
@@ -23,6 +24,14 @@ const WorkerForm = () => {
             setPosition(worker.position);
         }
     }, [worker]);
+
+    const handleBack = (worker) => {
+        if (isEditMode) {
+            navigate(`/workers/details/${worker.id}`);
+        } else {
+            navigate('/workers');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -68,17 +77,27 @@ const WorkerForm = () => {
                     onChange={(e) => setPosition(e.target.value)}
                     placeholder="Enter position"
                 />
+
+
+
                 <Button
                     type="submit"
-                    className="bg-blue-500 text-white p-2 rounded"
                     disabled={isLoading}
                 >
                     {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Worker' : 'Create Worker')}
                 </Button>
             </form>
+
+            <ButtonCancel
+                type="button"
+                className="mt-2"
+                disabled={isLoading}
+                onClick={() => handleBack(worker)}
+            >
+                Go Back
+            </ButtonCancel>
         </div>
     );
 };
 
 export default WorkerForm;
-

@@ -55,7 +55,7 @@ const WorkerListWithJobs = () => {
                 ))}
             </div>
 
-            <div className="mt-6">
+            <div>
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}

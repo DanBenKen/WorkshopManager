@@ -2,9 +2,10 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Details from '../../molecules/Details';
-import Button from '../../atoms/Button';
 import Text from '../../atoms/Text';
 import useWorkers from '../../../hooks/useWorkers';
+import ButtonCancel from '../../atoms/ButtonCancel';
+import DetailsButtons from '../../molecules/DetailsButtons';
 
 const WorkerDetails = () => {
     const { workerId } = useParams();
@@ -15,11 +16,19 @@ const WorkerDetails = () => {
         navigate(`/workers`);
     };
 
+    const handleEdit = (worker) => {
+        navigate(`/workers/edit/${worker.id}`);
+    };
+
+    const handleDelete = (worker) => {
+        navigate(`/workers/delete/${worker.id}`);
+    };
+
     if (error) {
         return (
             <div className="mx-auto px-4 py-8">
                 <ErrorMessage message={error} />
-                <Button className="mt-4" onClick={handleBack}>Back to List</Button>
+                <ButtonCancel className="mt-4" onClick={handleBack}>Back to List</ButtonCancel>
             </div>
         );
     }
@@ -28,15 +37,6 @@ const WorkerDetails = () => {
         return (
             <div className="mx-auto px-4 py-8">
                 <Text content="Loading..." />
-            </div>
-        );
-    }
-
-    if (!workers || workers.length === 0) {
-        return (
-            <div className="mx-auto px-4 py-8">
-                <Text content="No details found." />
-                <Button className="mt-4" onClick={handleBack}>Back to List</Button>
             </div>
         );
     }
@@ -53,13 +53,11 @@ const WorkerDetails = () => {
                 ))}
             </div>
 
-            <div className="mt-6">
-                <Button
-                    className="mt-4"
-                    onClick={handleBack}>
-                    Back to List
-                </Button>
-            </div>
+            <DetailsButtons
+                onBack={handleBack}
+                onEdit={() => handleEdit(worker)}
+                onDelete={() => handleDelete(worker)}
+            />
         </div>
     );
 };

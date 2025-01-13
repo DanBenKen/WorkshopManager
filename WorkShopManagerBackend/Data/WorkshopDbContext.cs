@@ -26,6 +26,6 @@ public class WorkshopDbContext : IdentityDbContext<ApplicationUser, ApplicationR
             .HasOne(j => j.Worker)
             .WithMany(w => w.Jobs)
             .HasForeignKey(j => j.WorkerId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

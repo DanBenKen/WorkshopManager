@@ -23,16 +23,8 @@ const SupplyList = () => {
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredSupplies, 5);
 
-    const handleEdit = (supply) => {
-        navigate(`/supplies/edit/${supply.id}`);
-    };
-
     const handleDetails = (supply) => {
         navigate(`/supplies/details/${supply.id}`);
-    };
-
-    const handleDelete = (supply) => {
-        navigate(`/supplies/delete/${supply.id}`);
     };
 
     const onAddQuantity = (supply) => ({
@@ -85,8 +77,6 @@ const SupplyList = () => {
                     <List
                         data={getPaginatedData(filteredSupplies)}
                         columns={columns}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
                         onDetails={handleDetails}
                         getCustomAction={onAddQuantity}
                     />

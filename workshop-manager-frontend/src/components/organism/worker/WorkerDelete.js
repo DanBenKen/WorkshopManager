@@ -6,22 +6,22 @@ import useWorkers from '../../../hooks/useWorkers';
 const WorkerDelete = () => {
     const { workerId } = useParams();
     const navigate = useNavigate();
-    const { handleDeleteWorker } = useWorkers();
+    const { worker, handleDeleteWorker } = useWorkers(workerId);
 
-    const handleConfirm = async () => {
-        await handleDeleteWorker(workerId);
+    const handleConfirm = async (worker) => {
+        await handleDeleteWorker(worker.id);
         navigate('/workers');
     };
 
-    const handleCancel = () => {
-        navigate('/workers');
+    const handleCancel = (workerId) => {
+        navigate(`/workers/details/${workerId}`);
     };
 
     return (
         <DeleteConfirmation
             itemName={`Worker #${workerId}`}
-            onConfirm={handleConfirm}
-            onCancel={handleCancel}
+            onConfirm={() => handleConfirm(worker)}
+            onCancel={() => handleCancel(worker)}
         />
     );
 };

@@ -23,14 +23,6 @@ const JobList = () => {
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredJobs, 5);
 
-    const handleEdit = (job) => {
-        navigate(`/jobs/edit/${job.id}`);
-    };
-
-    const handleDelete = (job) => {
-        navigate(`/jobs/delete/${job.id}`);
-    };
-
     const handleDetails = (job) => {
         navigate(`/jobs/details/${job.id}`);
     };
@@ -53,7 +45,6 @@ const JobList = () => {
     ];
 
     const statusOptions = [
-        { label: 'Pending', value: 'Pending' },
         { label: 'In Progress', value: 'InProgress' },
         { label: 'Completed', value: 'Completed' },
     ];
@@ -66,7 +57,7 @@ const JobList = () => {
                 <Button>Add New Job</Button>
             </Link>
 
-            <div className='flex flex-col sm:flex-row gap-4 mb-4'>
+            <div className='flex flex-col sm:flex-row'>
                 <Filter
                     type="select"
                     options={statusOptions}
@@ -94,10 +85,8 @@ const JobList = () => {
                     <List
                         data={getPaginatedData(filteredJobs)}
                         columns={columns}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
-                        onDetails={handleDetails}
                         getCustomAction={handleComplete}
+                        onDetails={handleDetails}
                     />
 
                     <Pagination

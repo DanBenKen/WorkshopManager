@@ -4,6 +4,7 @@ import FormField from '../../molecules/FormField';
 import useJobs from '../../../hooks/useJobs';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
+import ButtonCancel from '../../atoms/ButtonCancel';
 
 const JobForm = () => {
     const { jobId } = useParams();
@@ -67,6 +68,14 @@ const JobForm = () => {
         } catch (err) {
             console.error('Error in handleSubmit:', err);
             setFormErrors(err.message || 'An error occurred. Please try again later.');
+        }
+    };
+
+    const handleBack = (job) => {
+        if (isEditMode) {
+            navigate(`/jobs/details/${job.id}`);
+        } else {
+            navigate('/jobs');
         }
     };
 
@@ -151,6 +160,15 @@ const JobForm = () => {
                             : 'Create Job'}
                 </Button>
             </form>
+
+            <ButtonCancel
+                type="button"
+                className="mt-2"
+                disabled={isLoading}
+                onClick={() => handleBack(job)}
+            >
+                Go Back
+            </ButtonCancel>
         </div>
     );
 };

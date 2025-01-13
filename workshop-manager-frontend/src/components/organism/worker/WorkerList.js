@@ -20,14 +20,6 @@ const WorkersList = () => {
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 5);
 
-    const handleEdit = (worker) => {
-        navigate(`/workers/edit/${worker.id}`);
-    };
-
-    const handleDelete = (worker) => {
-        navigate(`/workers/delete/${worker.id}`);
-    };
-
     const handleDetails = (worker) => {
         navigate(`/workers/details/${worker.id}`);
     };
@@ -64,8 +56,6 @@ const WorkersList = () => {
                     <List
                         data={getPaginatedData(filteredWorkers)}
                         columns={columns}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
                         onDetails={handleDetails}
                     />
 

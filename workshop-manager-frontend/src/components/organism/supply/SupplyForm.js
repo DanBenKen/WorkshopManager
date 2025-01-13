@@ -4,6 +4,7 @@ import FormField from '../../molecules/FormField';
 import useSupplies from '../../../hooks/useSupplies';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
+import ButtonCancel from '../../atoms/ButtonCancel';
 
 const SupplyForm = () => {
     const { supplyId } = useParams();
@@ -42,6 +43,14 @@ const SupplyForm = () => {
         navigate('/supplies');
     };
 
+    const handleBack = (supply) => {
+        if (isEditMode) {
+            navigate(`/supplies/details/${supply.id}`);
+        } else {
+            navigate('/supplies');
+        }
+    };
+
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Supply' : 'Create New Supply'}</h2>
@@ -74,6 +83,7 @@ const SupplyForm = () => {
                     onChange={(e) => setType(e.target.value)}
                     placeholder="Enter supply type"
                 />
+
                 <Button
                     type="submit"
                     className="bg-blue-500 text-white p-2 rounded"
@@ -82,6 +92,15 @@ const SupplyForm = () => {
                     {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Supply' : 'Create Supply')}
                 </Button>
             </form>
+
+            <ButtonCancel
+                type="button"
+                className="mt-2"
+                disabled={isLoading}
+                onClick={() => handleBack(supply)}
+            >
+                Go Back
+            </ButtonCancel>
         </div>
     );
 };

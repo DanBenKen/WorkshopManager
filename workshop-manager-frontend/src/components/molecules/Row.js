@@ -3,7 +3,7 @@ import TableRow from '../atoms/TableRow';
 import TableCell from '../atoms/TableCell';
 import TableActions from './TableActions';
 
-const Row = ({ data, columns, onEdit, onDelete, onDetails, customAction }) => {
+const Row = ({ data, columns, onDetails, customAction }) => {
     const [quantity, setQuantity] = useState(0);
 
     const isCustomActionValid = customAction && (customAction.requiresInput ? quantity > 0 : true);
@@ -24,8 +24,6 @@ const Row = ({ data, columns, onEdit, onDelete, onDetails, customAction }) => {
             ))}
             <TableCell className="flex flex-wrap gap-2 items-center justify-start">
                 <TableActions
-                    onEdit={() => onEdit(data)}
-                    onDelete={() => onDelete(data)}
                     onDetails={() => onDetails(data)}
                     onCustomAction={customAction ? handleCustomActionClick : null}
                     customButtonLabel={customAction?.label}

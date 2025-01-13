@@ -14,15 +14,14 @@ const JobDelete = () => {
     };
 
     const handleCancel = () => {
-        navigate('/jobs');
+        navigate(`/jobs/details/${jobId}`);
     };
 
     return (
         <DeleteConfirmation
             itemName={`Job #${jobId}`}
             onConfirm={handleConfirm}
-            onCancel={handleCancel}
-        />
+            onCancel={() => handleCancel(jobId)} />
     );
 };
 
