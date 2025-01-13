@@ -83,6 +83,7 @@ const WorkerForm = () => {
                 <Button
                     type="submit"
                     disabled={isLoading}
+                    className="bg-green-500 hover:bg-green-600"
                 >
                     {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Worker' : 'Create Worker')}
                 </Button>

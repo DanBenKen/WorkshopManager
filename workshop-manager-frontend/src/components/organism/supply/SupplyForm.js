@@ -86,7 +86,7 @@ const SupplyForm = () => {
 
                 <Button
                     type="submit"
-                    className="bg-blue-500 text-white p-2 rounded"
+                    className="bg-green-500 hover:bg-green-600"
                     disabled={isLoading}
                 >
                     {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Supply' : 'Create Supply')}
