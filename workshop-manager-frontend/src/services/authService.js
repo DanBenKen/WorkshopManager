@@ -31,8 +31,14 @@ export const removeToken = () => {
 };
 
 export const handleAuthError = (error) => {
-    if (error?.response?.data?.errors) {
-        return error.response.data.errors;
+    if (error.response?.data?.errors) {
+        return Object.values(error.response.data.errors).flat();
     }
-    return error.response?.data || "An unknown error occurred";
+
+    if (error.response?.data?.message) {
+        return [error.response.data.message];
+    }
+
+    return ["An unknown error occurred."];
 };
+

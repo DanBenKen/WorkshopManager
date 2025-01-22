@@ -14,10 +14,10 @@ const useAuth = () => {
         try {
             const response = await loginService(loginData);
             setToken(response.token);
-            navigate('/');
+            return true;
         } catch (error) {
             setAuthError(handleAuthError(error));
-            throw error;
+            return false;
         } finally {
             setIsLoading(false);
         }
@@ -29,10 +29,10 @@ const useAuth = () => {
 
         try {
             await registerService(userData);
-            navigate('/');
+            return true;
         } catch (error) {
             setAuthError(handleAuthError(error));
-            throw error;
+            return false;
         } finally {
             setIsLoading(false);
         }
@@ -46,7 +46,6 @@ const useAuth = () => {
             navigate('/account/login');
         } catch (error) {
             setAuthError(handleAuthError(error));
-            throw error;
         } finally {
             setIsLoading(false);
         }

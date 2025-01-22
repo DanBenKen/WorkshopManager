@@ -1,7 +1,21 @@
 import React from 'react';
 
 const ErrorMessage = ({ message }) => {
-    return <p className="m-5 text-sm text-red-500">{message}</p>;
+    if (!message || message.length === 0) return null;
+
+    return (
+        <div className="m-2 text-sm text-red-500">
+            {Array.isArray(message) ? (
+                <ul className="list-disc list-inside">
+                    {message.map((error, index) => (
+                        <li key={index}>{error}</li>
+                    ))}
+                </ul>
+            ) : (
+                <p>{message}</p>
+            )}
+        </div>
+    );
 };
 
 export default ErrorMessage;

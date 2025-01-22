@@ -11,14 +11,21 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        handleLogin({ email, password });
-        navigate('/');
+
+        const success = await handleLogin({ email, password });
+
+        if (success) {
+            navigate('/');
+        }
     };
 
     return (
+
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
+            {authError && <ErrorMessage message={authError} />}
+            
             <FormField
                 label="Email"
                 type="email"
@@ -37,8 +44,6 @@ const LoginForm = () => {
             <Button type="submit" disabled={isLoading}>
                 {isLoading ? 'Loading...' : 'Login'}
             </Button>
-
-            {authError && <ErrorMessage message={authError} />}
 
             <div className="mt-4 text-center">
                 <p className="text-sm md:text-base">
