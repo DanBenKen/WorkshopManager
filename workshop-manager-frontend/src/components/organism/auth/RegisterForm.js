@@ -24,9 +24,14 @@ const RegisterForm = () => {
 
         const userData = { username, email, password, confirmPassword };
 
-        await handleRegister(userData);
-        setSuccessMessage("Registration successful! Please log in.");
-        navigate('/account/login');
+        const success = await handleRegister(userData);
+
+        if (success) {
+            setSuccessMessage("Registration successful! Please log in.");
+            setTimeout(() => navigate('/account/login'), 2000);
+        } else {
+            setSuccessMessage("");
+        }
     };
 
     return (
@@ -34,6 +39,9 @@ const RegisterForm = () => {
             onSubmit={handleSubmit}
             className="max-w-lg mx-auto p-6 bg-white rounded space-y-4"
         >
+            {authError && <ErrorMessage message={authError} />}
+            {successMessage && <p className="text-green-500">{successMessage}</p>}
+
             <FormField
                 label="Username"
                 type="text"
@@ -62,13 +70,13 @@ const RegisterForm = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
             />
+            {password && confirmPassword && password !== confirmPassword && (
+                <ErrorMessage message="Passwords do not match." />
+            )}
 
             <Button type="submit" disabled={isLoading}>
                 {isLoading ? 'Registering...' : 'Register'}
             </Button>
-
-            {authError && <ErrorMessage message={authError} />}
-            {successMessage && <p className="text-green-500">{successMessage}</p>}
 
             <div className="mt-4 text-center">
                 <p className="text-sm md:text-base">

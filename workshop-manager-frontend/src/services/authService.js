@@ -31,6 +31,10 @@ export const removeToken = () => {
 };
 
 export const handleAuthError = (error) => {
+    if (error.response?.status === 500) {
+        return ["Invalid Attempt. Please check your credentials."];
+    }
+
     if (error.response?.data?.errors) {
         return Object.values(error.response.data.errors).flat();
     }
@@ -41,4 +45,3 @@ export const handleAuthError = (error) => {
 
     return ["An unknown error occurred."];
 };
-
