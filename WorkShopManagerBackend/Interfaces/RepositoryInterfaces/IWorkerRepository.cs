@@ -9,7 +9,7 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
         Task<IEnumerable<Worker>> GetAllWorkersAsync();
         Task<IEnumerable<Worker>> GetAllWorkersWithJobsAsync();
         Task<Worker> AddWorkerAsync(WorkerDTO workerDTO);
-        Worker UpdateWorker(int id, WorkerDTO workerDTO);
+        Task UpdateWorkerAsync(int id, WorkerDTO workerDTO);
         bool DeleteWorker(Worker worker);
     }
 }

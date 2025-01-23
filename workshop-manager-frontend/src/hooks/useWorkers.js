@@ -13,13 +13,19 @@ const useWorkers = (workerId, fetchType = 'all') => {
             setError(null);
 
             try {
+                let data;
                 if (fetchType === 'withJobs') {
-                    const data = await getWorkersWithJobs();
-                    setWorkers(data);
+                    data = await getWorkersWithJobs();
                 } else if (fetchType === 'all') {
-                    const data = await getWorkers();
-                    setWorkers(data);
+                    data = await getWorkers();
                 }
+
+                const workersWithFullName = data.map(worker => ({
+                    ...worker,
+                    fullName: `${worker.firstName} ${worker.lastName}`
+                }));
+
+                setWorkers(workersWithFullName);
             } catch (error) {
                 setError('Failed to fetch workers. Please try again later.');
             } finally {

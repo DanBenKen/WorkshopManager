@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WorkshopManager.DTOs.WorkerDTOs;
+using WorkshopManager.Exceptions.WorkerExceptions;
 using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Models;
 
@@ -42,16 +43,16 @@ namespace WorkshopManager.Repositories
             return worker;
         }
 
-        public Worker UpdateWorker(int id, WorkerDTO workerDTO)
+        public async Task UpdateWorkerAsync(int id, WorkerDTO workerDTO)
         {
-            var worker = _mapper.Map<Worker>(workerDTO);
-            worker.Id = id;
+            var worker = await _context.Workers.FindAsync(id)
+                ?? throw new WorkerNotFoundException(id);
 
-            _context.Update(worker);
-            return worker;
+            _mapper.Map(workerDTO, worker);
+            _context.Workers.Update(worker);
         }
 
-        public bool DeleteWorker(Worker worker) 
+        public bool DeleteWorker(Worker worker)
         {
             _context.Workers.Remove(worker);
             return true;

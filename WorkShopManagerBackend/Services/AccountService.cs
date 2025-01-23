@@ -100,7 +100,7 @@ namespace WorkshopManager.Services
             var expirationInMinutesString = jwtSettings["TokenExpirationInMinutes"];
             if (string.IsNullOrEmpty(expirationInMinutesString) || !double.TryParse(expirationInMinutesString, out var expirationInMinutes))
             {
-                expirationInMinutes = 30.0;
+                expirationInMinutes = 60.0;
             }
 
             var token = new JwtSecurityToken(

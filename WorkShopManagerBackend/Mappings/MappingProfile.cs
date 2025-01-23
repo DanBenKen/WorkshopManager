@@ -23,7 +23,9 @@ namespace WorkshopManager.Mappings
             CreateMap<RequestUpdateSupplyDTO, SupplyDTO>();
 
             CreateMap<Worker, WorkerDTO>();
-            CreateMap<WorkerDTO, Worker>();
+            CreateMap<WorkerDTO, Worker>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Jobs, opt => opt.Ignore());
             CreateMap<RequestCreateWorkerDTO, WorkerDTO>();
             CreateMap<RequestUpdateWorkerDTO, WorkerDTO>();
             CreateMap<WorkerWithJobDTO, JobDTO>();

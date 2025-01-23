@@ -4,7 +4,6 @@ using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Exceptions.WorkerExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
-using WorkshopManager.Models;
 
 namespace WorkshopManager.Services
 {
@@ -21,19 +20,14 @@ namespace WorkshopManager.Services
 
         public async Task<WorkerDTO> CreateWorkerAsync(RequestCreateWorkerDTO createWorkerDTO)
         {
-            WorkerDTO? worker = null;
+            var workerDTO = _mapper.Map<WorkerDTO>(createWorkerDTO);
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                worker = _mapper.Map<WorkerDTO>(createWorkerDTO);
-
-                await _unitOfWork.WorkerRepository.AddWorkerAsync(worker);
+                await _unitOfWork.WorkerRepository.AddWorkerAsync(workerDTO);
             });
 
-            if (worker is null)
-                throw new WorkerCreateNullException();
-
-            return worker;
+            return workerDTO;
         }
 
         public async Task<WorkerDTO> GetWorkerAsync(int id)
@@ -42,7 +36,7 @@ namespace WorkshopManager.Services
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id) 
+                var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
                     ?? throw new WorkerNotFoundException(id);
 
                 getWorker = _mapper.Map<WorkerDTO>(worker);
@@ -54,9 +48,10 @@ namespace WorkshopManager.Services
             return getWorker;
         }
 
-        public async Task<IEnumerable<Worker>> GetAllWorkersAsync()
+        public async Task<IEnumerable<WorkerDTO>> GetAllWorkersAsync()
         {
-            return await _unitOfWork.WorkerRepository.GetAllWorkersAsync();
+            var workers = await _unitOfWork.WorkerRepository.GetAllWorkersAsync();
+            return _mapper.Map<IEnumerable<WorkerDTO>>(workers);
         }
 
         public async Task<IEnumerable<WorkerWithJobDTO>> GetAllWorkersWithJobsAsync()
@@ -85,18 +80,12 @@ namespace WorkshopManager.Services
 
         public async Task<WorkerDTO> UpdateWorkerAsync(int id, RequestUpdateWorkerDTO workerUpdateDTO)
         {
-            WorkerDTO? workerDTO = null;
+            var workerDTO = _mapper.Map<WorkerDTO>(workerUpdateDTO);
 
-            await _unitOfWork.ExecuteInTransactionAsync(() =>
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                workerDTO = _mapper.Map<WorkerDTO>(workerUpdateDTO);
-
-                _unitOfWork.WorkerRepository.UpdateWorker(id, workerDTO);
-                return Task.CompletedTask;
+                await _unitOfWork.WorkerRepository.UpdateWorkerAsync(id, workerDTO);
             });
-
-            if (workerDTO is null)
-                throw new WorkerUpdateNullException();
 
             return workerDTO;
         }
