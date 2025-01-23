@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.Exceptions.JobExceptions;
+using WorkshopManager.Exceptions.SupplyExceptions;
 using WorkshopManager.Exceptions.WorkerExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
@@ -20,42 +21,39 @@ namespace WorkshopManager.Services
 
         public async Task<JobDTO> CreateJobAsync(RequestCreateJobDTO createJob)
         {
-            // null object pattern???
+            ArgumentNullException.ThrowIfNull(createJob);
 
-            JobDTO? jobCreate = null;
+            var workerExists = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(createJob.WorkerId)
+                ?? throw new WorkerNotFoundException(createJob.WorkerId);
+
+            var supplyExists = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(createJob.SupplyId)
+                ?? throw new SupplyNotFoundException(createJob.SupplyId);
+
+            var jobCreate = _mapper.Map<JobDTO>(createJob);
+            jobCreate.WorkerName = await GetWorkerFullNameAsync(createJob.WorkerId);
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                var workerFullName = await GetWorkerFullNameAsync(createJob.WorkerId);
-
-                jobCreate = _mapper.Map<JobDTO>(createJob);
-                jobCreate.WorkerName = workerFullName;
-
                 await _unitOfWork.JobRepository.AddJobAsync(jobCreate);
             });
-
-            if (jobCreate is null)
-                throw new JobCreationNullException();
 
             return jobCreate;
         }
 
         public async Task<JobDTO> UpdateJobAsync(int id, RequestUpdateJobDTO updateJob)
         {
-            JobDTO? jobUpdate = null;
+            ArgumentNullException.ThrowIfNull(updateJob);
+
+            var existingJob = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
+                ?? throw new JobNotFoundException(id);
+
+            var jobUpdate = _mapper.Map<JobDTO>(updateJob);
+            jobUpdate.WorkerName = await GetWorkerFullNameAsync(updateJob.WorkerId);
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                var workerFullName = await GetWorkerFullNameAsync(updateJob.WorkerId);
-
-                jobUpdate = _mapper.Map<JobDTO>(updateJob);
-                jobUpdate.WorkerName = workerFullName;
-
-                _unitOfWork.JobRepository.UpdateJob(id, jobUpdate);
+                await _unitOfWork.JobRepository.UpdateJobAsync(id, jobUpdate);
             });
-
-            if (jobUpdate is null)
-                throw new JobUpdateNullException();
 
             return jobUpdate;
         }
@@ -77,27 +75,16 @@ namespace WorkshopManager.Services
 
         public async Task<JobDTO> GetJobAsync(int id)
         {
-            JobDTO? getJob = null;
+            var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
+                            ?? throw new JobNotFoundException(id);
 
-            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            var getJob = _mapper.Map<JobDTO>(job);
+            getJob.WorkerName = job.Worker?.FullName;
+
+            if (job.SupplyId.HasValue)
             {
-                var job = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
-                                ?? throw new JobNotFoundException(id);
-
-                var workerFullName = await GetWorkerFullNameAsync(job.WorkerId);
-
-                getJob = _mapper.Map<JobDTO>(job);
-                getJob.WorkerName = workerFullName;
-
-                if (job.SupplyId.HasValue)
-                {
-                    var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(job.SupplyId.Value);
-                    getJob.SupplyName = supply?.Name;
-                }
-            });
-
-            if (getJob is null)
-                throw new JobGetNullException();
+                getJob.SupplyName = job.Supply?.Name;
+            }
 
             return getJob;
         }
@@ -105,16 +92,14 @@ namespace WorkshopManager.Services
         public async Task<IEnumerable<JobDTO>> GetAllJobs()
         {
             var jobs = await _unitOfWork.JobRepository.GetAllJobsAsync();
-
-            var jobDtos = _mapper.Map<IEnumerable<JobDTO>>(jobs);
-
-            return jobDtos;
+            return _mapper.Map<IEnumerable<JobDTO>>(jobs);
         }
 
         private async Task<string> GetWorkerFullNameAsync(int workerId)
         {
             var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(workerId)
                 ?? throw new WorkerNotFoundException(workerId);
+
             return worker.FullName;
         }
     }

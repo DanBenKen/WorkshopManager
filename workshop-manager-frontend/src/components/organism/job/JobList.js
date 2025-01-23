@@ -57,14 +57,14 @@ const JobList = () => {
                 <Button>Add New Job</Button>
             </Link>
 
-            <div className='flex flex-col sm:flex-row'>
+            <div className='flex flex-col sm:flex-row mb-3'>
                 <Filter
                     type="select"
                     options={statusOptions}
                     value={statusFilter}
                     onChange={setStatusFilter}
                     placeholder="Filter by status"
-                    className="w-full sm:w-1/4"
+                    className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
                 />
 
                 <Filter
@@ -72,7 +72,7 @@ const JobList = () => {
                     value={nameFilter}
                     onChange={setNameFilter}
                     placeholder="Filter by name"
-                    className="w-full sm:w-1/4"
+                    className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
                 />
             </div>
 

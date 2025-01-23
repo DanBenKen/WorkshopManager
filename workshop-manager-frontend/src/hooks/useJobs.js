@@ -89,15 +89,14 @@ const useJobs = (jobId) => {
     
                 if (currentJob) {
                     const oldSupplyQuantity = currentJob.supplyQuantity;
-
+    
                     if (supplyQuantity < oldSupplyQuantity) {
                         const quantityToReturn = oldSupplyQuantity - supplyQuantity;
                         const supply = await getSupplyById(supplyId);
     
                         const updatedSupply = { ...supply, quantity: supply.quantity + quantityToReturn };
                         await updateSupply(supplyId, updatedSupply);
-                    }
-                    else if (supplyQuantity > oldSupplyQuantity) {
+                    } else if (supplyQuantity > oldSupplyQuantity) {
                         const quantityToDeduct = supplyQuantity - oldSupplyQuantity;
                         const supply = await getSupplyById(supplyId);
     
@@ -115,7 +114,8 @@ const useJobs = (jobId) => {
             return true;
         } catch (error) {
             console.error('Error updating job:', error);
-            setError(error.message || 'Failed to update job. Please try again later.');
+            console.error('Error details:', error.response?.data);
+            setError(error.response?.data?.message || error.message || 'Failed to update job. Please try again later.');
             return false;
         } finally {
             setIsLoading(false);

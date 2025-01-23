@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WorkshopManager.DTOs.JobDTOs;
+using WorkshopManager.Exceptions.JobExceptions;
 using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Models;
 
@@ -23,6 +24,7 @@ namespace WorkshopManager.Repositories
         {
             return await _context.Jobs
                 .Include(j => j.Worker)
+                .Include(j => j.Supply)
                 .ToListAsync();
         }
 
@@ -34,13 +36,14 @@ namespace WorkshopManager.Repositories
             return job;
         }
 
-        public Job UpdateJob(int id, JobDTO jobDTO)
+        public async Task UpdateJobAsync(int id, JobDTO jobDTO)
         {
-            var job = _mapper.Map<Job>(jobDTO);
-            job.Id = id;
+            var job = await _context.Jobs.FindAsync(id);
+            if (job == null)
+                throw new JobNotFoundException(id);
 
+            _mapper.Map(jobDTO, job);
             _context.Jobs.Update(job);
-            return job;
         }
 
         public bool DeleteJob(Job job)

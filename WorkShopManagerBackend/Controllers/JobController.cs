@@ -44,6 +44,9 @@ namespace WorkshopManager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateJob(int id, [FromBody] RequestUpdateJobDTO updateJob)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             await _jobService.UpdateJobAsync(id, updateJob);
             return NoContent();
         }

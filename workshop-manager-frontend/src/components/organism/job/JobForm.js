@@ -48,13 +48,20 @@ const JobForm = () => {
 
         if (!validateForm()) return;
 
+        const statusMap = {
+            0: 'Pending',
+            1: 'InProgress',
+            2: 'Completed',
+        };
+
         const jobData = {
+            id: jobId ? parseInt(jobId, 10) : null,
             jobName,
             description,
-            status,
-            workerId,
-            supplyId: supplyId || null,
-            supplyQuantity: quantity,
+            status: statusMap[status],
+            workerId: parseInt(workerId, 10),
+            supplyId: supplyId ? parseInt(supplyId, 10) : null,
+            supplyQuantity: parseInt(quantity, 10),
         };
 
         try {
@@ -67,7 +74,7 @@ const JobForm = () => {
             }
         } catch (err) {
             console.error('Error in handleSubmit:', err);
-            setFormErrors(err.message || 'An error occurred. Please try again later.');
+            setFormErrors(err.response?.data?.errors || err.message || 'An error occurred. Please try again later.');
         }
     };
 
@@ -112,9 +119,9 @@ const JobForm = () => {
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                     options={[
-                        { value: '0', label: 'Pending' },
-                        { value: '1', label: 'InProgress' },
-                        { value: '2', label: 'Completed' }
+                        { value: 0, label: 'Pending' },
+                        { value: 1, label: 'In Progress' },
+                        { value: 2, label: 'Completed' }
                     ]}
                 />
 
