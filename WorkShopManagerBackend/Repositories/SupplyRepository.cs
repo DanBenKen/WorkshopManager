@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WorkshopManager.DTOs.SupplyDTOs;
+using WorkshopManager.Exceptions.SupplyExceptions;
 using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Models;
 
@@ -35,13 +36,13 @@ namespace WorkshopManager.Repositories
             return supply;
         }
 
-        public Supply UpdateSupply(int id, SupplyDTO supplyDTO)
+        public async Task UpdateSupplyAsync(int id, SupplyDTO supplyDTO)
         {
-            var supply = _mapper.Map<Supply>(supplyDTO);
-            supply.Id = id;
+            var supply = await _context.Supplies.FindAsync(id)
+                ?? throw new SupplyNotFoundException(id);
 
+            _mapper.Map(supplyDTO, supply);
             _context.Supplies.Update(supply);
-            return supply;
         }
 
         public bool DeleteSupply(Supply supply)

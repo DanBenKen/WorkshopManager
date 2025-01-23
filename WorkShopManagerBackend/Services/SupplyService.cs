@@ -22,15 +22,13 @@ namespace WorkshopManager.Services
         {
             SupplyDTO? supplyDTO = null;
 
+            supplyDTO = _mapper.Map<SupplyDTO>(requestCreateSupply) 
+                ?? throw new SupplyCreateNullException();
+
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                supplyDTO = _mapper.Map<SupplyDTO>(requestCreateSupply);
-
                 await _unitOfWork.SupplyRepository.AddSupplyAsync(supplyDTO);
             });
-
-            if (supplyDTO is null)
-                throw new SupplyCreateNullException();
 
             return supplyDTO;
         }
@@ -62,11 +60,11 @@ namespace WorkshopManager.Services
         {
             SupplyDTO? updateSupply = null;
 
+            updateSupply = _mapper.Map<SupplyDTO>(requestUpdate);
+
             await _unitOfWork.ExecuteInTransactionAsync(() =>
             {
-                updateSupply = _mapper.Map<SupplyDTO>(requestUpdate);
-
-                _unitOfWork.SupplyRepository.UpdateSupply(id, updateSupply);
+                _unitOfWork.SupplyRepository.UpdateSupplyAsync(id, updateSupply);
                 return Task.CompletedTask;
             });
 
