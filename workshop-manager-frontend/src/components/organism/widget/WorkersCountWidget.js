@@ -1,5 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import useWorkers from "../../../hooks/useWorkers";
+import Button from "../../atoms/Button";
 
 const WorkersCountWidget = () => {
     const { count, isLoading, error } = useWorkers(null, "count");
@@ -16,6 +18,12 @@ const WorkersCountWidget = () => {
             <div className="mt-2 text-3xl font-bold text-red-600 dark:text-red-400">
                 {isLoadingUnemployed ? "Loading..." : unemployedError ? "Error" : unemployedCount}
             </div>
+            
+            <Link to="/workers/without-jobs">
+                <Button className="mt-2">
+                    View Workers Without Jobs
+                </Button>
+            </Link>
         </div>
     );
 };
