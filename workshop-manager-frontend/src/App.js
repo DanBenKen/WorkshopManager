@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
-import AdminDashboard from './pages/AdminDashboard';
 import WorkersPage from './pages/worker/WorkersPage';
 import SuppliesPage from './pages/supply/SupplyPage';
 import SupplyDetailsPage from './pages/supply/SupplyDetailsPage';
@@ -16,6 +15,9 @@ import JobDeletePage from './pages/job/JobDeletePage';
 import SupplyFormPage from './pages/supply/SupplyFormPage';
 import WorkersFormPage from './pages/worker/WorkerFormPage';
 import WorkersListWithJobsPage from './pages/worker/WorkersListWithJobsPage';
+import Sidebar from './pages/Sidebar';
+import AdminDashboard from './pages/AdminDashboard';
+import WorkersListWithoutJobsPage from './pages/worker/WorkersListWithoutJobsPage';
 
 const App = () => {
     return (
@@ -23,8 +25,8 @@ const App = () => {
             <Routes>
                 <Route path="/account/login" element={<LoginPage />} />
                 <Route path="/account/register" element={<RegisterPage />} />
-                <Route path="/" element={<AdminDashboard />}>
-                    <Route path="/" element={<div>Welcome to Admin Dashboard</div>} />
+                <Route path="/" element={<Sidebar />}>
+                    <Route path="/" element={<AdminDashboard />} />
                     <Route path="/workers" element={<WorkersPage />} />
                     <Route path="/supplies" element={<SuppliesPage />} />
                     <Route path="/supplies/create" element={<SupplyFormPage />} />
@@ -38,6 +40,7 @@ const App = () => {
                     <Route path="/jobs/delete/:jobId" element={<JobDeletePage />} />
                     <Route path="/workers/create" element={<WorkersFormPage />} />
                     <Route path="/workers/with-jobs" element={<WorkersListWithJobsPage />} />
+                    <Route path="/workers/without-jobs" element={<WorkersListWithoutJobsPage />} />
                     <Route path="/workers/details/:workerId" element={<WorkerDetailsPage />} />
                     <Route path="/workers/edit/:workerId" element={<WorkersFormPage />} />
                     <Route path="/workers/delete/:workerId" element={<WorkerDeletePage />} />

@@ -104,5 +104,21 @@ namespace WorkshopManager.Services
 
             return isDeleted;
         }
+
+        public async Task<int> GetWorkersCountAsync()
+        {
+            return await _unitOfWork.WorkerRepository.GetWorkersCountAsync();
+        }
+
+        public async Task<int> GetUnemployedWorkersCountAsync()
+        {
+            return await _unitOfWork.WorkerRepository.GetUnemployedWorkersCountAsync();
+        }
+
+        public async Task<IEnumerable<WorkerDTO>> GetWorkersWithoutJobsAsync()
+        {
+            var workers = await _unitOfWork.WorkerRepository.GetWorkersWithoutJobsAsync();
+            return _mapper.Map<IEnumerable<WorkerDTO>>(workers);
+        }
     }
 }

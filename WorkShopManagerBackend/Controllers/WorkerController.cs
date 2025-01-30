@@ -58,5 +58,26 @@ namespace WorkshopManager.Controllers
             await _workerService.DeleteWorkerAsync(id);
             return NoContent();
         }
+
+        [HttpGet("count")]
+        public async Task<IActionResult> GetWorkersCount()
+        {
+            var count = await _workerService.GetWorkersCountAsync();
+            return Ok(new { Count = count });
+        }
+
+        [HttpGet("unemployed-count")]
+        public async Task<IActionResult> GetUnemployedWorkersCount()
+        {
+            var count = await _workerService.GetUnemployedWorkersCountAsync();
+            return Ok(new { UnemployedCount = count });
+        }
+
+        [HttpGet("workers-without-jobs")]
+        public async Task<IActionResult> GetWorkersWithoutJobs()
+        {
+            var workersWithoutJobs = await _workerService.GetWorkersWithoutJobsAsync();
+            return Ok(workersWithoutJobs);
+        }
     }
 }

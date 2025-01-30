@@ -4,8 +4,8 @@ import axiosInstance from './axiosInstance';
 const API_URL = API_ROUTES.WORKER;
 
 export const getWorkers = async () => {
-        const response = await axiosInstance.get(API_URL);
-        return response.data;
+    const response = await axiosInstance.get(API_URL);
+    return response.data;
 };
 
 export const getWorkerById = async (id) => {
@@ -15,6 +15,11 @@ export const getWorkerById = async (id) => {
 
 export const getWorkersWithJobs = async () => {
     const response = await axiosInstance.get(`${API_URL}/workers-with-jobs`);
+    return response.data;
+};
+
+export const getWorkersWithoutJobs = async () => {
+    const response = await axiosInstance.get(`${API_URL}/workers-without-jobs`);
     return response.data;
 };
 
@@ -31,4 +36,14 @@ export const updateWorker = async (id, workerData) => {
 export const deleteWorker = async (id) => {
     const response = await axiosInstance.delete(`${API_URL}/${id}`);
     return response.data;
+};
+
+export const getWorkersCount = async () => {
+    const response = await axiosInstance.get(`${API_URL}/count`);
+    return response.data.count;
+};
+
+export const getUnemployedWorkersCount = async () => {
+    const response = await axiosInstance.get(`${API_URL}/unemployed-count`);
+    return response.data.unemployedCount;
 };

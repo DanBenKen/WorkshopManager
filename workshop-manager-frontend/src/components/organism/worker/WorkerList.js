@@ -38,6 +38,9 @@ const WorkersList = () => {
             <Link to="/workers/with-jobs" className="inline-block ms-2 mb-4">
                 <Button>Workers with Jobs</Button>
             </Link>
+            <Link to="/workers/without-jobs" className="inline-block ms-2 mb-4">
+                <Button>Workers without Jobs</Button>
+            </Link>
 
             <Filter
                 type="input"

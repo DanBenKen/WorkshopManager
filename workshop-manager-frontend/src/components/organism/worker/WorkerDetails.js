@@ -9,7 +9,7 @@ import DetailsButtons from '../../molecules/DetailsButtons';
 
 const WorkerDetails = () => {
     const { workerId } = useParams();
-    const { workers, isLoading, error } = useWorkers(workerId);
+    const { worker, isLoading, error } = useWorkers(workerId);
     const navigate = useNavigate();
 
     const handleBack = () => {
@@ -41,14 +41,12 @@ const WorkerDetails = () => {
         );
     }
 
-    const worker = workers[0];
-
     return (
         <div className="mx-auto max-w-4xl px-6 py-8 bg-white rounded-lg">
             <h2 className="text-3xl font-semibold text-gray-800 mb-6">Worker Details</h2>
 
             <div className="space-y-6">
-                {Object.entries(worker).map(([key, value]) => (
+                {worker && Object.entries(worker).map(([key, value]) => (
                     <Details key={key} label={key} value={value} />
                 ))}
             </div>

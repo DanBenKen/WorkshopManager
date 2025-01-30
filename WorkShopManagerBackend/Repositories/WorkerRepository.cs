@@ -35,6 +35,11 @@ namespace WorkshopManager.Repositories
                 .ToListAsync();
         }
 
+        public async Task<int> GetWorkersCountAsync()
+        {
+            return await _context.Workers.CountAsync();
+        }
+
         public async Task<Worker> AddWorkerAsync(WorkerDTO workerDTO)
         {
             var worker = _mapper.Map<Worker>(workerDTO);
@@ -57,5 +62,18 @@ namespace WorkshopManager.Repositories
             _context.Workers.Remove(worker);
             return true;
         }
+
+        public async Task<int> GetUnemployedWorkersCountAsync()
+        {
+            return await _context.Workers.CountAsync(w => !w.Jobs.Any());
+        }
+
+        public async Task<IEnumerable<Worker>> GetWorkersWithoutJobsAsync()
+        {
+            return await _context.Workers
+                .Where(w => !w.Jobs.Any())
+                .ToListAsync();
+        }
+
     }
 }

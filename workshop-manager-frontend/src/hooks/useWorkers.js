@@ -1,40 +1,55 @@
 import { useState, useEffect } from 'react';
-import { createWorker, getWorkers, updateWorker, getWorkerById, deleteWorker, getWorkersWithJobs } from '../services/workerService';
+import { createWorker, getWorkers, updateWorker, getWorkerById, deleteWorker, getWorkersWithJobs, getWorkersCount, getUnemployedWorkersCount, getWorkersWithoutJobs } from '../services/workerService';
 
 const useWorkers = (workerId, fetchType = 'all') => {
     const [workers, setWorkers] = useState([]);
     const [worker, setWorker] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const [count, setCount] = useState(0);
+    const [unemployedCount, setUnemployedCount] = useState(0);
+    
     useEffect(() => {
         const fetchData = async () => {
-            setIsLoading(true);
-            setError(null);
-
-            try {
-                let data;
-                if (fetchType === 'withJobs') {
-                    data = await getWorkersWithJobs();
-                } else if (fetchType === 'all') {
-                    data = await getWorkers();
-                }
-
-                const workersWithFullName = data.map(worker => ({
-                    ...worker,
-                    fullName: `${worker.firstName} ${worker.lastName}`
-                }));
-
-                setWorkers(workersWithFullName);
-            } catch (error) {
-                setError('Failed to fetch workers. Please try again later.');
-            } finally {
-                setIsLoading(false);
+          setIsLoading(true);
+          setError(null);
+      
+          try {
+            if (workerId) return;
+      
+            let data;
+            if (fetchType === "withJobs") {
+              data = await getWorkersWithJobs();
             }
+            else if (fetchType === 'withoutJobs') {
+              data = await getWorkersWithoutJobs();
+            } else if (fetchType === "all") {
+              data = await getWorkers();
+            } else if (fetchType === "count") {
+              const countData = await getWorkersCount();
+              setCount(countData);
+              return;
+            } else if (fetchType === "unemployedCount") {
+              const unemployedData = await getUnemployedWorkersCount();
+              setUnemployedCount(unemployedData);
+              return;
+            }
+      
+            const workersWithFullName = data.map((worker) => ({
+              ...worker,
+              fullName: `${worker.firstName} ${worker.lastName}`,
+            }));
+      
+            setWorkers(workersWithFullName);
+          } catch (error) {
+            setError("Failed to fetch workers. Please try again later.");
+          } finally {
+            setIsLoading(false);
+          }
         };
-
+      
         fetchData();
-    }, [fetchType]);
+      }, [fetchType, workerId]);
 
     useEffect(() => {
         if (workerId) {
@@ -98,6 +113,9 @@ const useWorkers = (workerId, fetchType = 'all') => {
         worker,
         isLoading,
         error,
+        count,
+        unemployedCount,
+        getWorkersWithoutJobs,
         handleCreateWorker,
         handleUpdateWorker,
         handleDeleteWorker,

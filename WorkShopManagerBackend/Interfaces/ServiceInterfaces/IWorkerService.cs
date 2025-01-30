@@ -1,5 +1,4 @@
 ﻿using WorkshopManager.DTOs.WorkerDTOs;
-using WorkshopManager.Models;
 
 namespace WorkshopManager.Interfaces.ServiceInterfaces
 {
@@ -11,5 +10,8 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
         Task<IEnumerable<WorkerWithJobDTO>> GetAllWorkersWithJobsAsync();
         Task<WorkerDTO> UpdateWorkerAsync(int id, RequestUpdateWorkerDTO workerUpdateDTO);
         Task<bool> DeleteWorkerAsync(int id);
+        Task<int> GetWorkersCountAsync();
+        Task<int> GetUnemployedWorkersCountAsync();
+        Task<IEnumerable<WorkerDTO>> GetWorkersWithoutJobsAsync();
     }
 }
