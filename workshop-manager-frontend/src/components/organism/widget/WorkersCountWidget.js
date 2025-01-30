@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import useWorkers from "../../../hooks/useWorkers";
+import Button from "../../atoms/Button";
 
 const WorkersCountWidget = () => {
     const navigate = useNavigate();
@@ -23,12 +24,12 @@ const WorkersCountWidget = () => {
                 {isLoadingUnemployed ? "Loading..." : unemployedError ? "Error" : unemployedCount}
             </div>
 
-            <button 
+            <Button 
                 onClick={handleViewUnemployed}
-                className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                className="mt-2"
             >
                 View Unemployed Workers
-            </button>
+            </Button>
         </div>
     );
 };
