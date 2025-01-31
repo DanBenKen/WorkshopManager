@@ -55,14 +55,14 @@ const JobForm = () => {
         };
 
         const jobData = {
-            id: jobId ? parseInt(jobId, 10) : null,
+            id: jobId ? parseInt(jobId, 10) : 0,
             jobName,
             description,
             status: statusMap[status],
             workerId: parseInt(workerId, 10),
             supplyId: supplyId ? parseInt(supplyId, 10) : null,
             supplyQuantity: parseInt(quantity, 10),
-        };
+        };        
 
         try {
             const success = isEditMode
