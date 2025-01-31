@@ -1,4 +1,5 @@
-﻿using WorkshopManager.DTOs.SupplyDTOs;
+﻿using WorkshopManager.Data;
+using WorkshopManager.DTOs.SupplyDTOs;
 using WorkshopManager.Models;
 
 namespace WorkshopManager.Interfaces.ServiceInterfaces
@@ -10,5 +11,7 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
         Task<SupplyDTO> GetSupplyAsync(int id);
         Task<SupplyDTO> UpdateSupplyAsync(int id, RequestUpdateSupplyDTO requestUpdate);
         Task<bool> DeleteSupplyAsync(int id);
+        Task<int> GetTotalSuppliesCountAsync();
+        Task<int> GetLowStockSuppliesCountAsync();
     }
 }

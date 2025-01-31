@@ -88,5 +88,15 @@ namespace WorkshopManager.Services
 
             return isDeleted;
         }
+
+        public async Task<int> GetTotalSuppliesCountAsync()
+        {
+            return await _unitOfWork.SupplyRepository.GetTotalSuppliesCountAsync();
+        }
+
+        public async Task<int> GetLowStockSuppliesCountAsync()
+        {
+            return await _unitOfWork.SupplyRepository.GetLowStockSuppliesCountAsync();
+        }
     }
 }

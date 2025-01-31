@@ -1,4 +1,5 @@
-﻿using WorkshopManager.DTOs.SupplyDTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using WorkshopManager.DTOs.SupplyDTOs;
 using WorkshopManager.Models;
 
 namespace WorkshopManager.Interfaces.RepositoryInterfaces
@@ -10,5 +11,7 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
         Task<Supply> AddSupplyAsync(SupplyDTO supplyDTO);
         Task UpdateSupplyAsync(int id, SupplyDTO supplyDTO);
         bool DeleteSupply(Supply supply);
+        Task<int> GetTotalSuppliesCountAsync();
+        Task<int> GetLowStockSuppliesCountAsync();
     }
 }

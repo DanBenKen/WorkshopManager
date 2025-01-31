@@ -27,3 +27,14 @@ export const deleteSupply = async (id) => {
     const response = await axiosInstance.delete(`${API_URL}/${id}`);
     return response.data;
 };
+
+export const getTotalSuppliesCount = async () => {
+    const response = await axiosInstance.get(`${API_URL}/count`);
+    return response.data.count;
+};
+
+export const getLowStockSuppliesCount = async () => {
+    const response = await axiosInstance.get(`${API_URL}/low-stock`);
+    return response.data.lowStockCount;
+};
+

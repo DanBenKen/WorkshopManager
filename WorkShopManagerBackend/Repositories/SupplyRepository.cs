@@ -50,5 +50,15 @@ namespace WorkshopManager.Repositories
             _context.Supplies.Remove(supply);
             return true;
         }
+
+        public async Task<int> GetTotalSuppliesCountAsync()
+        {
+            return await _context.Supplies.CountAsync();
+        }
+
+        public async Task<int> GetLowStockSuppliesCountAsync()
+        {
+            return await _context.Supplies.CountAsync(s => s.Quantity < 5);
+        }
     }
 }

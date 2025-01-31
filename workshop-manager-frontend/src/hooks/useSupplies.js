@@ -1,20 +1,28 @@
 import { useState, useEffect } from 'react';
-import { createSupply, getSupplies, updateSupply, getSupplyById, deleteSupply } from '../services/supplyService';
+import { getSupplies, getSupplyById, getTotalSuppliesCount, getLowStockSuppliesCount, createSupply, updateSupply, deleteSupply } from '../services/supplyService';
 
 const useSupplies = () => {
     const [supplies, setSupplies] = useState([]);
     const [supply, setSupply] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [totalSupplies, setTotalSupplies] = useState(0);
+    const [lowStockSupplies, setLowStockSupplies] = useState(0);
 
     useEffect(() => {
-        const fetchSupplies = async () => {
+        const fetchSuppliesData = async () => {
             setIsLoading(true);
             setError(null);
-
+    
             try {
-                const data = await getSupplies();
-                setSupplies(data);
+                const suppliesData = await getSupplies();
+                setSupplies(suppliesData);
+    
+                const total = await getTotalSuppliesCount();
+                setTotalSupplies(total);
+    
+                const lowStock = await getLowStockSuppliesCount();
+                setLowStockSupplies(lowStock);
             } catch (error) {
                 console.error("Error fetching supplies:", error);
                 setError("Failed to load supplies. Please try again later.");
@@ -22,9 +30,10 @@ const useSupplies = () => {
                 setIsLoading(false);
             }
         };
-
-        fetchSupplies();
+    
+        fetchSuppliesData();
     }, []);
+    
 
     const fetchSupplyById = async (id) => {
         setIsLoading(true);
@@ -156,6 +165,8 @@ const useSupplies = () => {
         handleAddMoreQuantity,
         isLoading,
         error,
+        totalSupplies,
+        lowStockSupplies,
     };
 };
 

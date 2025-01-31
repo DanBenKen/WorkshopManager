@@ -51,5 +51,19 @@ namespace WorkshopManager.Controllers
             await _supplyService.DeleteSupplyAsync(id);
             return NoContent();
         }
+
+        [HttpGet("count")]
+        public async Task<IActionResult> GetTotalSuppliesCount()
+        {
+            var count = await _supplyService.GetTotalSuppliesCountAsync();
+            return Ok(new { count });
+        }
+
+        [HttpGet("low-stock")]
+        public async Task<IActionResult> GetLowStockSuppliesCount()
+        {
+            var lowStockCount = await _supplyService.GetLowStockSuppliesCountAsync();
+            return Ok(new { lowStockCount });
+        }
     }
 }
