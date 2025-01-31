@@ -13,5 +13,6 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
         bool DeleteSupply(Supply supply);
         Task<int> GetTotalSuppliesCountAsync();
         Task<int> GetLowStockSuppliesCountAsync();
+        Task<IEnumerable<Supply>> GetLowStockSuppliesAsync();
     }
 }

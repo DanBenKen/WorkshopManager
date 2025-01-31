@@ -2,7 +2,7 @@ import React from 'react';
 
 const TablePageLayout = ({ children }) => {
     return (
-        <div className="flex justify-center items-center w-full p-2 bg-white rounded-lg max-w-full flex-wrap">
+        <div className="flex justify-center items-center w-full p-6 bg-white rounded-lg max-w-full flex-wrap">
             {children}
         </div>
     );

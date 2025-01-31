@@ -8,7 +8,7 @@ import StatCard from "../../atoms/StatCard";
 const SuppliesCountWidget = () => {
     const navigate = useNavigate();
     const { totalSupplies, isLoading: isLoadingTotal, error: totalError } = useSupplies();
-    const { lowStockSupplies, isLoading: isLoadingLowStock, error: lowStockError } = useSupplies();
+    const { lowStockSuppliesCount, isLoading: isLoadingLowStock, error: lowStockError } = useSupplies();
 
     return (
         <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center">
@@ -22,11 +22,11 @@ const SuppliesCountWidget = () => {
             />
             <StatCard
                 label="Low Stock Supplies"
-                value={isLoadingLowStock ? "Loading..." : lowStockSupplies || "No Data"}
+                value={isLoadingLowStock ? "Loading..." : lowStockSuppliesCount || "No Data"}
                 isLoading={isLoadingLowStock}
                 error={lowStockError}
                 icon={FaExclamationTriangle}
-                colorClass={lowStockSupplies === 0 ? "text-green-400" : "text-red-400"}
+                colorClass={lowStockSuppliesCount === 0 ? "text-green-400" : "text-red-400"}
             />
             <Button onClick={() => navigate("/supplies/low-stock")} className="mt-4">
                 View Low Stock Supplies

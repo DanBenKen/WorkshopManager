@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using WorkshopManager.DTOs.SupplyDTOs;
+using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Exceptions.SupplyExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
@@ -97,6 +98,12 @@ namespace WorkshopManager.Services
         public async Task<int> GetLowStockSuppliesCountAsync()
         {
             return await _unitOfWork.SupplyRepository.GetLowStockSuppliesCountAsync();
+        }
+
+        public async Task<IEnumerable<SupplyDTO>> GetLowStockSuppliesAsync()
+        {
+            var lowStockSupplies = await _unitOfWork.SupplyRepository.GetLowStockSuppliesAsync();
+            return _mapper.Map<IEnumerable<SupplyDTO>>(lowStockSupplies);
         }
     }
 }

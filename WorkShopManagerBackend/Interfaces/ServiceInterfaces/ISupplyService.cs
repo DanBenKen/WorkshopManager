@@ -13,5 +13,6 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
         Task<bool> DeleteSupplyAsync(int id);
         Task<int> GetTotalSuppliesCountAsync();
         Task<int> GetLowStockSuppliesCountAsync();
+        Task<IEnumerable<SupplyDTO>> GetLowStockSuppliesAsync();
     }
 }

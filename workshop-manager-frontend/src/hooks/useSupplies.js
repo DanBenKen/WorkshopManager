@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getSupplies, getSupplyById, getTotalSuppliesCount, getLowStockSuppliesCount, createSupply, updateSupply, deleteSupply } from '../services/supplyService';
+import { getSupplies, getSupplyById, getTotalSuppliesCount, getLowStockSuppliesCount, createSupply, updateSupply, deleteSupply, getLowStockSupplies } from '../services/supplyService';
 
 const useSupplies = () => {
     const [supplies, setSupplies] = useState([]);
@@ -7,22 +7,26 @@ const useSupplies = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [totalSupplies, setTotalSupplies] = useState(0);
-    const [lowStockSupplies, setLowStockSupplies] = useState(0);
-
+    const [lowStockSuppliesCount, setLowStockSuppliesCount] = useState(0);
+    const [lowStockSupplies, setLowStockSupplies] = useState([]);
+    
     useEffect(() => {
         const fetchSuppliesData = async () => {
             setIsLoading(true);
             setError(null);
-    
+        
             try {
                 const suppliesData = await getSupplies();
                 setSupplies(suppliesData);
-    
+        
                 const total = await getTotalSuppliesCount();
                 setTotalSupplies(total);
-    
-                const lowStock = await getLowStockSuppliesCount();
-                setLowStockSupplies(lowStock);
+        
+                const lowStockCount = await getLowStockSuppliesCount();
+                setLowStockSuppliesCount(lowStockCount);
+        
+                const lowStockSupplies = await getLowStockSupplies();
+                setLowStockSupplies(lowStockSupplies);
             } catch (error) {
                 console.error("Error fetching supplies:", error);
                 setError("Failed to load supplies. Please try again later.");
@@ -30,11 +34,10 @@ const useSupplies = () => {
                 setIsLoading(false);
             }
         };
-    
+        
         fetchSuppliesData();
     }, []);
     
-
     const fetchSupplyById = async (id) => {
         setIsLoading(true);
         setError(null);
@@ -166,6 +169,7 @@ const useSupplies = () => {
         isLoading,
         error,
         totalSupplies,
+        lowStockSuppliesCount,
         lowStockSupplies,
     };
 };

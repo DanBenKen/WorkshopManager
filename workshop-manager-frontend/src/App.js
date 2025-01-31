@@ -18,6 +18,7 @@ import WorkersListWithJobsPage from './pages/worker/WorkersListWithJobsPage';
 import Sidebar from './pages/Sidebar';
 import AdminDashboard from './pages/AdminDashboard';
 import WorkersListWithoutJobsPage from './pages/worker/WorkersListWithoutJobsPage';
+import SupplyListWithLowStockPage from './pages/supply/SupplyListWithLowStockPage';
 
 const App = () => {
     return (
@@ -33,6 +34,7 @@ const App = () => {
                     <Route path="/supplies/details/:supplyId" element={<SupplyDetailsPage />} />
                     <Route path="/supplies/edit/:supplyId" element={<SupplyFormPage />} />
                     <Route path="/supplies/delete/:supplyId" element={<SupplyDeletePage />} />
+                    <Route path="/supplies/low-stock" element={<SupplyListWithLowStockPage />} />
                     <Route path="/jobs" element={<JobPage />} />
                     <Route path="/jobs/create" element={<JobFormPage />} />
                     <Route path="/jobs/edit/:jobId" element={<JobFormPage />} />

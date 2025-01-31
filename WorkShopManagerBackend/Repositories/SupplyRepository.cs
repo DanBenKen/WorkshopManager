@@ -60,5 +60,12 @@ namespace WorkshopManager.Repositories
         {
             return await _context.Supplies.CountAsync(s => s.Quantity < 5);
         }
+
+        public async Task<IEnumerable<Supply>> GetLowStockSuppliesAsync()
+        {
+            return await _context.Supplies
+                                 .Where(s => s.Quantity < 5)
+                                 .ToListAsync();
+        }
     }
 }

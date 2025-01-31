@@ -34,6 +34,11 @@ export const getTotalSuppliesCount = async () => {
 };
 
 export const getLowStockSuppliesCount = async () => {
-    const response = await axiosInstance.get(`${API_URL}/low-stock`);
+    const response = await axiosInstance.get(`${API_URL}/low-stock-count`);
     return response.data.lowStockCount;
+};
+
+export const getLowStockSupplies = async () => {
+        const response = await axiosInstance.get(`${API_URL}/low-stock`);
+        return response.data;
 };

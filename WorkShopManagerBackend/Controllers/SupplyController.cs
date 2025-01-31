@@ -59,11 +59,18 @@ namespace WorkshopManager.Controllers
             return Ok(new { count });
         }
 
-        [HttpGet("low-stock")]
+        [HttpGet("low-stock-count")]
         public async Task<IActionResult> GetLowStockSuppliesCount()
         {
             var lowStockCount = await _supplyService.GetLowStockSuppliesCountAsync();
             return Ok(new { lowStockCount });
+        }
+
+        [HttpGet("low-stock")]
+        public async Task<ActionResult<IEnumerable<SupplyDTO>>> GetLowStockSupplies()
+        {
+            var lowStockSupplies = await _supplyService.GetLowStockSuppliesAsync();
+            return Ok(lowStockSupplies);
         }
     }
 }

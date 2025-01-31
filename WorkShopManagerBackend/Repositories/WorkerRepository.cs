@@ -74,6 +74,5 @@ namespace WorkshopManager.Repositories
                 .Where(w => !w.Jobs.Any())
                 .ToListAsync();
         }
-
     }
 }
