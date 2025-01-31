@@ -37,6 +37,7 @@ const JobForm = () => {
         if (!jobName) errors.jobName = 'Job name is required';
         if (!description) errors.description = 'Description is required';
         if (!workerId) errors.workerId = 'Worker ID is required';
+        if (!supplyId) errors.supplyId = 'Supply ID is required';
         if (supplyId && !quantity) errors.quantity = 'Quantity is required if Supply ID is provided';
         if (quantity && isNaN(quantity)) errors.quantity = 'Quantity must be a valid number';
         setFormErrors(errors);
@@ -143,6 +144,7 @@ const JobForm = () => {
                     value={supplyId}
                     onChange={(e) => setSupplyId(e.target.value)}
                     placeholder="Enter supply ID"
+                    errorMessage={formErrors.supplyId}
                 />
                 <FormField
                     label="Supply Quantity"
