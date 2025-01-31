@@ -63,10 +63,9 @@ namespace WorkshopManager.Services
 
             updateSupply = _mapper.Map<SupplyDTO>(requestUpdate);
 
-            await _unitOfWork.ExecuteInTransactionAsync(() =>
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                _unitOfWork.SupplyRepository.UpdateSupplyAsync(id, updateSupply);
-                return Task.CompletedTask;
+                await _unitOfWork.SupplyRepository.UpdateSupplyAsync(id, updateSupply);
             });
 
             if (updateSupply is null)
