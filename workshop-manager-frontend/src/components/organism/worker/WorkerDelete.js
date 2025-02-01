@@ -13,8 +13,8 @@ const WorkerDelete = () => {
         navigate('/workers');
     };
 
-    const handleCancel = (workerId) => {
-        navigate(`/workers/details/${workerId}`);
+    const handleCancel = (worker) => {
+        navigate(`/workers/details/${worker.id}`);
     };
 
     return (

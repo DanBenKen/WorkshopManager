@@ -25,6 +25,7 @@ const JobList = () => {
     const handleDetails = (job) => {
         navigate(`/jobs/details/${job.id}`);
     };
+    
     const handleComplete = (job) => ({
         label: 'Complete Job',
         onClick: () => handleSetCompleted(job),
