@@ -29,7 +29,7 @@ const Pagination = ({ currentPage, totalPages, goToPage }) => {
             ))}
 
             {pageNumbers
-                .slice(Math.max(currentPage - 3, 1), Math.min(currentPage + 1, totalPages))
+                .slice(Math.max(currentPage - 2, 1), Math.min(currentPage + 1, totalPages))
                 .filter(number => number !== 1)
                 .map(number => (
                     <PageNumberButton
