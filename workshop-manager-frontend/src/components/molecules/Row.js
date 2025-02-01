@@ -22,7 +22,7 @@ const Row = ({ data, columns, onDetails, customAction }) => {
                     {col.render ? col.render(data) : data[col.field]}
                 </TableCell>
             ))}
-            <TableCell className="flex flex-wrap gap-2 items-center justify-start">
+            <TableCell className="flex flex-wrap gap-2 justify-center">
                 <TableActions
                     onDetails={() => onDetails(data)}
                     onCustomAction={customAction ? handleCustomActionClick : null}
