@@ -10,9 +10,8 @@ import Filter from '../../molecules/Filter';
 
 const JobList = () => {
     const { jobs, isLoading, error, handleSetCompleted } = useJobs();
-
-    const [statusFilter, setStatusFilter] = useState('');
     const [nameFilter, setNameFilter] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
     const navigate = useNavigate();
 
     const filteredJobs = jobs.filter((job) => {
@@ -26,17 +25,11 @@ const JobList = () => {
     const handleDetails = (job) => {
         navigate(`/jobs/details/${job.id}`);
     };
-
-    const handleComplete = (job) => {
-        if (job.status !== 'Completed') {
-            return {
-                label: 'Complete Job',
-                onClick: () => handleSetCompleted(job),
-                requiresInput: false,
-            };
-        }
-        return null;
-    };
+    const handleComplete = (job) => ({
+        label: 'Complete Job',
+        onClick: () => handleSetCompleted(job),
+        requiresInput: false,
+    });
 
     const columns = [
         { label: 'Job Name', field: 'jobName' },
@@ -52,12 +45,10 @@ const JobList = () => {
     return (
         <div className="mx-auto p-2">
             <h2 className="text-3xl font-bold mb-4">Jobs</h2>
-
             <Link to="/jobs/create" className="inline-block mb-4">
                 <Button>Add New Job</Button>
             </Link>
-
-            <div className='flex flex-col sm:flex-row mb-3'>
+            <div className="flex flex-col sm:flex-row mb-3">
                 <Filter
                     type="select"
                     options={statusOptions}
@@ -66,7 +57,6 @@ const JobList = () => {
                     placeholder="Filter by status"
                     className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
                 />
-
                 <Filter
                     type="input"
                     value={nameFilter}
@@ -88,7 +78,6 @@ const JobList = () => {
                         getCustomAction={handleComplete}
                         onDetails={handleDetails}
                     />
-
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

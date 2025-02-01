@@ -10,7 +10,6 @@ import Filter from '../../molecules/Filter';
 
 const SupplyList = () => {
     const { supplies, isLoading, error, handleAddMoreQuantity } = useSupplies();
-
     const [nameFilter, setNameFilter] = useState('');
     const [typeFilter, setTypeFilter] = useState('');
     const navigate = useNavigate();
@@ -26,7 +25,6 @@ const SupplyList = () => {
     const handleDetails = (supply) => {
         navigate(`/supplies/details/${supply.id}`);
     };
-
     const onAddQuantity = (supply) => ({
         label: 'Add Quantity',
         onClick: (quantity) => handleAddMore(supply, quantity),
@@ -80,7 +78,6 @@ const SupplyList = () => {
                         onDetails={handleDetails}
                         getCustomAction={onAddQuantity}
                     />
-
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
