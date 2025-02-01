@@ -25,12 +25,17 @@ const JobList = () => {
     const handleDetails = (job) => {
         navigate(`/jobs/details/${job.id}`);
     };
-    
-    const handleComplete = (job) => ({
-        label: 'Complete Job',
-        onClick: () => handleSetCompleted(job),
-        requiresInput: false,
-    });
+
+    const handleComplete = (job) => {
+        if (job.status === 'InProgress') {
+            return {
+                label: 'Complete Job',
+                onClick: () => handleSetCompleted(job),
+                requiresInput: false,
+            };
+        }
+        return null;
+    };
 
     const columns = [
         { label: 'Job Name', field: 'jobName' },
