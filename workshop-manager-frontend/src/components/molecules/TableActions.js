@@ -8,7 +8,7 @@ const TableActions = ({ onDetails, onCustomAction, customButtonLabel }) => {
     };
 
     return (
-        <div className="flex flex-col xl:flex-row space-y-2 xl:space-y-0 xl:space-x-2">
+        <div className="flex flex-col xl:flex-row space-y-2 xl:space-y-0 xl:space-x-2 mb-2">
             <Button className={buttonStyles.details} onClick={onDetails} type="button">
                 Details
             </Button>

@@ -23,11 +23,11 @@ const Sidebar = () => {
                 } md:translate-x-0 ${isSidebarOpen ? 'block' : 'hidden'} lg:block xl:block`}
             >
                 <div className="text-center py-4">
-                    <h1 className="text-2xl font-bold">Workshop Manager</h1>
+                    <Link to="/" className="text-2xl font-bold">Workshop Manager</Link>
                 </div>
                 <ul>
                     <li>
-                        <Link to="/" className="block py-2 px-4 hover:bg-gray-700">Dashboard</Link>
+                        <Link to="/" className="text-xl block mb-2 py-2 px-4 hover:bg-gray-700">Admin Dashboard</Link>
                     </li>
                     <li>
                         <Link to="/workers" className="block py-2 px-4 hover:bg-gray-700">Workers</Link>
@@ -39,7 +39,7 @@ const Sidebar = () => {
                         <Link to="/jobs" className="block py-2 px-4 hover:bg-gray-700">Jobs</Link>
                     </li>
                     <li>
-                        <Link to="/account/login" className="block py-2 px-4 hover:bg-gray-700">Logout</Link>
+                        <Link to="/account/login" className="mt-4 block py-2 px-4 hover:bg-gray-700">Logout</Link>
                     </li>
                 </ul>
             </div>
