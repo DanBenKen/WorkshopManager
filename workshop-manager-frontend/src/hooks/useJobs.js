@@ -1,31 +1,49 @@
 import { useState, useEffect } from 'react';
-import { createJob, getJobs, updateJob, getJobById, deleteJob } from '../services/jobService';
+import { createJob, getJobs, updateJob, getJobById, deleteJob, getTotalCompletedJobs, getJobsInProgressCount } from '../services/jobService';
 import { getSupplyById, updateSupply } from '../services/supplyService';
 
-const useJobs = (jobId) => {
+const useJobs = (jobId, fetchType = 'all') => {
     const [jobs, setJobs] = useState([]);
     const [job, setJob] = useState(null);
+    const [totalCompleted, setTotalCompleted] = useState(0);
+    const [inProgress, setInProgress] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchJobs = async () => {
+        const fetchData = async () => {
             setIsLoading(true);
             setError(null);
 
             try {
-                const data = await getJobs();
-                setJobs(data);
+                if (jobId) return;
+
+                let data;
+                switch(fetchType) {
+                    case 'completedCount':
+                        data = await getTotalCompletedJobs();
+                        setTotalCompleted(data);
+                        break;
+                    case 'inProgressCount':
+                        data = await getJobsInProgressCount();
+                        setInProgress(data);
+                        break;
+                    case 'all':
+                        data = await getJobs();
+                        setJobs(data);
+                        break;
+                    default:
+                        break;
+                }
             } catch (error) {
-                console.error('Error fetching jobs:', error);
-                setError('Failed to load jobs. Please try again later.');
+                setError("Failed to fetch job data");
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchJobs();
-    }, []);
+        fetchData();
+    }, [fetchType, jobId]);
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -159,6 +177,8 @@ const useJobs = (jobId) => {
         job,
         isLoading,
         error,
+        inProgress,
+        totalCompleted,
         handleCreateJob,
         handleUpdateJob,
         handleDeleteJob,
