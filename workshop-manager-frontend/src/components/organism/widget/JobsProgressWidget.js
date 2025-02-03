@@ -2,22 +2,22 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import useJobs from "../../../hooks/useJobs";
 import Button from "../../atoms/Button";
-import { FaCheckCircle, FaSyncAlt, FaListAlt } from "react-icons/fa";
+import { FaCheckCircle, FaSyncAlt } from "react-icons/fa";
 import StatCard from "../../atoms/StatCard";
 
 const JobsProgressWidget = () => {
     const navigate = useNavigate();
-    
-    const { 
-        totalCompleted, 
-        isLoading: isLoadingCompleted, 
-        error: completedError 
+
+    const {
+        totalCompleted,
+        isLoading: isLoadingCompleted,
+        error: completedError
     } = useJobs(null, "completedCount");
 
-    const { 
-        inProgress, 
-        isLoading: isLoadingInProgress, 
-        error: inProgressError 
+    const {
+        inProgress,
+        isLoading: isLoadingInProgress,
+        error: inProgressError
     } = useJobs(null, "inProgressCount");
 
     return (
@@ -30,7 +30,7 @@ const JobsProgressWidget = () => {
                 icon={FaCheckCircle}
                 colorClass="text-green-400"
             />
-            
+
             <StatCard
                 label="Jobs in Progress"
                 value={isLoadingInProgress ? "Loading..." : inProgress}
@@ -40,10 +40,9 @@ const JobsProgressWidget = () => {
                 colorClass="text-yellow-400"
             />
 
-            <Button 
-                onClick={() => navigate("/jobs/list")} 
+            <Button
+                onClick={() => navigate("/jobs/list-in-progress")}
                 className="mt-4"
-                icon={FaListAlt}
             >
                 View All Jobs
             </Button>

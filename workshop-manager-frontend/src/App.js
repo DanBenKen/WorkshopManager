@@ -19,6 +19,7 @@ import Sidebar from './pages/Sidebar';
 import AdminDashboard from './pages/AdminDashboard';
 import WorkersListWithoutJobsPage from './pages/worker/WorkersListWithoutJobsPage';
 import SupplyListWithLowStockPage from './pages/supply/SupplyListWithLowStockPage';
+import JobListInProgressPage from './pages/job/JobListInProgressPage';
 
 const App = () => {
     return (
@@ -40,6 +41,7 @@ const App = () => {
                     <Route path="/jobs/edit/:jobId" element={<JobFormPage />} />
                     <Route path="/jobs/details/:jobId" element={<JobDetailsPage />} />
                     <Route path="/jobs/delete/:jobId" element={<JobDeletePage />} />
+                    <Route path="/jobs/list-in-progress" element={<JobListInProgressPage />} />
                     <Route path="/workers/create" element={<WorkersFormPage />} />
                     <Route path="/workers/with-jobs" element={<WorkersListWithJobsPage />} />
                     <Route path="/workers/without-jobs" element={<WorkersListWithoutJobsPage />} />
