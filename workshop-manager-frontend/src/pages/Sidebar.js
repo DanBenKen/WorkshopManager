@@ -47,7 +47,7 @@ const Sidebar = () => {
             <div className="flex-1 flex flex-col lg:ml-64">
                 <div className="bg-gray-100 p-4 shadow lg:hidden">
                     <button
-                        className="bg-gray-800 text-white px-4 py-2 rounded"
+                        className="bg-gray-800 text-white px-4 py-2 rounded-md"
                         onClick={toggleSidebar}
                     >
                         {isSidebarOpen ? 'Close Menu' : 'Open Menu'}
