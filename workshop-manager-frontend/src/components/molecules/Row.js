@@ -33,7 +33,7 @@ const Row = ({ data, columns, onDetails, customAction }) => {
                         type="number"
                         value={quantity}
                         onChange={(e) => setQuantity(Number(e.target.value))}
-                        className="p-2 border border-gray-300 rounded w-full md:w-auto"
+                        className="border border-gray-300 p-1 rounded w-full md:w-auto"
                         placeholder="Quantity"
                     />
                 )}

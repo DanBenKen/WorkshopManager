@@ -21,7 +21,7 @@ const JobsProgressWidget = () => {
     } = useJobs(null, "inProgressCount");
 
     return (
-        <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center min-w-[250px]">
+        <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center min-w-[300px]">
             <StatCard
                 label="Completed Jobs"
                 value={isLoadingCompleted ? "Loading..." : totalCompleted}

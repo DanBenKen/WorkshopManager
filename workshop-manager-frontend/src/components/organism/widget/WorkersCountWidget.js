@@ -11,7 +11,7 @@ const WorkersCountWidget = () => {
     const { unemployedCount, isLoading: isLoadingUnemployed, error: unemployedError } = useWorkers(null, "unemployedCount");
 
     return (
-        <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center min-w-[250px]">
+        <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center min-w-[300px]">
             <StatCard
                 label="Total Workers"
                 value={isLoadingTotal ? "Loading..." : count || "No Data"}

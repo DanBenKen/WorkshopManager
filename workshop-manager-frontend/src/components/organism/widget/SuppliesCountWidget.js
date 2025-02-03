@@ -11,7 +11,7 @@ const SuppliesCountWidget = () => {
     const { lowStockSuppliesCount, isLoading: isLoadingLowStock, error: lowStockError } = useSupplies();
 
     return (
-        <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center min-w-[250px]">
+        <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center min-w-[300px]">
             <StatCard
                 label="Total Supplies"
                 value={isLoadingTotal ? "Loading..." : totalSupplies || "No Data"}

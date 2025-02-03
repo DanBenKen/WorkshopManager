@@ -11,11 +11,11 @@ const List = ({ data, columns, onDetails, getCustomAction }) => {
             <Table className="min-w-full">
                 <TableHeader>
                     {columns.map((col, index) => (
-                        <TableCell key={index} className="text-sm md:text-base font-semibold">
+                        <TableCell key={index} className="text-sm font-semibold">
                             {col.label}
                         </TableCell>
                     ))}
-                    <TableCell className="text-sm lg:text-base font-semibold">Actions</TableCell>
+                    <TableCell className="text-sm font-semibold">Actions</TableCell>
                 </TableHeader>
                 <TableBody>
                     {data.map((item) => (

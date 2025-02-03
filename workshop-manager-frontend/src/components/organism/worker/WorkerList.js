@@ -22,6 +22,7 @@ const WorkersList = () => {
     const handleDetails = (worker) => {
         navigate(`/workers/details/${worker.id}`);
     };
+    
     const columns = [
         { label: 'Full Name', field: 'fullName' },
         { label: 'Position', field: 'position' },

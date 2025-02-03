@@ -42,7 +42,7 @@ const SupplyList = () => {
     ];
 
     return (
-        <div className="mx-auto px-4 py-8">
+        <div className="mx-auto px-2 py-8">
             <h2 className="text-3xl font-bold mb-4">Supplies</h2>
             <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row md:items-center md:justify-between gap-4 mb-4">
                 <Link to="/supplies/create">
