@@ -19,7 +19,7 @@ const WorkerListWithJobs = () => {
     if (error) return <ErrorMessage message={error} />;
 
     return (
-        <div className="mx-auto px-4 py-8 bg-white shadow-md rounded-lg">
+        <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg">
             <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">Workers and Their Jobs</h2>
 
             <div className="mb-4">
