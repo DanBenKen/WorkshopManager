@@ -7,48 +7,40 @@ const useAuth = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleLogin = async (loginData) => {
+    const handleAsyncAction = async (actionFunc, actionName, successCallback = () => {}) => {
         setIsLoading(true);
         setAuthError(null);
 
         try {
-            const response = await loginService(loginData);
-            setToken(response.token);
+            await actionFunc();
+            successCallback();
             return true;
         } catch (error) {
-            setAuthError(handleAuthError(error));
+            setAuthError(handleAuthError(error, actionName));
             return false;
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleLogin = async (loginData) => {
+        return await handleAsyncAction(async () => {
+            const response = await loginService(loginData);
+            setToken(response.token);
+        }, 'login');
     };
 
     const handleRegister = async (userData) => {
-        setIsLoading(true);
-        setAuthError(null);
-
-        try {
+        return await handleAsyncAction(async () => {
             await registerService(userData);
-            return true;
-        } catch (error) {
-            setAuthError(handleAuthError(error));
-            return false;
-        } finally {
-            setIsLoading(false);
-        }
+        }, 'register');
     };
 
     const handleLogout = async () => {
-        setIsLoading(true);
-
-        try {
+        return await handleAsyncAction(async () => {
             await logoutService();
             navigate('/account/login');
-        } catch (error) {
-            setAuthError(handleAuthError(error));
-        } finally {
-            setIsLoading(false);
-        }
+        }, 'logout');
     };
 
     return {
