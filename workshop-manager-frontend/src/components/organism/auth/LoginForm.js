@@ -22,16 +22,16 @@ const LoginForm = () => {
     };
 
     return (
-
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
             {authError && <ErrorMessage message={authError} />}
-            
+
             <FormField
                 label="Email"
                 type="email"
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
             />
             <FormField
                 label="Password"
@@ -39,6 +39,7 @@ const LoginForm = () => {
                 name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
             />
 
             <Button type="submit" disabled={isLoading}>
