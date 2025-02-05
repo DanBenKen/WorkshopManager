@@ -50,7 +50,6 @@ const JobForm = () => {
         if (!validateForm()) return;
 
         const statusMap = {
-            0: 'Pending',
             1: 'InProgress',
             2: 'Completed',
         };
@@ -120,7 +119,6 @@ const JobForm = () => {
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                     options={[
-                        { value: 0, label: 'Pending' },
                         { value: 1, label: 'In Progress' },
                         { value: 2, label: 'Completed' }
                     ]}
