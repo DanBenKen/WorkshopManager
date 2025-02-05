@@ -7,14 +7,14 @@ import StatCard from "../../atoms/StatCard";
 
 const WorkersCountWidget = () => {
     const navigate = useNavigate();
-    const { count, isLoading: isLoadingTotal, error: totalError } = useWorkers(null, "count");
-    const { unemployedCount, isLoading: isLoadingUnemployed, error: unemployedError } = useWorkers(null, "unemployedCount");
+    const { counts, isLoading: isLoadingTotal, error: totalError } = useWorkers(null, "count");
+    const { counts: unemployedCounts, isLoading: isLoadingUnemployed, error: unemployedError } = useWorkers(null, "unemployedCount");
 
     return (
         <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center min-w-[300px]">
             <StatCard
                 label="Total Workers"
-                value={isLoadingTotal ? "Loading..." : count || "No Data"}
+                value={isLoadingTotal ? "Loading..." : (counts.total !== 0 ? counts.total : "0")}
                 isLoading={isLoadingTotal}
                 error={totalError}
                 icon={FaUsers}
@@ -22,11 +22,11 @@ const WorkersCountWidget = () => {
             />
             <StatCard
                 label="Unemployed Workers"
-                value={isLoadingUnemployed ? "Loading..." : unemployedCount || "No Data"}
+                value={isLoadingUnemployed ? "Loading..." : (unemployedCounts.unemployed !== 0 ? unemployedCounts.unemployed : "0" || "No Data")}
                 isLoading={isLoadingUnemployed}
                 error={unemployedError}
                 icon={FaUserSlash}
-                colorClass={unemployedCount === 0 ? "text-green-400" : "text-red-400"}
+                colorClass={unemployedCounts.unemployed === 0 ? "text-green-400" : "text-red-400"}
             />
             <Button onClick={() => navigate("/workers/without-jobs")} className="mt-4">
                 View Unemployed Workers
