@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
-import { getSupplies, getSupplyById, getTotalSuppliesCount, getLowStockSuppliesCount, createSupply, updateSupply, deleteSupply, getLowStockSupplies } from '../services/supplyService';
+import { 
+    getSupplies, 
+    getSupplyById, 
+    getTotalSuppliesCount, 
+    getLowStockSuppliesCount, 
+    createSupply, 
+    updateSupply, 
+    deleteSupply, 
+    getLowStockSupplies 
+} from '../services/supplyService';
 
 const useSupplies = () => {
     const [supplies, setSupplies] = useState([]);
@@ -9,35 +18,38 @@ const useSupplies = () => {
     const [totalSupplies, setTotalSupplies] = useState(0);
     const [lowStockSuppliesCount, setLowStockSuppliesCount] = useState(0);
     const [lowStockSupplies, setLowStockSupplies] = useState([]);
-    
+
+    const handleError = (error) => {
+        setError(error.message || 'An error occurred. Please try again later.');
+        console.error(error);
+    };
+
     useEffect(() => {
-        const fetchSuppliesData = async () => {
+        const fetchData = async () => {
             setIsLoading(true);
             setError(null);
-        
+
             try {
-                const suppliesData = await getSupplies();
+                const [suppliesData, total, lowStockCount, lowStockData] = await Promise.all([
+                    getSupplies(),
+                    getTotalSuppliesCount(),
+                    getLowStockSuppliesCount(),
+                    getLowStockSupplies()
+                ]);
                 setSupplies(suppliesData);
-        
-                const total = await getTotalSuppliesCount();
                 setTotalSupplies(total);
-        
-                const lowStockCount = await getLowStockSuppliesCount();
                 setLowStockSuppliesCount(lowStockCount);
-        
-                const lowStockSupplies = await getLowStockSupplies();
-                setLowStockSupplies(lowStockSupplies);
+                setLowStockSupplies(lowStockData);
             } catch (error) {
-                console.error("Error fetching supplies:", error);
-                setError("Failed to load supplies. Please try again later.");
+                handleError(error);
             } finally {
                 setIsLoading(false);
             }
         };
-        
-        fetchSuppliesData();
+
+        fetchData();
     }, []);
-    
+
     const fetchSupplyById = async (id) => {
         setIsLoading(true);
         setError(null);
@@ -46,8 +58,7 @@ const useSupplies = () => {
             const data = await getSupplyById(id);
             setSupply(data);
         } catch (error) {
-            console.error('Error fetching supply:', error);
-            setError('Failed to fetch supply details.');
+            handleError(error);
         } finally {
             setIsLoading(false);
         }
@@ -55,14 +66,13 @@ const useSupplies = () => {
 
     const handleCreateSupply = async (supplyData) => {
         setIsLoading(true);
-        setError('');
+        setError(null);
 
         try {
             const createdSupply = await createSupply(supplyData);
             setSupplies((prev) => [...prev, createdSupply]);
         } catch (error) {
-            console.error('Error creating supply:', error);
-            setError('Failed to create supply. Please try again later.');
+            handleError(error);
         } finally {
             setIsLoading(false);
         }
@@ -78,8 +88,7 @@ const useSupplies = () => {
                 prev.map((supply) => (supply.id === id ? updatedSupply : supply))
             );
         } catch (error) {
-            console.error('Error updating supply:', error);
-            setError('Failed to update supply. Please try again later.');
+            handleError(error);
         } finally {
             setIsLoading(false);
         }
@@ -102,8 +111,7 @@ const useSupplies = () => {
                 prev.map((item) => (item.id === id ? updatedSupply : item))
             );
         } catch (error) {
-            console.error('Error updating supply quantity:', error);
-            setError(error.message || 'Failed to update quantity.');
+            handleError(error);
         } finally {
             setIsLoading(false);
         }
@@ -116,8 +124,7 @@ const useSupplies = () => {
             await deleteSupply(id);
             setSupplies((prev) => prev.filter((supply) => supply.id !== id));
         } catch (err) {
-            console.error('Error deleting supply:', err);
-            setError('Failed to delete supply.');
+            handleError(err);
         } finally {
             setIsLoading(false);
         }
@@ -144,8 +151,7 @@ const useSupplies = () => {
             await updateSupply(supply.id, updatedSupply);
 
         } catch (error) {
-            console.error("Error updating supply quantity:", error);
-            setError("Failed to update supply quantity. Please try again later.");
+            handleError(error);
 
             setSupplies((prevSupplies) =>
                 prevSupplies.map((item) =>
