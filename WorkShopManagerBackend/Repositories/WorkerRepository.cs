@@ -20,12 +20,16 @@ namespace WorkshopManager.Repositories
 
         public async Task<Worker?> GetWorkerByIdAsync(int id)
         {
-            return await _context.Workers.FirstOrDefaultAsync(w => w.Id == id);
+            return await _context.Workers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(w => w.Id == id);
         }
 
         public async Task<IEnumerable<Worker>> GetAllWorkersAsync()
         {
-            return await _context.Workers.ToListAsync();
+            return await _context.Workers
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Worker>> GetAllWorkersWithJobsAsync()
@@ -33,6 +37,7 @@ namespace WorkshopManager.Repositories
             return await _context.Workers
                 .Include(w => w.Jobs)
                 .Where(w => w.Jobs.Any())
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -73,6 +78,7 @@ namespace WorkshopManager.Repositories
         {
             return await _context.Workers
                 .Where(w => !w.Jobs.Any())
+                .AsNoTracking()
                 .ToListAsync();
         }
     }
