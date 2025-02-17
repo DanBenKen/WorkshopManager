@@ -5,6 +5,7 @@ using WorkshopManager.Exceptions.SupplyExceptions;
 using WorkshopManager.Exceptions.WorkerExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
+using WorkshopManager.Models;
 
 namespace WorkshopManager.Services
 {
@@ -21,41 +22,38 @@ namespace WorkshopManager.Services
 
         public async Task<JobDTO> CreateJobAsync(RequestCreateJobDTO createJob)
         {
-            ArgumentNullException.ThrowIfNull(createJob);
-
-            var workerExists = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(createJob.WorkerId)
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(createJob.WorkerId)
                 ?? throw new WorkerNotFoundException(createJob.WorkerId);
 
-            var supplyExists = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(createJob.SupplyId)
+            var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(createJob.SupplyId)
                 ?? throw new SupplyNotFoundException(createJob.SupplyId);
 
-            var jobCreate = _mapper.Map<JobDTO>(createJob);
-            jobCreate.WorkerName = await GetWorkerFullNameAsync(createJob.WorkerId);
+            var jobEntity = _mapper.Map<Job>(createJob);
+
+            jobEntity.WorkerId = worker.Id;
+            jobEntity.SupplyId = supply.Id;
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.JobRepository.AddJobAsync(jobCreate);
+                await _unitOfWork.JobRepository.AddJobAsync(jobEntity);
             });
 
-            return jobCreate;
+            return _mapper.Map<JobDTO>(jobEntity);
         }
 
         public async Task<JobDTO> UpdateJobAsync(int id, RequestUpdateJobDTO updateJob)
         {
-            ArgumentNullException.ThrowIfNull(updateJob);
-
             var existingJob = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
                 ?? throw new JobNotFoundException(id);
 
-            var jobUpdate = _mapper.Map<JobDTO>(updateJob);
-            jobUpdate.WorkerName = await GetWorkerFullNameAsync(updateJob.WorkerId);
+            _mapper.Map(updateJob, existingJob);
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.JobRepository.UpdateJobAsync(id, jobUpdate);
+                await _unitOfWork.JobRepository.UpdateJobAsync(id, existingJob);
             });
 
-            return jobUpdate;
+            return _mapper.Map<JobDTO>(existingJob);
         }
 
         public async Task<bool> DeleteJobAsync(int id)

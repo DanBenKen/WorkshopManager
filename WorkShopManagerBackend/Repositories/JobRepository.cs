@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.Exceptions.JobExceptions;
 using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Models;
@@ -14,35 +13,26 @@ namespace WorkshopManager.Repositories
 
         public async Task<Job?> GetJobByIdAsync(int id)
         {
-            return await _context.Jobs
-                .Include(j => j.Worker)
-                .Include(j => j.Supply)
-                .FirstOrDefaultAsync(j => j.Id == id);
+            return await _context.Jobs.Include(j => j.Worker).Include(j => j.Supply).FirstOrDefaultAsync(j => j.Id == id);
         }
 
         public async Task<IEnumerable<Job>> GetAllJobsAsync()
         {
-            return await _context.Jobs
-                .Include(j => j.Worker)
-                .Include(j => j.Supply)
-                .ToListAsync();
+            return await _context.Jobs.Include(j => j.Worker).Include(j => j.Supply).AsNoTracking().ToListAsync();
         }
 
-        public async Task<Job> AddJobAsync(JobDTO jobDTO)
+        public async Task<Job> AddJobAsync(Job job)
         {
-            var job = _mapper.Map<Job>(jobDTO);
-
             await _context.Jobs.AddAsync(job);
             return job;
         }
 
-        public async Task UpdateJobAsync(int id, JobDTO jobDTO)
+        public async Task UpdateJobAsync(int id, Job existingJob)
         {
-            var job = await _context.Jobs.FindAsync(id);
-            if (job == null)
-                throw new JobNotFoundException(id);
+            var job = await _context.Jobs.FindAsync(id)
+                ?? throw new JobNotFoundException(id);
 
-            _mapper.Map(jobDTO, job);
+            _mapper.Map(existingJob, job);
             _context.Jobs.Update(job);
         }
 

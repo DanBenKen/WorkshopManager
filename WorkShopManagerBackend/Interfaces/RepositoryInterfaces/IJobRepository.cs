@@ -7,8 +7,8 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
     {
         Task<Job?> GetJobByIdAsync(int id);
         Task<IEnumerable<Job>> GetAllJobsAsync();
-        Task<Job> AddJobAsync(JobDTO jobDTO);
-        Task UpdateJobAsync(int id, JobDTO jobDTO);
+        Task<Job> AddJobAsync(Job job);
+        Task UpdateJobAsync(int id, Job existingJob);
         bool DeleteJob(Job job);
     }
 }
