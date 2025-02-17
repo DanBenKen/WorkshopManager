@@ -20,6 +20,7 @@ namespace WorkshopManager.Mappings
             CreateMap<SupplyDTO, Supply>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<RequestCreateSupplyDTO, SupplyDTO>();
+            CreateMap<RequestCreateSupplyDTO, Supply>();
             CreateMap<RequestUpdateSupplyDTO, SupplyDTO>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 

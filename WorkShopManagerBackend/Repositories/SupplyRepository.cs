@@ -20,19 +20,18 @@ namespace WorkshopManager.Repositories
 
         public async Task<IEnumerable<Supply>> GetAllSuppliesAsync()
         {
-            return await _context.Supplies.ToListAsync();
+            return await _context.Supplies.AsNoTracking().ToListAsync();
         }
 
         public async Task<Supply?> GetSupplyByIdAsync(int id)
         {
-            return await _context.Supplies.FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Supplies.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task<Supply> AddSupplyAsync(SupplyDTO supplyDTO)
+        public async Task<Supply> AddSupplyAsync(Supply supply)
         {
-            var supply = _mapper.Map<Supply>(supplyDTO);
-
             await _context.Supplies.AddAsync(supply);
+
             return supply;
         }
 
@@ -53,19 +52,17 @@ namespace WorkshopManager.Repositories
 
         public async Task<int> GetTotalSuppliesCountAsync()
         {
-            return await _context.Supplies.CountAsync();
+            return await _context.Supplies.AsNoTracking().CountAsync();
         }
 
         public async Task<int> GetLowStockSuppliesCountAsync()
         {
-            return await _context.Supplies.CountAsync(s => s.Quantity < 5);
+            return await _context.Supplies.AsNoTracking().CountAsync(s => s.Quantity < 5);
         }
 
         public async Task<IEnumerable<Supply>> GetLowStockSuppliesAsync()
         {
-            return await _context.Supplies
-                                 .Where(s => s.Quantity < 5)
-                                 .ToListAsync();
+            return await _context.Supplies.AsNoTracking().Where(s => s.Quantity < 5).ToListAsync();
         }
     }
 }

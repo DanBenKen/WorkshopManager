@@ -21,40 +21,29 @@ namespace WorkshopManager.Services
 
         public async Task<SupplyDTO> CreateSupplyAsync(RequestCreateSupplyDTO requestCreateSupply)
         {
-            SupplyDTO? supplyDTO = null;
-
-            supplyDTO = _mapper.Map<SupplyDTO>(requestCreateSupply) 
-                ?? throw new SupplyCreateNullException();
+            var supplyEntity = _mapper.Map<Supply>(requestCreateSupply);
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.SupplyRepository.AddSupplyAsync(supplyDTO);
+                await _unitOfWork.SupplyRepository.AddSupplyAsync(supplyEntity);
             });
 
-            return supplyDTO;
+            return _mapper.Map<SupplyDTO>(supplyEntity);
         }
 
-        public async Task<IEnumerable<Supply>> GetAllSppliesAsync()
+        public async Task<IEnumerable<SupplyDTO>> GetAllSuppliesAsync()
         {
-            return await _unitOfWork.SupplyRepository.GetAllSuppliesAsync();
+            var supplies = await _unitOfWork.SupplyRepository.GetAllSuppliesAsync();
+
+            return _mapper.Map<IEnumerable<SupplyDTO>>(supplies);
         }
 
         public async Task<SupplyDTO> GetSupplyAsync(int id)
         {
-            SupplyDTO? getSupply = null;
+            var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
+                ?? throw new SupplyNotFoundException(id);
 
-            await _unitOfWork.ExecuteInTransactionAsync(async () =>
-            {
-                var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
-                    ?? throw new SupplyNotFoundException(id);
-
-                getSupply = _mapper.Map<SupplyDTO>(supply);
-            });
-
-            if (getSupply is null)
-                throw new SupplyGetNullException();
-
-            return getSupply;
+            return _mapper.Map<SupplyDTO>(supply);
         }
 
         public async Task<SupplyDTO> UpdateSupplyAsync(int id, RequestUpdateSupplyDTO requestUpdate)

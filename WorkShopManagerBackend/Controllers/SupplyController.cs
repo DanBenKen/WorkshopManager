@@ -24,13 +24,6 @@ namespace WorkshopManager.Controllers
             return CreatedAtAction(nameof(GetSupply), new { id = supply.Id }, supply);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllWorkers()
-        {
-            var supplies = await _supplyService.GetAllSppliesAsync();
-            return Ok(supplies);
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult<SupplyDTO>> GetSupply(int id)
         {
@@ -50,6 +43,13 @@ namespace WorkshopManager.Controllers
         {
             await _supplyService.DeleteSupplyAsync(id);
             return NoContent();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllSupplies()
+        {
+            var supplies = await _supplyService.GetAllSuppliesAsync();
+            return Ok(supplies);
         }
 
         [HttpGet("count")]

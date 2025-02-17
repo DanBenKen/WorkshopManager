@@ -8,7 +8,7 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
     {
         Task<IEnumerable<Supply>> GetAllSuppliesAsync();
         Task<Supply?> GetSupplyByIdAsync(int id);
-        Task<Supply> AddSupplyAsync(SupplyDTO supplyDTO);
+        Task<Supply> AddSupplyAsync(Supply supply);
         Task UpdateSupplyAsync(int id, SupplyDTO supplyDTO);
         bool DeleteSupply(Supply supply);
         Task<int> GetTotalSuppliesCountAsync();
