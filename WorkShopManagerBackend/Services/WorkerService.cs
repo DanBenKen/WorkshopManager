@@ -32,48 +32,24 @@ namespace WorkshopManager.Services
 
         public async Task<WorkerDTO> GetWorkerAsync(int id)
         {
-            WorkerDTO? getWorker = null;
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
+                ?? throw new WorkerNotFoundException(id);
 
-            await _unitOfWork.ExecuteInTransactionAsync(async () =>
-            {
-                var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
-                    ?? throw new WorkerNotFoundException(id);
-
-                getWorker = _mapper.Map<WorkerDTO>(worker);
-            });
-
-            if (getWorker is null)
-                throw new WorkerGetNullException();
-
-            return getWorker;
+            return _mapper.Map<WorkerDTO>(worker);
         }
 
         public async Task<IEnumerable<WorkerDTO>> GetAllWorkersAsync()
         {
             var workers = await _unitOfWork.WorkerRepository.GetAllWorkersAsync();
+
             return _mapper.Map<IEnumerable<WorkerDTO>>(workers);
         }
 
         public async Task<IEnumerable<WorkerWithJobDTO>> GetAllWorkersWithJobsAsync()
         {
-            IEnumerable<WorkerWithJobDTO>? workersWithJobs = null;
+            var workers = await _unitOfWork.WorkerRepository.GetAllWorkersWithJobsAsync();
 
-            await _unitOfWork.ExecuteInTransactionAsync(async () =>
-            {
-                var workers = await _unitOfWork.WorkerRepository.GetAllWorkersWithJobsAsync();
-
-                workersWithJobs = workers
-                    .Where(w => w.Jobs != null && w.Jobs.Any())
-                    .Select(worker => new WorkerWithJobDTO
-                    {
-                        WorkerId = worker.Id,
-                        WorkerName = worker.FullName,
-                        Jobs = worker.Jobs.Select(job => _mapper.Map<JobDTO>(job)).ToList()
-                    }).ToList();
-            });
-
-            if (workersWithJobs is null)
-                throw new WorkerGetNullException();
+            var workersWithJobs = _mapper.Map<IEnumerable<WorkerWithJobDTO>>(workers);
 
             return workersWithJobs;
         }

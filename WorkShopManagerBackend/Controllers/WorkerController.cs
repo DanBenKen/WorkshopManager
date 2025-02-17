@@ -55,8 +55,8 @@ namespace WorkshopManager.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWorker(int id)
         {
-            await _workerService.DeleteWorkerAsync(id);
-            return NoContent();
+            var isDeleted = await _workerService.DeleteWorkerAsync(id);
+            return isDeleted ? NoContent() : NotFound();
         }
 
         [HttpGet("count")]

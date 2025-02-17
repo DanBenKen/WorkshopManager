@@ -32,6 +32,7 @@ namespace WorkshopManager.Repositories
         {
             return await _context.Workers
                 .Include(w => w.Jobs)
+                .Where(w => w.Jobs.Any())
                 .ToListAsync();
         }
 
