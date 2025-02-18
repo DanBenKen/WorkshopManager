@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using WorkshopManager.DTOs.JobDTOs;
 using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Exceptions.WorkerExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
+using WorkshopManager.Models;
 
 namespace WorkshopManager.Services
 {
@@ -20,14 +20,14 @@ namespace WorkshopManager.Services
 
         public async Task<WorkerDTO> CreateWorkerAsync(RequestCreateWorkerDTO createWorkerDTO)
         {
-            var workerDTO = _mapper.Map<WorkerDTO>(createWorkerDTO);
+            var worker = _mapper.Map<Worker>(createWorkerDTO);
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.WorkerRepository.AddWorkerAsync(workerDTO);
+                await _unitOfWork.WorkerRepository.AddWorkerAsync(worker);
             });
 
-            return workerDTO;
+            return _mapper.Map<WorkerDTO>(worker);
         }
 
         public async Task<WorkerDTO> GetWorkerAsync(int id)
@@ -38,47 +38,50 @@ namespace WorkshopManager.Services
             return _mapper.Map<WorkerDTO>(worker);
         }
 
+        public async Task<WorkerDTO> UpdateWorkerAsync(int id, RequestUpdateWorkerDTO workerUpdateDTO)
+        {
+            var existingWorker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
+                ?? throw new WorkerNotFoundException(id);
+
+            _mapper.Map(workerUpdateDTO, existingWorker);
+
+            await _unitOfWork.ExecuteInTransactionAsync(() =>
+            {
+                _unitOfWork.WorkerRepository.UpdateWorker(existingWorker);
+                return Task.CompletedTask;
+            });
+
+            return _mapper.Map<WorkerDTO>(existingWorker);
+        }
+
+        public async Task DeleteWorkerAsync(int id)
+        {
+            var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
+                ?? throw new WorkerNotFoundException(id);
+
+            await _unitOfWork.ExecuteInTransactionAsync(() =>
+            {
+                _unitOfWork.WorkerRepository.DeleteWorker(worker);
+                return Task.CompletedTask;
+            });
+        }
+
         public async Task<IEnumerable<WorkerDTO>> GetAllWorkersAsync()
         {
             var workers = await _unitOfWork.WorkerRepository.GetAllWorkersAsync();
-
             return _mapper.Map<IEnumerable<WorkerDTO>>(workers);
         }
 
         public async Task<IEnumerable<WorkerWithJobDTO>> GetAllWorkersWithJobsAsync()
         {
             var workers = await _unitOfWork.WorkerRepository.GetAllWorkersWithJobsAsync();
-
-            var workersWithJobs = _mapper.Map<IEnumerable<WorkerWithJobDTO>>(workers);
-
-            return workersWithJobs;
+            return _mapper.Map<IEnumerable<WorkerWithJobDTO>>(workers);
         }
 
-        public async Task<WorkerDTO> UpdateWorkerAsync(int id, RequestUpdateWorkerDTO workerUpdateDTO)
+        public async Task<IEnumerable<WorkerDTO>> GetWorkersWithoutJobsAsync()
         {
-            var workerDTO = _mapper.Map<WorkerDTO>(workerUpdateDTO);
-
-            await _unitOfWork.ExecuteInTransactionAsync(async () =>
-            {
-                await _unitOfWork.WorkerRepository.UpdateWorkerAsync(id, workerDTO);
-            });
-
-            return workerDTO;
-        }
-
-        public async Task<bool> DeleteWorkerAsync(int id)
-        {
-            bool isDeleted = false;
-
-            await _unitOfWork.ExecuteInTransactionAsync(async () =>
-            {
-                var worker = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(id)
-                    ?? throw new WorkerNotFoundException(id);
-
-                isDeleted = _unitOfWork.WorkerRepository.DeleteWorker(worker);
-            });
-
-            return isDeleted;
+            var workers = await _unitOfWork.WorkerRepository.GetUnemployedWorkersAsync();
+            return _mapper.Map<IEnumerable<WorkerDTO>>(workers);
         }
 
         public async Task<int> GetWorkersCountAsync()
@@ -89,12 +92,6 @@ namespace WorkshopManager.Services
         public async Task<int> GetUnemployedWorkersCountAsync()
         {
             return await _unitOfWork.WorkerRepository.GetUnemployedWorkersCountAsync();
-        }
-
-        public async Task<IEnumerable<WorkerDTO>> GetWorkersWithoutJobsAsync()
-        {
-            var workers = await _unitOfWork.WorkerRepository.GetWorkersWithoutJobsAsync();
-            return _mapper.Map<IEnumerable<WorkerDTO>>(workers);
         }
     }
 }

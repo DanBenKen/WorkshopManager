@@ -1,4 +1,5 @@
-﻿using WorkshopManager.DTOs.WorkerDTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Models;
 
 namespace WorkshopManager.Interfaces.RepositoryInterfaces
@@ -8,11 +9,11 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
         Task<Worker?> GetWorkerByIdAsync(int id);
         Task<IEnumerable<Worker>> GetAllWorkersAsync();
         Task<IEnumerable<Worker>> GetAllWorkersWithJobsAsync();
-        Task<Worker> AddWorkerAsync(WorkerDTO workerDTO);
-        Task UpdateWorkerAsync(int id, WorkerDTO workerDTO);
+        Task AddWorkerAsync(Worker worker);
+        void UpdateWorker(Worker worker);
+        void DeleteWorker(Worker worker);
         Task<int> GetWorkersCountAsync();
-        bool DeleteWorker(Worker worker);
         Task<int> GetUnemployedWorkersCountAsync();
-        Task<IEnumerable<Worker>> GetWorkersWithoutJobsAsync();
+        Task<IEnumerable<Worker>> GetUnemployedWorkersAsync();
     }
 }

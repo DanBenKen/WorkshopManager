@@ -9,7 +9,7 @@ namespace WorkshopManager.Interfaces.ServiceInterfaces
         Task<IEnumerable<WorkerDTO>> GetAllWorkersAsync();
         Task<IEnumerable<WorkerWithJobDTO>> GetAllWorkersWithJobsAsync();
         Task<WorkerDTO> UpdateWorkerAsync(int id, RequestUpdateWorkerDTO workerUpdateDTO);
-        Task<bool> DeleteWorkerAsync(int id);
+        Task DeleteWorkerAsync(int id);
         Task<int> GetWorkersCountAsync();
         Task<int> GetUnemployedWorkersCountAsync();
         Task<IEnumerable<WorkerDTO>> GetWorkersWithoutJobsAsync();

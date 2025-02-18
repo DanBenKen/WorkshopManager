@@ -14,12 +14,12 @@ export const getWorkerById = async (id) => {
 };
 
 export const getWorkersWithJobs = async () => {
-    const response = await axiosInstance.get(`${API_URL}/workers-with-jobs`);
+    const response = await axiosInstance.get(`${API_URL}/employed-workers`);
     return response.data;
 };
 
 export const getWorkersWithoutJobs = async () => {
-    const response = await axiosInstance.get(`${API_URL}/workers-without-jobs`);
+    const response = await axiosInstance.get(`${API_URL}/unemployed-workers`);
     return response.data;
 };
 
@@ -44,6 +44,6 @@ export const getWorkersCount = async () => {
 };
 
 export const getUnemployedWorkersCount = async () => {
-    const response = await axiosInstance.get(`${API_URL}/unemployed-count`);
+    const response = await axiosInstance.get(`${API_URL}/unemployed-worker-count`);
     return response.data.unemployedCount;
 };

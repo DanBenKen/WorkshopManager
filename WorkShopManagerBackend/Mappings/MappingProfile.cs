@@ -24,6 +24,8 @@ namespace WorkshopManager.Mappings
             CreateMap<RequestCreateSupplyDTO, Supply>();
             CreateMap<RequestUpdateSupplyDTO, SupplyDTO>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<RequestUpdateSupplyDTO, Supply>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<Worker, WorkerWithJobDTO>()
                 .ForMember(dest => dest.WorkerId, opt => opt.MapFrom(src => src.Id))
@@ -36,7 +38,11 @@ namespace WorkshopManager.Mappings
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Jobs, opt => opt.Ignore());
             CreateMap<RequestCreateWorkerDTO, WorkerDTO>();
+            CreateMap<RequestCreateWorkerDTO, Worker>();
+            CreateMap<Worker, RequestCreateWorkerDTO>();
             CreateMap<RequestUpdateWorkerDTO, WorkerDTO>();
+            CreateMap<RequestUpdateWorkerDTO, Worker>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<WorkerWithJobDTO, JobDTO>();
         }
     }
