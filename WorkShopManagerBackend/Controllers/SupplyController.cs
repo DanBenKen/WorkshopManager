@@ -31,20 +31,6 @@ namespace WorkshopManager.Controllers
             return Ok(supply);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSupply(int id, [FromBody] RequestUpdateSupplyDTO supplyDTO)
-        {
-            await _supplyService.UpdateSupplyAsync(id, supplyDTO);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSupply(int id)
-        {
-            await _supplyService.DeleteSupplyAsync(id);
-            return NoContent();
-        }
-
         [HttpGet]
         public async Task<IActionResult> GetAllSupplies()
         {
@@ -71,6 +57,20 @@ namespace WorkshopManager.Controllers
         {
             var lowStockSupplies = await _supplyService.GetLowStockSuppliesAsync();
             return Ok(lowStockSupplies);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateSupply(int id, [FromBody] RequestUpdateSupplyDTO supplyDTO)
+        {
+            await _supplyService.UpdateSupplyAsync(id, supplyDTO);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSupply(int id)
+        {
+            await _supplyService.DeleteSupplyAsync(id);
+            return NoContent();
         }
     }
 }

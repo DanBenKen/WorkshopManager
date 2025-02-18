@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using WorkshopManager.DTOs.SupplyDTOs;
-using WorkshopManager.DTOs.WorkerDTOs;
 using WorkshopManager.Exceptions.SupplyExceptions;
 using WorkshopManager.Interfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
@@ -12,6 +11,8 @@ namespace WorkshopManager.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
+        private const int lowStockThreshold = 5;
 
         public SupplyService(IUnitOfWork unitOfWork, IMapper mapper)
         {
@@ -31,13 +32,6 @@ namespace WorkshopManager.Services
             return _mapper.Map<SupplyDTO>(supplyEntity);
         }
 
-        public async Task<IEnumerable<SupplyDTO>> GetAllSuppliesAsync()
-        {
-            var supplies = await _unitOfWork.SupplyRepository.GetAllSuppliesAsync();
-
-            return _mapper.Map<IEnumerable<SupplyDTO>>(supplies);
-        }
-
         public async Task<SupplyDTO> GetSupplyAsync(int id)
         {
             var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
@@ -46,36 +40,38 @@ namespace WorkshopManager.Services
             return _mapper.Map<SupplyDTO>(supply);
         }
 
-        public async Task<SupplyDTO> UpdateSupplyAsync(int id, RequestUpdateSupplyDTO requestUpdate)
+        public async Task<IEnumerable<SupplyDTO>> GetAllSuppliesAsync()
         {
-            SupplyDTO? updateSupply = null;
-
-            updateSupply = _mapper.Map<SupplyDTO>(requestUpdate);
-
-            await _unitOfWork.ExecuteInTransactionAsync(async () =>
-            {
-                await _unitOfWork.SupplyRepository.UpdateSupplyAsync(id, updateSupply);
-            });
-
-            if (updateSupply is null)
-                throw new SupplyUpdateNullException();
-
-            return updateSupply;
+            var supplies = await _unitOfWork.SupplyRepository.GetAllSuppliesAsync();
+            return _mapper.Map<IEnumerable<SupplyDTO>>(supplies);
         }
 
-        public async Task<bool> DeleteSupplyAsync(int id)
+        public async Task<SupplyDTO> UpdateSupplyAsync(int id, RequestUpdateSupplyDTO requestUpdate)
         {
-            bool isDeleted = false;
+            var existingSupply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
+                ?? throw new SupplyNotFoundException(id);
 
-            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            _mapper.Map(requestUpdate, existingSupply);
+
+            await _unitOfWork.ExecuteInTransactionAsync(() =>
             {
-                var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
-                    ?? throw new SupplyNotFoundException(id);
-
-                isDeleted = _unitOfWork.SupplyRepository.DeleteSupply(supply);
+                _unitOfWork.SupplyRepository.UpdateSupply(existingSupply);
+                return Task.CompletedTask;
             });
 
-            return isDeleted;
+            return _mapper.Map<SupplyDTO>(existingSupply);
+        }
+
+        public async Task DeleteSupplyAsync(int id)
+        {
+            var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(id)
+                ?? throw new SupplyNotFoundException(id);
+
+            await _unitOfWork.ExecuteInTransactionAsync(() =>
+            {
+                _unitOfWork.SupplyRepository.DeleteSupply(supply);
+                return Task.CompletedTask;
+            });
         }
 
         public async Task<int> GetTotalSuppliesCountAsync()
@@ -85,12 +81,12 @@ namespace WorkshopManager.Services
 
         public async Task<int> GetLowStockSuppliesCountAsync()
         {
-            return await _unitOfWork.SupplyRepository.GetLowStockSuppliesCountAsync();
+            return await _unitOfWork.SupplyRepository.GetLowStockSuppliesCountAsync(lowStockThreshold);
         }
 
         public async Task<IEnumerable<SupplyDTO>> GetLowStockSuppliesAsync()
         {
-            var lowStockSupplies = await _unitOfWork.SupplyRepository.GetLowStockSuppliesAsync();
+            var lowStockSupplies = await _unitOfWork.SupplyRepository.GetLowStockSuppliesAsync(lowStockThreshold);
             return _mapper.Map<IEnumerable<SupplyDTO>>(lowStockSupplies);
         }
     }
