@@ -18,36 +18,36 @@ namespace WorkshopManager.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateJob([FromBody] RequestCreateJobDTO requestCreateJob)
+        public async Task<ActionResult<JobDTO>> CreateJob([FromBody] RequestCreateJobDTO requestDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createJob = await _jobService.CreateJobAsync(requestCreateJob);
-            return CreatedAtAction(nameof(GetJob), new { id = createJob.Id }, createJob);
+            var job = await _jobService.CreateJobAsync(requestDTO);
+            return CreatedAtAction(nameof(GetJob), new { id = job.Id }, job);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllJobs()
+        public async Task<ActionResult<IEnumerable<JobDTO>>> GetAllJobs()
         {
-            var getAllJobs = await _jobService.GetAllJobs();
-            return Ok(getAllJobs);
+            var jobs = await _jobService.GetAllJobsAsync();
+            return Ok(jobs);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetJob(int id)
+        public async Task<ActionResult<JobDTO>> GetJob(int id)
         {
             var job = await _jobService.GetJobAsync(id);
             return Ok(job);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateJob(int id, [FromBody] RequestUpdateJobDTO updateJob)
+        public async Task<IActionResult> UpdateJob(int id, [FromBody] RequestUpdateJobDTO updateDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _jobService.UpdateJobAsync(id, updateJob);
+            await _jobService.UpdateJobAsync(id, updateDTO);
             return NoContent();
         }
 

@@ -23,6 +23,11 @@ namespace WorkshopManager.Repositories
             return await _context.Supplies.FindAsync(id);
         }
 
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Supplies.AnyAsync(s => s.Id == id);
+        }
+
         public async Task AddSupplyAsync(Supply supply)
         {
             await _context.Supplies.AddAsync(supply);

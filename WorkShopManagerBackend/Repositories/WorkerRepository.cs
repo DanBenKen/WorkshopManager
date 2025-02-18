@@ -43,6 +43,11 @@ namespace WorkshopManager.Repositories
             return await _context.Workers.AsNoTracking().Where(w => !w.Jobs.Any()).ToListAsync();
         }
 
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Workers.AnyAsync(w => w.Id == id);
+        }
+
         public async Task AddWorkerAsync(Worker worker)
         {
             await _context.Workers.AddAsync(worker);
