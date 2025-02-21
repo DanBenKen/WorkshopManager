@@ -30,6 +30,17 @@ export const removeToken = () => {
     localStorage.removeItem(TOKEN_KEY);
 };
 
+export const isAuthenticated = () => {
+    const token = getToken();
+    if (!token) return false;
+
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    const expirationDate = decodedToken.exp * 1000;
+    const currentDate = new Date().getTime();
+
+    return currentDate < expirationDate;
+};
+
 export const handleAuthError = (error) => {
     if (!error.response) {
         return { message: ["Network error. Please check your internet connection."], code: 503 };
@@ -40,7 +51,6 @@ export const handleAuthError = (error) => {
     const getErrorMessage = (status, data) => {
         switch (status) {
             case 400:
-            case 422:
                 if (data?.errors) {
                     return { message: Object.values(data.errors), code: status };
                 }

@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { logout } from '../services/authService';
 
 const Sidebar = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const navigate = useNavigate();
 
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
     const closeSidebar = () => setSidebarOpen(false);
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/account/login');
+    };
 
     return (
         <div className="flex h-screen">
@@ -39,7 +46,12 @@ const Sidebar = () => {
                         <Link to="/jobs" className="block py-2 px-4 hover:bg-gray-700">Jobs</Link>
                     </li>
                     <li>
-                        <Link to="/account/login" className="mt-4 block py-2 px-4 hover:bg-gray-700">Logout</Link>
+                        <button
+                            onClick={handleLogout}
+                            className="mt-4 block py-2 px-4 hover:bg-gray-700 w-full text-left"
+                        >
+                            Logout
+                        </button>
                     </li>
                 </ul>
             </div>

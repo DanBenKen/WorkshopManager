@@ -5,21 +5,33 @@ import useJobs from '../../../hooks/useJobs';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
 import ButtonCancel from '../../atoms/ButtonCancel';
+import useValidation from '../../../hooks/useValidation';
+import { validateJobForm } from '../../../utils/validators';
 
 const JobForm = () => {
     const { jobId } = useParams();
+    const { job, handleCreateJob, handleUpdateJob, isLoading, error } = useJobs(jobId);
+    const navigate = useNavigate();
+
     const [jobName, setJobName] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('1');
     const [workerId, setWorkerId] = useState('');
     const [supplyId, setSupplyId] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [formErrors, setFormErrors] = useState({});
-
-    const { job, handleCreateJob, handleUpdateJob, isLoading, error } = useJobs(jobId);
-    const navigate = useNavigate();
 
     const isEditMode = !!jobId;
+
+    const {
+        values: { jobName: formJobName, description: formDescription, status: formStatus, workerId: formWorkerId, supplyId: formSupplyId, quantity: formQuantity },
+        errors,
+        handleChange,
+        resetErrors,
+        validateForm
+    } = useValidation(
+        { jobName, description, status, workerId, supplyId, quantity },
+        validateJobForm
+    );
 
     useEffect(() => {
         if (job) {
@@ -32,22 +44,11 @@ const JobForm = () => {
         }
     }, [job]);
 
-    const validateForm = () => {
-        const errors = {};
-        if (!jobName) errors.jobName = 'Job name is required';
-        if (!description) errors.description = 'Description is required';
-        if (!workerId) errors.workerId = 'Worker ID is required';
-        if (!supplyId) errors.supplyId = 'Supply ID is required';
-        if (supplyId && !quantity) errors.quantity = 'Quantity is required if Supply ID is provided';
-        if (quantity && isNaN(quantity)) errors.quantity = 'Quantity must be a valid number';
-        setFormErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (!validateForm()) return;
+        resetErrors();
+        const isValidForm = validateForm();
+        if (!isValidForm) return;
 
         const statusMap = {
             1: 'InProgress',
@@ -56,25 +57,20 @@ const JobForm = () => {
 
         const jobData = {
             id: jobId ? parseInt(jobId, 10) : 0,
-            jobName,
-            description,
-            status: statusMap[status],
-            workerId: parseInt(workerId, 10),
-            supplyId: supplyId ? parseInt(supplyId, 10) : null,
-            supplyQuantity: parseInt(quantity, 10),
-        };        
+            jobName: formJobName,
+            description: formDescription,
+            status: statusMap[formStatus],
+            workerId: parseInt(formWorkerId, 10),
+            supplyId: formSupplyId ? parseInt(formSupplyId, 10) : null,
+            supplyQuantity: parseInt(formQuantity, 10),
+        };
 
-        try {
-            const success = isEditMode
-                ? await handleUpdateJob(jobId, jobData)
-                : await handleCreateJob(jobData);
+        const success = isEditMode
+            ? await handleUpdateJob(jobId, jobData)
+            : await handleCreateJob(jobData);
 
-            if (success) {
-                navigate('/jobs');
-            }
-        } catch (err) {
-            console.error('Error in handleSubmit:', err);
-            setFormErrors(err.response?.data?.errors || err.message || 'An error occurred. Please try again later.');
+        if (success) {
+            navigate('/jobs');
         }
     };
 
@@ -89,27 +85,25 @@ const JobForm = () => {
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Job' : 'Create New Job'}</h2>
-            {error && <ErrorMessage message={error} />}
+            {error && !Object.values(errors).some((e) => e) && <ErrorMessage message={error} />}
             <form onSubmit={handleSubmit}>
                 <FormField
                     label="Job Name"
                     type="text"
-                    id="JobName"
                     name="jobName"
-                    value={jobName}
-                    onChange={(e) => setJobName(e.target.value)}
+                    value={formJobName}
+                    onChange={handleChange}
                     placeholder="Enter job name"
-                    errorMessage={formErrors.jobName}
+                    errorMessage={errors.jobName}
                 />
                 <FormField
                     label="Description"
                     type="text"
-                    id="Description"
                     name="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    value={formDescription}
+                    onChange={handleChange}
                     placeholder="Enter job description"
-                    errorMessage={formErrors.description}
+                    errorMessage={errors.description}
                 />
                 <FormField
                     label="Status"
@@ -123,41 +117,36 @@ const JobForm = () => {
                         { value: 2, label: 'Completed' }
                     ]}
                 />
-
                 <FormField
                     label="Worker ID"
                     type="number"
-                    id="WorkerId"
                     name="workerId"
-                    value={workerId}
-                    onChange={(e) => setWorkerId(e.target.value)}
+                    value={formWorkerId}
+                    onChange={handleChange}
                     placeholder="Enter worker ID"
-                    errorMessage={formErrors.workerId}
+                    errorMessage={errors.workerId}
                 />
                 <FormField
                     label="Supply ID"
                     type="number"
-                    id="SupplyId"
                     name="supplyId"
-                    value={supplyId}
-                    onChange={(e) => setSupplyId(e.target.value)}
+                    value={formSupplyId}
+                    onChange={handleChange}
                     placeholder="Enter supply ID"
-                    errorMessage={formErrors.supplyId}
+                    errorMessage={errors.supplyId}
                 />
                 <FormField
                     label="Supply Quantity"
                     type="number"
-                    id="Quantity"
                     name="quantity"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
+                    value={formQuantity}
+                    onChange={handleChange}
                     placeholder="Enter quantity of supply needed"
-                    errorMessage={formErrors.quantity}
+                    errorMessage={errors.quantity}
                 />
 
                 <Button
                     type="submit"
-                    className="bg-green-500 hover:bg-green-600"
                     disabled={isLoading}
                 >
                     {isLoading
@@ -170,9 +159,9 @@ const JobForm = () => {
 
             <ButtonCancel
                 type="button"
-                className="mt-2"
                 disabled={isLoading}
-                onClick={() => handleBack(job)}
+                onClick={handleBack}
+                className={'mt-3'}
             >
                 Go Back
             </ButtonCancel>

@@ -4,9 +4,6 @@ namespace WorkshopManager.Enums
 {
     public enum JobStatus
     {
-        [EnumMember(Value = "Pending")]
-        Pending,
-
         [EnumMember(Value = "InProgress")]
         InProgress,
 
