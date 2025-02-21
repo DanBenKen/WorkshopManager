@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { login as loginService, register as registerService, logout as logoutService, setToken, handleAuthError } from '../services/authService';
+import { login as loginService, register as registerService, logout as logoutService, setToken, removeToken, handleAuthError } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 
 const useAuth = () => {
@@ -7,19 +7,17 @@ const useAuth = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleAsyncAction = async (actionFunc, actionName, successCallback = () => {}) => {
+    const handleAsyncAction = async (actionFunc) => {
         setIsLoading(true);
         setAuthError(null);
-
+    
         try {
             await actionFunc();
-            successCallback();
             return true;
         } catch (error) {
-            setAuthError(handleAuthError(error, actionName));
+            const { message } = handleAuthError(error); 
+            setAuthError(message);
             return false;
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -27,26 +25,28 @@ const useAuth = () => {
         return await handleAsyncAction(async () => {
             const response = await loginService(loginData);
             setToken(response.token);
-        }, 'login');
+        });
     };
 
     const handleRegister = async (userData) => {
         return await handleAsyncAction(async () => {
             await registerService(userData);
-        }, 'register');
+        });
     };
 
     const handleLogout = async () => {
-        return await handleAsyncAction(async () => {
+        removeToken();
+        await handleAsyncAction(async () => {
             await logoutService();
             navigate('/account/login');
-        }, 'logout');
+        });
     };
 
     return {
         handleLogin,
         handleRegister,
         handleLogout,
+        setIsLoading,
         authError,
         isLoading,
     };

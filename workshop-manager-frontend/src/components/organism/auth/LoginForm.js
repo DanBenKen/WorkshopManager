@@ -4,33 +4,57 @@ import Button from '../../atoms/Button';
 import FormField from '../../molecules/FormField';
 import { useNavigate, Link } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
+import useValidation from '../../../hooks/useValidation';
+import { validateLogin } from '../../../utils/validators';
 
 const LoginForm = () => {
-    const { handleLogin, authError, isLoading } = useAuth();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { handleLogin, authError } = useAuth();
+    const [successMessage, setSuccessMessage] = useState('');
+    const [isButtonLoading, setIsButtonLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const {
+        values: { email, password },
+        errors,
+        handleChange,
+        resetErrors,
+        validateForm,
+    } = useValidation({ email: '', password: '' }, validateLogin);
 
-        const success = await handleLogin({ email, password });
-
-        if (success) {
-            navigate('/');
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        resetErrors();
+    
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length) {
+            return;
+        }
+    
+        setIsButtonLoading(true);
+    
+        const isSuccess = await handleLogin({ email, password });
+    
+        if (isSuccess) {
+            setSuccessMessage("Login successful!");
+            setTimeout(() => navigate('/'), 1000);
+        } else {
+            setIsButtonLoading(false);
         }
     };
+    
 
     return (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
             {authError && <ErrorMessage message={authError} />}
+            {successMessage && <p className="text-center text-green-500">{successMessage}</p>}
 
             <FormField
                 label="Email"
                 type="email"
                 name="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleChange}
+                errorMessage={errors.email}
                 required
             />
             <FormField
@@ -38,12 +62,13 @@ const LoginForm = () => {
                 type="password"
                 name="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleChange}
+                errorMessage={errors.password}
                 required
             />
 
-            <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Loading...' : 'Login'}
+            <Button type="submit" disabled={isButtonLoading}>
+                {isButtonLoading ? 'Logging in...' : 'Login'}
             </Button>
 
             <div className="mt-4 text-center">

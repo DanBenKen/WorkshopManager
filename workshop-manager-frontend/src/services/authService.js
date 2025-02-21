@@ -31,17 +31,31 @@ export const removeToken = () => {
 };
 
 export const handleAuthError = (error) => {
-    if (error.response?.status === 500) {
-        return ["Invalid Attempt. Please check your credentials."];
+    if (!error.response) {
+        return { message: ["Network error. Please check your internet connection."], code: 503 };
     }
 
-    if (error.response?.data?.errors) {
-        return Object.values(error.response.data.errors).flat();
-    }
+    const { status, data } = error.response;
 
-    if (error.response?.data?.message) {
-        return [error.response.data.message];
-    }
+    const getErrorMessage = (status, data) => {
+        switch (status) {
+            case 400:
+            case 422:
+                if (data?.errors) {
+                    return { message: Object.values(data.errors), code: status };
+                }
+                return { message: [data?.message || "Invalid input. Please check your details."], code: status };
 
-    return ["An unknown error occurred."];
+            case 401:
+                return { message: ["Invalid login attempt. Please check your credentials."], code: status };
+
+            case 500:
+                return { message: ["Server error. Please try again later."], code: status };
+
+            default:
+                return { message: ["An unknown error occurred. Please try again."], code: status };
+        }
+    };
+
+    return getErrorMessage(status, data);
 };

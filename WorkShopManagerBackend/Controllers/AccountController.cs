@@ -37,7 +37,7 @@ namespace WorkshopManager.Controllers
 
             var token = await _accountService.LoginAsync(loginDTO);
             if (token == null)
-                return Unauthorized("Invalid login attempt.");
+                return Unauthorized("Unauthorized login attempt.");
 
             return Ok(new { Token = token });
         }

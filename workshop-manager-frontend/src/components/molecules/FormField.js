@@ -15,11 +15,12 @@ const FormField = ({ label, type, id, name, value, onChange, errorMessage, place
                     onChange={onChange}
                     className="border p-2 rounded w-full"
                 >
-                    {options && options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
+                    {options &&
+                        options.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
                 </select>
             ) : (
                 <Input

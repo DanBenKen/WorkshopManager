@@ -1,81 +1,95 @@
 import React, { useState } from 'react';
 import useAuth from '../../../hooks/useAuth';
 import Button from '../../atoms/Button';
-import { useNavigate, Link } from 'react-router-dom';
 import FormField from '../../molecules/FormField';
+import { useNavigate, Link } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
+import useValidation from '../../../hooks/useValidation';
+import { validateRegistration } from '../../../utils/validators';
 
 const RegisterForm = () => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const { handleRegister, authError, isLoading } = useAuth();
+    const { handleRegister, authError } = useAuth();
     const [successMessage, setSuccessMessage] = useState('');
+    const [isButtonLoading, setIsButtonLoading] = useState(false);
     const navigate = useNavigate();
+
+    const {
+        values: { username, email, password, confirmPassword },
+        errors,
+        handleChange,
+        resetErrors,
+        validateForm,
+    } = useValidation({ username: '', email: '', password: '', confirmPassword: '' }, validateRegistration);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        resetErrors();
 
-        if (password !== confirmPassword) {
-            setSuccessMessage('');
-            return;
-        }
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length) return;
 
-        const userData = { username, email, password, confirmPassword };
+        setIsButtonLoading(true);
 
-        const success = await handleRegister(userData);
+        const success = await handleRegister({
+            username,
+            email,
+            password,
+            confirmPassword
+        });
 
         if (success) {
-            setSuccessMessage("Registration successful! Please log in.");
-            setTimeout(() => navigate('/account/login'), 2000);
+            setSuccessMessage("Registration successful!");
+            setTimeout(() => navigate('/account/login'), 1000);
         } else {
-            setSuccessMessage("");
+
+            setIsButtonLoading(false);
         }
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="max-w-lg mx-auto p-6 bg-white rounded space-y-4"
-        >
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
             {authError && <ErrorMessage message={authError} />}
-            {successMessage && <p className="text-green-500">{successMessage}</p>}
+            {successMessage && <p className="text-center text-green-500">{successMessage}</p>}
 
             <FormField
                 label="Username"
                 type="text"
                 name="username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={handleChange}
+                errorMessage={errors.username}
+                required
             />
             <FormField
                 label="Email"
                 type="email"
                 name="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleChange}
+                errorMessage={errors.email}
+                required
             />
             <FormField
                 label="Password"
                 type="password"
                 name="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleChange}
+                errorMessage={errors.password}
+                required
             />
             <FormField
                 label="Confirm Password"
                 type="password"
                 name="confirmPassword"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={handleChange}
+                errorMessage={errors.confirmPassword}
+                required
             />
-            {password && confirmPassword && password !== confirmPassword && (
-                <ErrorMessage message="Passwords do not match." />
-            )}
 
-            <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Registering...' : 'Register'}
+            <Button type="submit" disabled={isButtonLoading}>
+                {isButtonLoading ? 'Registering...' : 'Register'}
             </Button>
 
             <div className="mt-4 text-center">

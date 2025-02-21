@@ -4,7 +4,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WorkshopManager.DTOs.AccountDTOs;
-using WorkshopManager.Exceptions.AccountExceptions;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 using WorkshopManager.Models;
 
@@ -60,7 +59,7 @@ namespace WorkshopManager.Services
                 throw new ArgumentException("Email and password are required.");
 
             var user = await _userManager.FindByEmailAsync(loginDTO.Email)
-                ?? throw new UserNotFoundException();
+                ?? throw new UnauthorizedAccessException("Invalid e-mail.");
 
             var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
             if (!isPasswordCorrect)
