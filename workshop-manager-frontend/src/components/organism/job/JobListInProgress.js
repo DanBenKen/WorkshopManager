@@ -4,10 +4,13 @@ import ErrorMessage from '../../atoms/ErrorMessage';
 import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import usePagination from '../../../hooks/usePagination';
+import ButtonCancel from '../../atoms/ButtonCancel';
+import { useNavigate } from 'react-router-dom';
 
 const JobListInProgress = () => {
     const { jobs, isLoading, error } = useJobs(null, 'all');
     const [nameFilter, setNameFilter] = useState('');
+    const navigate = useNavigate();
 
     const filteredJobs = jobs.filter((job) =>
         job.status === 'InProgress' && 
@@ -18,6 +21,10 @@ const JobListInProgress = () => {
 
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;
+
+    const handleBack = () => {
+        navigate(`/`);
+    };
 
     return (
         <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg max-w-screen-xl">
@@ -51,6 +58,17 @@ const JobListInProgress = () => {
                     totalPages={totalPages}
                     goToPage={goToPage}
                 />
+            </div>
+
+            <div>
+                <ButtonCancel
+                    type="button"
+                    disabled={isLoading}
+                    onClick={handleBack}
+                    className={'mt-5'}
+                >
+                    Go Back
+                </ButtonCancel>
             </div>
         </div>
     );

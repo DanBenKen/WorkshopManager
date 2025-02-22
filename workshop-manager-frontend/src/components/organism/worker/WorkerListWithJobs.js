@@ -4,10 +4,13 @@ import ErrorMessage from '../../atoms/ErrorMessage';
 import usePagination from '../../../hooks/usePagination';
 import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
+import { useNavigate } from 'react-router-dom';
+import ButtonCancel from '../../atoms/ButtonCancel';
 
 const WorkerListWithJobs = () => {
     const { workers, isLoading, error } = useWorkers(null, 'withJobs');
     const [nameFilter, setNameFilter] = useState('');
+    const navigate = useNavigate();
 
     const filteredWorkers = workers.filter((worker) =>
         nameFilter ? worker.workerName.toLowerCase().includes(nameFilter.toLowerCase()) : true
@@ -17,6 +20,10 @@ const WorkerListWithJobs = () => {
 
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;
+
+    const handleBack = () => {
+        navigate(`/workers`);
+    };
 
     return (
         <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg">
@@ -61,6 +68,17 @@ const WorkerListWithJobs = () => {
                     totalPages={totalPages}
                     goToPage={goToPage}
                 />
+            </div>
+
+            <div>
+                <ButtonCancel
+                    type="button"
+                    disabled={isLoading}
+                    onClick={handleBack}
+                    className={'mt-5'}
+                >
+                    Go Back
+                </ButtonCancel>
             </div>
         </div>
     );

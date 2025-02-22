@@ -4,10 +4,13 @@ import ErrorMessage from '../../atoms/ErrorMessage';
 import usePagination from '../../../hooks/usePagination';
 import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
+import ButtonCancel from '../../atoms/ButtonCancel';
+import { useNavigate } from 'react-router-dom';
 
 const SupplyListWithLowStock = () => {
     const { lowStockSupplies = [], isLoading, error } = useSupplies();
     const [nameFilter, setNameFilter] = useState('');
+    const navigate = useNavigate();
 
     const filteredSupplies = lowStockSupplies.filter((supply) =>
         nameFilter ? supply.name.toLowerCase().includes(nameFilter.toLowerCase()) : true
@@ -17,6 +20,10 @@ const SupplyListWithLowStock = () => {
 
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;
+
+    const handleBack = () => {
+        navigate(`/`);
+    };
 
     return (
         <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg max-w-screen-xl">
@@ -48,8 +55,19 @@ const SupplyListWithLowStock = () => {
                     goToPage={goToPage}
                 />
             </div>
+
+            <div>
+                <ButtonCancel
+                    type="button"
+                    disabled={isLoading}
+                    onClick={handleBack}
+                    className={'mt-5'}
+                >
+                    Go Back
+                </ButtonCancel>
+            </div>
         </div>
-    );    
+    );
 };
 
 export default SupplyListWithLowStock;
