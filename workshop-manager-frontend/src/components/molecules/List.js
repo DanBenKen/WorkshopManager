@@ -7,7 +7,7 @@ import Row from './Row';
 
 const List = ({ data, columns, onDetails, getCustomAction }) => {
     return (
-        <div className="overflow-x-auto flex justify-center w-full">
+        <div className="overflow-x-auto h-[500px] overflow-y-auto flex justify-center w-full">
             <Table className="w-full min-w-[800px] table-fixed border border-gray-300">
                 <TableHeader>
                     {columns.map((col, index) => (
