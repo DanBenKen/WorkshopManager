@@ -72,6 +72,8 @@ const SupplyList = () => {
                 <p className="text-gray-600">Loading...</p>
             ) : error ? (
                 <ErrorMessage message={error} />
+            ) : filteredSupplies.length === 0 ? (
+                <p className="mt-3 text-gray-600 text-center">No results found</p>
             ) : (
                 <div className="overflow-x-auto">
                     <List

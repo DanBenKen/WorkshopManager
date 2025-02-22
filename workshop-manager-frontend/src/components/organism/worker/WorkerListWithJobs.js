@@ -39,28 +39,32 @@ const WorkerListWithJobs = () => {
                 />
             </div>
 
-            <div className="divide-y divide-gray-200">
-                {getPaginatedData(filteredWorkers).map((worker) => (
-                    <div
-                        key={worker.workerId}
-                        className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"
-                    >
-                        <h3 className="text-lg font-semibold text-gray-800">{worker.workerName}</h3>
-                        {worker.jobs.length > 0 ? (
-                            <ul className="list-disc list-inside mt-2 text-gray-700">
-                                {worker.jobs.map((job) => (
-                                    <li key={job.id}>
-                                        <span className="font-medium">{job.jobName}</span> -{' '}
-                                        <span className="italic">{job.status}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-sm text-gray-500 mt-2">No jobs assigned.</p>
-                        )}
-                    </div>
-                ))}
-            </div>
+            {filteredWorkers.length === 0 ? (
+                <p className="mt-3 text-center text-gray-600">No results found</p>
+            ) : (
+                <div className="divide-y divide-gray-200">
+                    {getPaginatedData(filteredWorkers).map((worker) => (
+                        <div
+                            key={worker.workerId}
+                            className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"
+                        >
+                            <h3 className="text-lg font-semibold text-gray-800">{worker.workerName}</h3>
+                            {worker.jobs.length > 0 ? (
+                                <ul className="list-disc list-inside mt-2 text-gray-700">
+                                    {worker.jobs.map((job) => (
+                                        <li key={job.id}>
+                                            <span className="font-medium">{job.jobName}</span> -{' '}
+                                            <span className="italic">{job.status}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-sm text-gray-500 mt-2">No jobs assigned.</p>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
 
             <div>
                 <Pagination

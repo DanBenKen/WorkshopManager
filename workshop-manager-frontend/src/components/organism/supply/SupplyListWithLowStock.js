@@ -37,17 +37,22 @@ const SupplyListWithLowStock = () => {
                     className={"mb-4 w-2/4"}
                 />
             </div>
-            <div className="divide-y divide-gray-200">
-                {getPaginatedData(filteredSupplies).map((supply) => (
-                    <div
-                        key={`${supply.id}-${supply.name}`}
-                        className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"
-                    >
-                        <h3 className="text-lg font-semibold text-gray-800">{supply.name}</h3>
-                        <p className="text-sm text-gray-500 mt-2">Low stock: {supply.quantity}</p>
-                    </div>
-                ))}
-            </div>
+
+            {filteredSupplies.length === 0 ? (
+                <p className="mt-3 text-center text-gray-600">No results found</p>
+            ) : (
+                <div className="divide-y divide-gray-200">
+                    {getPaginatedData(filteredSupplies).map((supply) => (
+                        <div
+                            key={`${supply.id}-${supply.name}`}
+                            className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"
+                        >
+                            <h3 className="text-lg font-semibold text-gray-800">{supply.name}</h3>
+                            <p className="text-sm text-gray-500 mt-2">Low stock: {supply.quantity}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
             <div>
                 <Pagination
                     currentPage={currentPage}

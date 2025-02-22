@@ -39,6 +39,9 @@ const WorkerListWithoutJobs = () => {
                 />
             </div>
 
+            {filteredWorkers.length === 0 ? (
+                <p className="mt-3 text-center text-gray-600">No results found</p>
+            ) : (
             <div className="divide-y divide-gray-200">
                 {getPaginatedData(filteredWorkers).map((worker) => (
                     <div
@@ -50,7 +53,8 @@ const WorkerListWithoutJobs = () => {
                     </div>
                 ))}
             </div>
-
+            )}
+            
             <div>
                 <Pagination
                     currentPage={currentPage}

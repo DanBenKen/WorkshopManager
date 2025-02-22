@@ -22,7 +22,7 @@ const WorkersList = () => {
     const handleDetails = (worker) => {
         navigate(`/workers/details/${worker.id}`);
     };
-    
+
     const columns = [
         { label: 'Full Name', field: 'fullName' },
         { label: 'Position', field: 'position' },
@@ -58,6 +58,8 @@ const WorkersList = () => {
                 <p className="text-gray-600">Loading...</p>
             ) : error ? (
                 <ErrorMessage message={error} />
+            ) : filteredWorkers.length === 0 ? (
+                <p className="mt-3 text-gray-600 text-center">No results found</p>
             ) : (
                 <div className="overflow-x-auto">
                     <List
