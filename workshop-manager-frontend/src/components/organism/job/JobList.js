@@ -49,9 +49,10 @@ const JobList = () => {
     ];
 
     return (
-        <div className="mx-auto px-2 py-8">
+        <div className="max-w-[1000px] mx-auto px-4 py-8">
             <h2 className="text-3xl font-bold mb-4">Jobs</h2>
-            <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row md:items-center md:justify-between gap-4 mb-4">
+
+            <div className="flex flex-col sm:flex-row md:items-center justify-between gap-4 mb-4">
                 <Link to="/jobs/create">
                     <Button className="w-full md:w-auto">Add New Job</Button>
                 </Link>
@@ -61,7 +62,7 @@ const JobList = () => {
                         value={nameFilter}
                         onChange={setNameFilter}
                         placeholder="Filter by name"
-                        className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
+                        className="w-full sm:w-1/3"
                     />
                     <Filter
                         type="select"
@@ -69,7 +70,7 @@ const JobList = () => {
                         value={statusFilter}
                         onChange={setStatusFilter}
                         placeholder="Filter by status"
-                        className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
+                        className="w-full sm:w-1/3"
                     />
                 </div>
             </div>
@@ -79,7 +80,7 @@ const JobList = () => {
             ) : error ? (
                 <ErrorMessage message={error} />
             ) : (
-                <>
+                <div className="overflow-x-auto">
                     <List
                         data={getPaginatedData(filteredJobs)}
                         columns={columns}
@@ -91,7 +92,7 @@ const JobList = () => {
                         totalPages={totalPages}
                         goToPage={goToPage}
                     />
-                </>
+                </div>
             )}
         </div>
     );

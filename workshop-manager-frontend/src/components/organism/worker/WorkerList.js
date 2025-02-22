@@ -29,18 +29,21 @@ const WorkersList = () => {
     ];
 
     return (
-        <div className="mx-auto px-4 py-8">
+        <div className="max-w-[1000px] mx-auto px-4 py-8">
             <h2 className="text-3xl font-bold mb-4">Workers</h2>
-            <div className="flex gap-2 mb-4">
+
+            <div className="flex flex-col sm:flex-row md:items-center justify-between gap-4 mb-4">
                 <Link to="/workers/create">
-                    <Button>Add New Worker</Button>
+                    <Button className="w-full md:w-auto">Add New Worker</Button>
                 </Link>
-                <Link to="/workers/with-jobs">
-                    <Button>Workers with Jobs</Button>
-                </Link>
-                <Link to="/workers/without-jobs">
-                    <Button>Workers without Jobs</Button>
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
+                    <Link to="/workers/with-jobs">
+                        <Button className="w-full md:w-auto">Workers With Jobs</Button>
+                    </Link>
+                    <Link to="/workers/without-jobs">
+                        <Button className="w-full md:w-auto">Workers Without Jobs</Button>
+                    </Link>
+                </div>
             </div>
 
             <Filter
@@ -48,7 +51,7 @@ const WorkersList = () => {
                 value={nameFilter}
                 onChange={setNameFilter}
                 placeholder="Filter by name"
-                className="mb-4 w-full sm:w-2/3 lg:w-1/3 xl:w-1/3"
+                className="mb-3 w-full sm:w-1/3"
             />
 
             {isLoading ? (
@@ -56,7 +59,7 @@ const WorkersList = () => {
             ) : error ? (
                 <ErrorMessage message={error} />
             ) : (
-                <>
+                <div className="overflow-x-auto">
                     <List
                         data={getPaginatedData(filteredWorkers)}
                         columns={columns}
@@ -67,7 +70,7 @@ const WorkersList = () => {
                         totalPages={totalPages}
                         goToPage={goToPage}
                     />
-                </>
+                </div>
             )}
         </div>
     );

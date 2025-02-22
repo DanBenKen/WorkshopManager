@@ -7,15 +7,15 @@ import Row from './Row';
 
 const List = ({ data, columns, onDetails, getCustomAction }) => {
     return (
-        <div className="overflow-x-auto flex justify-center">
-            <Table className="min-w-full">
+        <div className="overflow-x-auto flex justify-center w-full">
+            <Table className="w-full min-w-[800px] table-fixed border border-gray-300">
                 <TableHeader>
                     {columns.map((col, index) => (
-                        <TableCell key={index} className="text-sm font-semibold">
+                        <TableCell key={index} className="text-sm font-semibold w-[500px]">
                             {col.label}
                         </TableCell>
                     ))}
-                    <TableCell className="text-sm font-semibold">Actions</TableCell>
+                    <TableCell className="text-sm font-semibold w-[150px]">Actions</TableCell>
                 </TableHeader>
                 <TableBody>
                     {data.map((item) => (

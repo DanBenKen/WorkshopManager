@@ -25,6 +25,7 @@ const SupplyList = () => {
     const handleDetails = (supply) => {
         navigate(`/supplies/details/${supply.id}`);
     };
+
     const onAddQuantity = (supply) => ({
         label: 'Add Quantity',
         onClick: (quantity) => handleAddMore(supply, quantity),
@@ -42,9 +43,10 @@ const SupplyList = () => {
     ];
 
     return (
-        <div className="mx-auto px-2 py-8">
+        <div className="max-w-[1000px] mx-auto px-4 py-8">
             <h2 className="text-3xl font-bold mb-4">Supplies</h2>
-            <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row md:items-center md:justify-between gap-4 mb-4">
+
+            <div className="flex flex-col sm:flex-row md:items-center justify-between gap-4 mb-4">
                 <Link to="/supplies/create">
                     <Button className="w-full md:w-auto">Add New Supply</Button>
                 </Link>
@@ -54,14 +56,14 @@ const SupplyList = () => {
                         value={nameFilter}
                         onChange={setNameFilter}
                         placeholder="Filter by name"
-                        className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
+                        className="w-full sm:w-1/3"
                     />
                     <Filter
                         type="input"
                         value={typeFilter}
                         onChange={setTypeFilter}
                         placeholder="Filter by type"
-                        className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
+                        className="w-full sm:w-1/3"
                     />
                 </div>
             </div>
@@ -71,7 +73,7 @@ const SupplyList = () => {
             ) : error ? (
                 <ErrorMessage message={error} />
             ) : (
-                <>
+                <div className="overflow-x-auto">
                     <List
                         data={getPaginatedData(filteredSupplies)}
                         columns={columns}
@@ -83,7 +85,7 @@ const SupplyList = () => {
                         totalPages={totalPages}
                         goToPage={goToPage}
                     />
-                </>
+                </div>
             )}
         </div>
     );
