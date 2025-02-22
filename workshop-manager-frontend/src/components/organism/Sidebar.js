@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { logout } from '../services/authService';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { logout } from '../../services/authService';
 
 const Sidebar = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const navigate = useNavigate();
 
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
-
     const closeSidebar = () => setSidebarOpen(false);
 
     const handleLogout = async () => {
         await logout();
         navigate('/account/login');
+    };
+
+    const handleNavigation = (path) => {
+        if (window.location.pathname === path) {
+            window.location.reload();
+        } else {
+            navigate(path);
+        }
+        closeSidebar();
     };
 
     return (
@@ -30,20 +38,20 @@ const Sidebar = () => {
                 } md:translate-x-0 ${isSidebarOpen ? 'block' : 'hidden'} lg:block xl:block`}
             >
                 <div className="text-center py-4">
-                    <Link to="/" className="text-2xl font-bold">Workshop Manager</Link>
+                    <button onClick={() => handleNavigation('/')} className="text-2xl font-bold">Workshop Manager</button>
                 </div>
                 <ul>
                     <li>
-                        <Link to="/" className="text-xl block mb-2 py-2 px-4 hover:bg-gray-700">Admin Dashboard</Link>
+                        <button onClick={() => handleNavigation('/')} className="w-full text-xl block mb-2 py-2 px-4 hover:bg-gray-700 text-left">Admin Dashboard</button>
                     </li>
                     <li>
-                        <Link to="/workers" className="block py-2 px-4 hover:bg-gray-700">Workers</Link>
+                        <button onClick={() => handleNavigation('/workers')} className="w-full block py-2 px-4 hover:bg-gray-700 text-left">Workers</button>
                     </li>
                     <li>
-                        <Link to="/supplies" className="block py-2 px-4 hover:bg-gray-700">Supplies</Link>
+                        <button onClick={() => handleNavigation('/supplies')} className="w-full block py-2 px-4 hover:bg-gray-700 text-left">Supplies</button>
                     </li>
                     <li>
-                        <Link to="/jobs" className="block py-2 px-4 hover:bg-gray-700">Jobs</Link>
+                        <button onClick={() => handleNavigation('/jobs')} className="w-full block py-2 px-4 hover:bg-gray-700 text-left">Jobs</button>
                     </li>
                     <li>
                         <button

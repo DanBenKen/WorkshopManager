@@ -15,12 +15,12 @@ import JobDeletePage from './pages/job/JobDeletePage';
 import SupplyFormPage from './pages/supply/SupplyFormPage';
 import WorkersFormPage from './pages/worker/WorkerFormPage';
 import WorkersListWithJobsPage from './pages/worker/WorkersListWithJobsPage';
-import Sidebar from './pages/Sidebar';
 import AdminDashboard from './pages/AdminDashboard';
 import WorkersListWithoutJobsPage from './pages/worker/WorkersListWithoutJobsPage';
 import SupplyListWithLowStockPage from './pages/supply/SupplyListWithLowStockPage';
 import JobListInProgressPage from './pages/job/JobListInProgressPage';
 import PrivateRoute from './components/organism/auth/PrivateRoute';
+import Sidebar from './components/organism/Sidebar';
 
 const App = () => {
     return (
