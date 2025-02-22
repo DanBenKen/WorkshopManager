@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
     getSupplies, 
     getSupplyById, 
@@ -24,12 +24,23 @@ const useSupplies = () => {
         console.error(error);
     };
 
+    const handleAsyncAction = useCallback(async (actionFunc) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            await actionFunc();
+            return true;
+        } catch (error) {
+            handleError(error);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
         const fetchData = async () => {
-            setIsLoading(true);
-            setError(null);
-
-            try {
+            await handleAsyncAction(async () => {
                 const [suppliesData, total, lowStockCount, lowStockData] = await Promise.all([
                     getSupplies(),
                     getTotalSuppliesCount(),
@@ -40,65 +51,39 @@ const useSupplies = () => {
                 setTotalSupplies(total);
                 setLowStockSuppliesCount(lowStockCount);
                 setLowStockSupplies(lowStockData);
-            } catch (error) {
-                handleError(error);
-            } finally {
-                setIsLoading(false);
-            }
+            });
         };
 
         fetchData();
-    }, []);
+    }, [handleAsyncAction]);
 
     const fetchSupplyById = async (id) => {
-        setIsLoading(true);
-        setError(null);
-
-        try {
+        await handleAsyncAction(async () => {
             const data = await getSupplyById(id);
             setSupply(data);
-        } catch (error) {
-            handleError(error);
-        } finally {
-            setIsLoading(false);
-        }
+        });
     };
 
     const handleCreateSupply = async (supplyData) => {
-        setIsLoading(true);
-        setError(null);
-
-        try {
+        const success = await handleAsyncAction(async () => {
             const createdSupply = await createSupply(supplyData);
             setSupplies((prev) => [...prev, createdSupply]);
-        } catch (error) {
-            handleError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        });
+        return success;
+    };    
 
     const handleUpdateSupply = async (id, supplyData) => {
-        setIsLoading(true);
-        setError(null);
-
-        try {
+        const success = await handleAsyncAction(async () => {
             const updatedSupply = await updateSupply(id, supplyData);
             setSupplies((prev) =>
                 prev.map((supply) => (supply.id === id ? updatedSupply : supply))
             );
-        } catch (error) {
-            handleError(error);
-        } finally {
-            setIsLoading(false);
-        }
+        });
+        return success;
     };
 
     const handleUpdateQuantity = async (id, quantity) => {
-        setIsLoading(true);
-        setError(null);
-
-        try {
+        await handleAsyncAction(async () => {
             const supply = await getSupplyById(id);
             if (supply.quantity < quantity) {
                 throw new Error('Insufficient stock quantity.');
@@ -110,24 +95,14 @@ const useSupplies = () => {
             setSupplies((prev) =>
                 prev.map((item) => (item.id === id ? updatedSupply : item))
             );
-        } catch (error) {
-            handleError(error);
-        } finally {
-            setIsLoading(false);
-        }
+        });
     };
 
     const handleDeleteSupply = async (id) => {
-        setIsLoading(true);
-
-        try {
+        await handleAsyncAction(async () => {
             await deleteSupply(id);
             setSupplies((prev) => prev.filter((supply) => supply.id !== id));
-        } catch (err) {
-            handleError(err);
-        } finally {
-            setIsLoading(false);
-        }
+        });
     };
 
     const handleAddMoreQuantity = async (supply, quantityToAdd) => {
@@ -136,10 +111,7 @@ const useSupplies = () => {
             return;
         }
 
-        setIsLoading(true);
-        setError(null);
-
-        try {
+        await handleAsyncAction(async () => {
             const updatedSupply = { ...supply, quantity: supply.quantity + quantityToAdd };
 
             setSupplies((prevSupplies) =>
@@ -149,18 +121,7 @@ const useSupplies = () => {
             );
 
             await updateSupply(supply.id, updatedSupply);
-
-        } catch (error) {
-            handleError(error);
-
-            setSupplies((prevSupplies) =>
-                prevSupplies.map((item) =>
-                    item.id === supply.id ? supply : item
-                )
-            );
-        } finally {
-            setIsLoading(false);
-        }
+        });
     };
 
     return {
