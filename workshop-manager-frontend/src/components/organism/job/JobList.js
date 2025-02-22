@@ -16,7 +16,7 @@ const JobList = () => {
 
     const filteredJobs = jobs.filter((job) => {
         const matchesName = nameFilter ? job.jobName.toLowerCase().includes(nameFilter.toLowerCase()) : true;
-        const matchesStatus = statusFilter ? job.status === statusFilter : true;
+        const matchesStatus = statusFilter ? job.status.toLowerCase() === statusFilter.toLowerCase() : true;
         return matchesName && matchesStatus;
     });
 
@@ -49,27 +49,29 @@ const JobList = () => {
     ];
 
     return (
-        <div className="mx-auto p-2">
+        <div className="mx-auto px-2 py-8">
             <h2 className="text-3xl font-bold mb-4">Jobs</h2>
-            <Link to="/jobs/create" className="inline-block mb-4">
-                <Button>Add New Job</Button>
-            </Link>
-            <div className="flex flex-col sm:flex-row mb-3">
-                <Filter
-                    type="select"
-                    options={statusOptions}
-                    value={statusFilter}
-                    onChange={setStatusFilter}
-                    placeholder="Filter by status"
-                    className="w-full mb-2 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
-                />
-                <Filter
-                    type="input"
-                    value={nameFilter}
-                    onChange={setNameFilter}
-                    placeholder="Filter by name"
-                    className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
-                />
+            <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row md:items-center md:justify-between gap-4 mb-4">
+                <Link to="/jobs/create">
+                    <Button className="w-full md:w-auto">Add New Job</Button>
+                </Link>
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
+                    <Filter
+                        type="input"
+                        value={nameFilter}
+                        onChange={setNameFilter}
+                        placeholder="Filter by name"
+                        className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
+                    />
+                    <Filter
+                        type="select"
+                        options={statusOptions}
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        placeholder="Filter by status"
+                        className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3"
+                    />
+                </div>
             </div>
 
             {isLoading ? (
