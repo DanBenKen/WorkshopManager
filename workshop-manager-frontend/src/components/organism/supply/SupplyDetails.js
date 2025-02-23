@@ -21,14 +21,14 @@ const SupplyDetails = () => {
     const handleBack = () => {
         navigate(`/supplies/`);
     };
-    
+
     const handleEdit = (supply) => {
         navigate(`/supplies/edit/${supply.id}`);
     };
-    
+
     const handleDelete = (supply) => {
         navigate(`/supplies/delete/${supply.id}`);
-    };    
+    };
 
     if (error) {
         return (

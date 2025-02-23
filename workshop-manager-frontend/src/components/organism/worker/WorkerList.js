@@ -26,10 +26,10 @@ const WorkersList = () => {
         navigate(`/workers/details/${worker.id}`);
     };
 
-    const columns = () => [
+    const columns = [
         { label: 'Full Name', field: 'fullName' },
         { label: 'Position', field: 'position' },
-    ];
+    ];    
 
     return (
         <div className="max-w-[1000px] mx-auto px-4 py-8">

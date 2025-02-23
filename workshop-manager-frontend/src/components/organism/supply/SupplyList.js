@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
@@ -26,13 +26,13 @@ const SupplyList = () => {
 
     const paginatedData = useMemo(() => getPaginatedData(filteredSupplies), [getPaginatedData, filteredSupplies]);
 
-    const handleDetails = useCallback((supply) => {
+    const handleDetails = (supply) => {
         navigate(`/supplies/details/${supply.id}`);
-    }, [navigate]);
+    };
 
-    const handleAddMore = useCallback((supply, quantity) => {
+    const handleAddMore = (supply, quantity) => {
         handleAddMoreQuantity(supply, quantity);
-    }, [handleAddMoreQuantity]);
+    };
 
     const onAddQuantity = (supply) => ({
         label: 'Add Quantity',

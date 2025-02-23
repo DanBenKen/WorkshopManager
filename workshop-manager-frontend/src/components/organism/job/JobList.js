@@ -46,11 +46,11 @@ const JobList = () => {
         { label: 'Description', field: 'description' },
         { label: 'Status', field: 'status' },
     ];
-
-    const statusOptions = () => [
+    
+    const statusOptions = [
         { label: 'In Progress', value: 'InProgress' },
         { label: 'Completed', value: 'Completed' },
-    ];
+    ];   
 
     return (
         <div className="max-w-[1000px] mx-auto px-4 py-8">

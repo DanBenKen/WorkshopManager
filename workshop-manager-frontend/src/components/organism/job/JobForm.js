@@ -82,10 +82,10 @@ const JobForm = () => {
         }
     };
 
-    const statusOptions = () => [
+    const statusOptions = [
         { value: 1, label: 'In Progress' },
         { value: 2, label: 'Completed' }
-    ];
+    ];    
 
     return (
         <div>

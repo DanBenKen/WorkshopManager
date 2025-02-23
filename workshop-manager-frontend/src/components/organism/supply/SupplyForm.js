@@ -31,18 +31,16 @@ const SupplyForm = () => {
     );
 
     useEffect(() => {
-        if (isEditMode && !supply) {
-            fetchSupplyById(supplyId);
+        if (isEditMode) {
+            if (!supply) {
+                fetchSupplyById(supplyId);
+            } else {
+                setName(supply.name);
+                setQuantity(supply.quantity);
+                setType(supply.type);
+            }
         }
-    }, [supplyId, isEditMode, supply, fetchSupplyById]);
-
-    useEffect(() => {
-        if (supply) {
-            setName(supply.name);
-            setQuantity(supply.quantity);
-            setType(supply.type);
-        }
-    }, [supply]);
+    }, [supplyId, isEditMode, supply, fetchSupplyById]);    
 
     const handleSubmit = async (e) => {
         e.preventDefault();

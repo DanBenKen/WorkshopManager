@@ -12,7 +12,7 @@ namespace WorkshopManager.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        private const int lowStockThreshold = 5;
+        private const int lowStockThreshold = 6;
 
         public SupplyService(IUnitOfWork unitOfWork, IMapper mapper)
         {
