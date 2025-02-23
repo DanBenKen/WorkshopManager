@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createJob, getJobs, updateJob, getJobById, deleteJob, getTotalCompletedJobs, getJobsInProgressCount } from '../services/jobService';
 import { getSupplyById, updateSupply } from '../services/supplyService';
 import { getWorkerById } from '../services/workerService';
@@ -11,11 +11,11 @@ const useJobs = (jobId, fetchType = 'all') => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const handleError = (error) => {
+    const handleError = useCallback((error) => {
         setError(Array.isArray(error) ? error : [error.message || 'An unknown error occurred.']);
-    };
+    }, []);
 
-    const handleAsyncAction = async (actionFunc) => {
+    const handleAsyncAction = useCallback(async (actionFunc) => {
         setIsLoading(true);
         setError(null);
         try {
@@ -27,33 +27,34 @@ const useJobs = (jobId, fetchType = 'all') => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [handleError]);
+
+    const fetchData = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            if (jobId) {
+                setJob(await getJobById(jobId));
+            } else {
+                const dataFetchers = {
+                    'completedCount': async () => setTotalCompleted(await getTotalCompletedJobs()),
+                    'inProgressCount': async () => setInProgress(await getJobsInProgressCount()),
+                    'all': async () => setJobs(await getJobs())
+                };
+                await dataFetchers[fetchType]?.();
+            }
+        } catch (error) {
+            handleError(error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [jobId, fetchType, handleError]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            setError(null);
-            try {
-                if (jobId) {
-                    setJob(await getJobById(jobId));
-                } else {
-                    const dataFetchers = {
-                        'completedCount': async () => setTotalCompleted(await getTotalCompletedJobs()),
-                        'inProgressCount': async () => setInProgress(await getJobsInProgressCount()),
-                        'all': async () => setJobs(await getJobs())
-                    };
-                    await dataFetchers[fetchType]?.();
-                }
-            } catch (error) {
-                handleError(error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
         fetchData();
-    }, [jobId, fetchType]);
+    }, [fetchData]);
 
-    const validateJobData = async (jobData) => {
+    const validateJobData = useCallback(async (jobData) => {
         const errors = [];
         let supply = null;
 
@@ -76,26 +77,26 @@ const useJobs = (jobId, fetchType = 'all') => {
 
         if (errors.length) throw errors;
         return supply;
-    };
+    }, []);
 
-    const adjustSupplyQuantity = async (supplyId, oldQuantity, newQuantity) => {
+    const adjustSupplyQuantity = useCallback(async (supplyId, oldQuantity, newQuantity) => {
         const supply = await getSupplyById(supplyId);
         const diff = newQuantity - oldQuantity;
         if (diff > 0 && supply.quantity < diff) {
             throw new Error('Entered quantity exceeds available stock.');
         }
         await updateSupply(supplyId, { ...supply, quantity: supply.quantity - diff });
-    };
+    }, []);
 
-    const handleCreateJob = async (jobData) => handleAsyncAction(async () => {
+    const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
         const supply = await validateJobData(jobData);
         if (supply) {
             await updateSupply(jobData.supplyId, { ...supply, quantity: supply.quantity - jobData.supplyQuantity });
         }
         await createJob(jobData);
-    });
+    }), [handleAsyncAction, validateJobData]);
 
-    const handleUpdateJob = async (id, jobData) => handleAsyncAction(async () => {
+    const handleUpdateJob = useCallback(async (id, jobData) => handleAsyncAction(async () => {
         const currentJob = await getJobById(id);
         if (!currentJob) throw new Error(`Job with ID ${id} not found.`);
 
@@ -103,18 +104,18 @@ const useJobs = (jobId, fetchType = 'all') => {
             await adjustSupplyQuantity(jobData.supplyId, currentJob.supplyQuantity, jobData.supplyQuantity);
         }
         await updateJob(id, jobData);
-    });
+    }), [handleAsyncAction, adjustSupplyQuantity]);
 
-    const handleDeleteJob = async (id) => handleAsyncAction(async () => {
+    const handleDeleteJob = useCallback(async (id) => handleAsyncAction(async () => {
         await deleteJob(id);
         setJobs((prevJobs) => prevJobs.filter(job => job.id !== id));
-    });
+    }), [handleAsyncAction]);
 
-    const handleSetCompleted = async (job) => handleAsyncAction(async () => {
+    const handleSetCompleted = useCallback(async (job) => handleAsyncAction(async () => {
         const updatedJob = { ...job, status: 'Completed' };
         await updateJob(job.id, updatedJob);
         setJobs((prevJobs) => prevJobs.map(j => (j.id === job.id ? updatedJob : j)));
-    });
+    }), [handleAsyncAction]);
 
     return {
         jobs, job, isLoading, error, inProgress, totalCompleted,

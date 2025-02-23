@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import useJobs from '../../../hooks/useJobs';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Pagination from '../../molecules/Pagination';
@@ -12,19 +12,23 @@ const JobListInProgress = () => {
     const [nameFilter, setNameFilter] = useState('');
     const navigate = useNavigate();
 
-    const filteredJobs = jobs.filter((job) =>
-        job.status === 'InProgress' && 
-        (nameFilter ? job.jobName.toLowerCase().includes(nameFilter.toLowerCase()) : true)
-    );
+    const filteredJobs = useMemo(() => {
+        return jobs.filter((job) =>
+            job.status === 'InProgress' &&
+            (nameFilter ? job.jobName.toLowerCase().includes(nameFilter.toLowerCase()) : true)
+        );
+    }, [jobs, nameFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredJobs, 5);
 
+    const paginatedData = useMemo(() => getPaginatedData(filteredJobs), [getPaginatedData, filteredJobs]);
+
+    const handleBack = useCallback(() => {
+        navigate(`/`);
+    }, [navigate]);
+
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;
-
-    const handleBack = () => {
-        navigate(`/`);
-    };
 
     return (
         <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg max-w-screen-xl">
@@ -44,7 +48,7 @@ const JobListInProgress = () => {
                 <p className="mt-3 text-center text-gray-600">No results found</p>
             ) : (
                 <div className="divide-y divide-gray-200">
-                    {getPaginatedData(filteredJobs).map((job) => (
+                    {paginatedData.map((job) => (
                         <div
                             key={job.id}
                             className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"

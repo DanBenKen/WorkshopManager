@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import FormField from '../../molecules/FormField';
 import useJobs from '../../../hooks/useJobs';
@@ -44,7 +44,7 @@ const JobForm = () => {
         }
     }, [job]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         resetErrors();
         const isValidForm = validateForm();
@@ -72,15 +72,20 @@ const JobForm = () => {
         if (success) {
             navigate('/jobs');
         }
-    };
+    }, [validateForm, resetErrors, handleCreateJob, handleUpdateJob, navigate, isEditMode, jobId, formJobName, formDescription, formStatus, formWorkerId, formSupplyId, formQuantity]);
 
-    const handleBack = (job) => {
-        if (isEditMode) {
+    const handleBack = useCallback(() => {
+        if (isEditMode && job) {
             navigate(`/jobs/details/${job.id}`);
         } else {
             navigate('/jobs');
         }
-    };
+    }, [navigate, isEditMode, job]);
+
+    const statusOptions = useMemo(() => [
+        { value: 1, label: 'In Progress' },
+        { value: 2, label: 'Completed' }
+    ], []);
 
     return (
         <div>
@@ -112,10 +117,7 @@ const JobForm = () => {
                     name="status"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    options={[
-                        { value: 1, label: 'In Progress' },
-                        { value: 2, label: 'Completed' }
-                    ]}
+                    options={statusOptions}
                 />
                 <FormField
                     label="Worker ID"

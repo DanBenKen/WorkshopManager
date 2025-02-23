@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
@@ -14,19 +14,23 @@ const JobList = () => {
     const [statusFilter, setStatusFilter] = useState('');
     const navigate = useNavigate();
 
-    const filteredJobs = jobs.filter((job) => {
-        const matchesName = nameFilter ? job.jobName.toLowerCase().includes(nameFilter.toLowerCase()) : true;
-        const matchesStatus = statusFilter ? job.status.toLowerCase() === statusFilter.toLowerCase() : true;
-        return matchesName && matchesStatus;
-    });
+    const filteredJobs = useMemo(() => {
+        return jobs.filter((job) => {
+            const matchesName = nameFilter ? job.jobName.toLowerCase().includes(nameFilter.toLowerCase()) : true;
+            const matchesStatus = statusFilter ? job.status.toLowerCase() === statusFilter.toLowerCase() : true;
+            return matchesName && matchesStatus;
+        });
+    }, [jobs, nameFilter, statusFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredJobs, 5);
 
-    const handleDetails = (job) => {
-        navigate(`/jobs/details/${job.id}`);
-    };
+    const paginatedData = useMemo(() => getPaginatedData(filteredJobs), [getPaginatedData, filteredJobs]);
 
-    const handleComplete = (job) => {
+    const handleDetails = useCallback((job) => {
+        navigate(`/jobs/details/${job.id}`);
+    }, [navigate]);
+
+    const handleComplete = useCallback((job) => {
         if (job.status === 'InProgress') {
             return {
                 label: 'Complete Job',
@@ -35,7 +39,7 @@ const JobList = () => {
             };
         }
         return null;
-    };
+    }, [handleSetCompleted]);
 
     const columns = [
         { label: 'Job Name', field: 'jobName' },
@@ -43,10 +47,10 @@ const JobList = () => {
         { label: 'Status', field: 'status' },
     ];
 
-    const statusOptions = [
+    const statusOptions = useMemo(() => [
         { label: 'In Progress', value: 'InProgress' },
         { label: 'Completed', value: 'Completed' },
-    ];
+    ], []);
 
     return (
         <div className="max-w-[1000px] mx-auto px-4 py-8">
@@ -84,7 +88,7 @@ const JobList = () => {
             ) : (
                 <div className="overflow-x-auto">
                     <List
-                        data={getPaginatedData(filteredJobs)}
+                        data={paginatedData}
                         columns={columns}
                         getCustomAction={handleComplete}
                         onDetails={handleDetails}
