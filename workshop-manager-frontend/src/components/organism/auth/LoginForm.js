@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import useAuth from '../../../hooks/useAuth';
 import Button from '../../atoms/Button';
 import FormField from '../../molecules/FormField';
@@ -21,27 +21,26 @@ const LoginForm = () => {
         validateForm,
     } = useValidation({ email: '', password: '' }, validateLogin);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = useCallback(async (event) => {
         event.preventDefault();
         resetErrors();
-    
+
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length) {
             return;
         }
-    
+
         setIsButtonLoading(true);
-    
+
         const isSuccess = await handleLogin({ email, password });
-    
+
         if (isSuccess) {
             setSuccessMessage("Login successful!");
             setTimeout(() => navigate('/'), 1000);
         } else {
             setIsButtonLoading(false);
         }
-    };
-    
+    }, [email, password, handleLogin, navigate, resetErrors, validateForm]);
 
     return (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">

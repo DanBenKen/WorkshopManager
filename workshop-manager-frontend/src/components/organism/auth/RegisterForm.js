@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import useAuth from '../../../hooks/useAuth';
 import Button from '../../atoms/Button';
 import FormField from '../../molecules/FormField';
@@ -21,7 +21,7 @@ const RegisterForm = () => {
         validateForm,
     } = useValidation({ username: '', email: '', password: '', confirmPassword: '' }, validateRegistration);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         resetErrors();
 
@@ -41,10 +41,9 @@ const RegisterForm = () => {
             setSuccessMessage("Registration successful!");
             setTimeout(() => navigate('/account/login'), 1000);
         } else {
-
             setIsButtonLoading(false);
         }
-    };
+    }, [username, email, password, confirmPassword, handleRegister, navigate, resetErrors, validateForm]);
 
     return (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
