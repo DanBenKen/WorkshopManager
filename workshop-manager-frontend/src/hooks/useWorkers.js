@@ -1,15 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  createWorker, 
-  getWorkers, 
-  updateWorker, 
-  getWorkerById, 
-  deleteWorker, 
-  getWorkersWithJobs, 
-  getWorkersCount, 
-  getUnemployedWorkersCount, 
-  getWorkersWithoutJobs 
-} from '../services/workerService';
+import { createWorker, getWorkers, updateWorker, getWorkerById, deleteWorker, getWorkersWithJobs, getWorkersCount, getUnemployedWorkersCount, getWorkersWithoutJobs } from '../services/workerService';
 
 const enhanceWorkerData = (workerData) => ({
     ...workerData,
