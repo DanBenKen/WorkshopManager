@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createJob, getJobs, updateJob, getJobById, deleteJob, getTotalCompletedJobs, getJobsInProgressCount } from '../services/jobService';
 import { getSupplyById, updateSupply } from '../services/supplyService';
 import { getWorkerById } from '../services/workerService';
@@ -10,6 +10,12 @@ const useJobs = (jobId, fetchType = 'all') => {
     const [inProgress, setInProgress] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const dataFetchers = useMemo(() => ({
+        'completedCount': async () => setTotalCompleted(await getTotalCompletedJobs()),
+        'inProgressCount': async () => setInProgress(await getJobsInProgressCount()),
+        'all': async () => setJobs(await getJobs())
+    }), []);
 
     const handleError = useCallback((error) => {
         setError(Array.isArray(error) ? error : [error.message || 'An unknown error occurred.']);
@@ -36,11 +42,6 @@ const useJobs = (jobId, fetchType = 'all') => {
             if (jobId) {
                 setJob(await getJobById(jobId));
             } else {
-                const dataFetchers = {
-                    'completedCount': async () => setTotalCompleted(await getTotalCompletedJobs()),
-                    'inProgressCount': async () => setInProgress(await getJobsInProgressCount()),
-                    'all': async () => setJobs(await getJobs())
-                };
                 await dataFetchers[fetchType]?.();
             }
         } catch (error) {
@@ -48,7 +49,7 @@ const useJobs = (jobId, fetchType = 'all') => {
         } finally {
             setIsLoading(false);
         }
-    }, [jobId, fetchType, handleError]);
+    }, [jobId, fetchType, handleError, dataFetchers]);
 
     useEffect(() => {
         fetchData();
