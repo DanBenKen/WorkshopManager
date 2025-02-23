@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import useWorkers from '../../../hooks/useWorkers';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import usePagination from '../../../hooks/usePagination';
@@ -12,18 +12,18 @@ const WorkerListWithoutJobs = () => {
     const [nameFilter, setNameFilter] = useState('');
     const navigate = useNavigate();
 
-    const filteredWorkers = workers.filter((worker) =>
+    const filteredWorkers = useMemo(() => workers.filter((worker) =>
         nameFilter ? worker.fullName.toLowerCase().includes(nameFilter.toLowerCase()) : true
-    );
+    ), [workers, nameFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 5);
 
+    const handleBack = useCallback(() => {
+        navigate(`/`);
+    }, [navigate]);
+
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;
-
-    const handleBack = () => {
-        navigate(`/`);
-    };
 
     return (
         <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg max-w-screen-xl">
@@ -42,19 +42,19 @@ const WorkerListWithoutJobs = () => {
             {filteredWorkers.length === 0 ? (
                 <p className="mt-3 text-center text-gray-600">No results found</p>
             ) : (
-            <div className="divide-y divide-gray-200">
-                {getPaginatedData(filteredWorkers).map((worker) => (
-                    <div
-                        key={`${worker.workerId}-${worker.fullName}`}
-                        className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"
-                    >
-                        <h3 className="text-lg font-semibold text-gray-800">{worker.fullName}</h3>
-                        <p className="text-sm text-gray-500 mt-2">No jobs assigned.</p>
-                    </div>
-                ))}
-            </div>
+                <div className="divide-y divide-gray-200">
+                    {getPaginatedData(filteredWorkers).map((worker) => (
+                        <div
+                            key={`${worker.workerId}-${worker.fullName}`}
+                            className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"
+                        >
+                            <h3 className="text-lg font-semibold text-gray-800">{worker.fullName}</h3>
+                            <p className="text-sm text-gray-500 mt-2">No jobs assigned.</p>
+                        </div>
+                    ))}
+                </div>
             )}
-            
+
             <div>
                 <Pagination
                     currentPage={currentPage}

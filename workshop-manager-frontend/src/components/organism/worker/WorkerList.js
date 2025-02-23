@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
@@ -14,22 +14,22 @@ const WorkersList = () => {
     const [positionFilter, setPositionFilter] = useState('');
     const navigate = useNavigate();
 
-    const filteredWorkers = workers.filter((worker) => {
+    const filteredWorkers = useMemo(() => workers.filter((worker) => {
         const matchesName = nameFilter ? worker.fullName.toLowerCase().includes(nameFilter.toLowerCase()) : true;
         const matchesPosition = positionFilter ? worker.position.toLowerCase().includes(positionFilter.toLowerCase()) : true;
         return matchesName && matchesPosition;
-    });
+    }), [workers, nameFilter, positionFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 5);
 
-    const handleDetails = (worker) => {
+    const handleDetails = useCallback((worker) => {
         navigate(`/workers/details/${worker.id}`);
-    };
+    }, [navigate]);
 
-    const columns = [
+    const columns = useMemo(() => [
         { label: 'Full Name', field: 'fullName' },
         { label: 'Position', field: 'position' },
-    ];
+    ], []);
 
     return (
         <div className="max-w-[1000px] mx-auto px-4 py-8">

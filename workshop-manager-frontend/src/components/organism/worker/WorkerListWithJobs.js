@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import useWorkers from '../../../hooks/useWorkers';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import usePagination from '../../../hooks/usePagination';
@@ -12,18 +12,18 @@ const WorkerListWithJobs = () => {
     const [nameFilter, setNameFilter] = useState('');
     const navigate = useNavigate();
 
-    const filteredWorkers = workers.filter((worker) =>
+    const filteredWorkers = useMemo(() => workers.filter((worker) =>
         nameFilter ? worker.workerName.toLowerCase().includes(nameFilter.toLowerCase()) : true
-    );
+    ), [workers, nameFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 5);
 
+    const handleBack = useCallback(() => {
+        navigate(`/workers`);
+    }, [navigate]);
+
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;
-
-    const handleBack = () => {
-        navigate(`/workers`);
-    };
 
     return (
         <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Details from '../../molecules/Details';
@@ -12,17 +12,17 @@ const WorkerDetails = () => {
     const { worker, isLoading, error } = useWorkers(workerId);
     const navigate = useNavigate();
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         navigate(`/workers`);
-    };
+    }, [navigate]);
 
-    const handleEdit = (worker) => {
+    const handleEdit = useCallback((worker) => {
         navigate(`/workers/edit/${worker.id}`);
-    };
+    }, [navigate]);
 
-    const handleDelete = (worker) => {
+    const handleDelete = useCallback((worker) => {
         navigate(`/workers/delete/${worker.id}`);
-    };
+    }, [navigate]);
 
     if (error) {
         return (
