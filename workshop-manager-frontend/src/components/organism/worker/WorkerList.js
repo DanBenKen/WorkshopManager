@@ -11,11 +11,14 @@ import Filter from '../../molecules/Filter';
 const WorkersList = () => {
     const { workers, isLoading, error } = useWorkers(null, 'all');
     const [nameFilter, setNameFilter] = useState('');
+    const [positionFilter, setPositionFilter] = useState('');
     const navigate = useNavigate();
 
-    const filteredWorkers = workers.filter((worker) =>
-        nameFilter ? worker.fullName.toLowerCase().includes(nameFilter.toLowerCase()) : true
-    );
+    const filteredWorkers = workers.filter((worker) => {
+        const matchesName = nameFilter ? worker.fullName.toLowerCase().includes(nameFilter.toLowerCase()) : true;
+        const matchesPosition = positionFilter ? worker.position.toLowerCase().includes(positionFilter.toLowerCase()) : true;
+        return matchesName && matchesPosition;
+    });
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 5);
 
@@ -46,13 +49,22 @@ const WorkersList = () => {
                 </div>
             </div>
 
-            <Filter
-                type="input"
-                value={nameFilter}
-                onChange={setNameFilter}
-                placeholder="Filter by name"
-                className="mb-3 w-full sm:w-1/3"
-            />
+            <div className="flex gap-4 mb-3">
+                <Filter
+                    type="input"
+                    value={nameFilter}
+                    onChange={setNameFilter}
+                    placeholder="Filter by name"
+                    className="w-full sm:w-1/3"
+                />
+                <Filter
+                    type="input"
+                    value={positionFilter}
+                    onChange={setPositionFilter}
+                    placeholder="Filter by position"
+                    className="w-full sm:w-1/3"
+                />
+            </div>
 
             {isLoading ? (
                 <p className="text-gray-600">Loading...</p>
