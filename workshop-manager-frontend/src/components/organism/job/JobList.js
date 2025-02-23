@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
@@ -26,11 +26,11 @@ const JobList = () => {
 
     const paginatedData = useMemo(() => getPaginatedData(filteredJobs), [getPaginatedData, filteredJobs]);
 
-    const handleDetails = useCallback((job) => {
+    const handleDetails = (job) => {
         navigate(`/jobs/details/${job.id}`);
-    }, [navigate]);
+    };
 
-    const handleComplete = useCallback((job) => {
+    const handleComplete = (job) => {
         if (job.status === 'InProgress') {
             return {
                 label: 'Complete Job',
@@ -39,7 +39,7 @@ const JobList = () => {
             };
         }
         return null;
-    }, [handleSetCompleted]);
+    };
 
     const columns = [
         { label: 'Job Name', field: 'jobName' },
@@ -47,10 +47,10 @@ const JobList = () => {
         { label: 'Status', field: 'status' },
     ];
 
-    const statusOptions = useMemo(() => [
+    const statusOptions = () => [
         { label: 'In Progress', value: 'InProgress' },
         { label: 'Completed', value: 'Completed' },
-    ], []);
+    ];
 
     return (
         <div className="max-w-[1000px] mx-auto px-4 py-8">

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DeleteConfirmation from '../../molecules/DeleteConfirmation';
 import useWorkers from '../../../hooks/useWorkers';
@@ -8,18 +8,18 @@ const WorkerDelete = () => {
     const navigate = useNavigate();
     const { worker, handleDeleteWorker } = useWorkers(workerId);
 
-    const handleConfirm = useCallback(async () => {
+    const handleConfirm = async () => {
         if (worker) {
             await handleDeleteWorker(worker.id);
             navigate('/workers');
         }
-    }, [worker, handleDeleteWorker, navigate]);
+    };    
 
-    const handleCancel = useCallback(() => {
+    const handleCancel = () => {
         if (worker) {
             navigate(`/workers/details/${worker.id}`);
         }
-    }, [worker, navigate]);
+    };
 
     return (
         <DeleteConfirmation

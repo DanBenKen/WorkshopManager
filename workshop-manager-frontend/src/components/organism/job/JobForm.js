@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import FormField from '../../molecules/FormField';
 import useJobs from '../../../hooks/useJobs';
@@ -74,18 +74,18 @@ const JobForm = () => {
         }
     }, [validateForm, resetErrors, handleCreateJob, handleUpdateJob, navigate, isEditMode, jobId, formJobName, formDescription, formStatus, formWorkerId, formSupplyId, formQuantity]);
 
-    const handleBack = useCallback(() => {
+    const handleBack = () => {
         if (isEditMode && job) {
             navigate(`/jobs/details/${job.id}`);
         } else {
             navigate('/jobs');
         }
-    }, [navigate, isEditMode, job]);
+    };
 
-    const statusOptions = useMemo(() => [
+    const statusOptions = () => [
         { value: 1, label: 'In Progress' },
         { value: 2, label: 'Completed' }
-    ], []);
+    ];
 
     return (
         <div>

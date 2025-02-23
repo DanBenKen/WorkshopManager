@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import FormField from '../../molecules/FormField';
 import useSupplies from '../../../hooks/useSupplies';
@@ -44,34 +44,34 @@ const SupplyForm = () => {
         }
     }, [supply]);
 
-    const handleSubmit = useCallback(async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         resetErrors();
         const isValidForm = validateForm();
         if (!isValidForm) return;
-
+    
         const supplyData = {
             name: formName,
             quantity: parseInt(formQuantity, 10),
             type: formType,
         };
-
+    
         const success = isEditMode
             ? await handleUpdateSupply(supplyId, supplyData)
             : await handleCreateSupply(supplyData);
-
+    
         if (success) {
             navigate('/supplies');
         }
-    }, [validateForm, resetErrors, handleCreateSupply, handleUpdateSupply, navigate, isEditMode, supplyId, formName, formQuantity, formType]);
-
-    const handleBack = useCallback(() => {
+    };
+    
+    const handleBack = () => {
         if (isEditMode && supply) {
             navigate(`/supplies/details/${supply.id}`);
         } else {
             navigate('/supplies');
         }
-    }, [navigate, isEditMode, supply]);
+    };    
 
     return (
         <div>

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DeleteConfirmation from '../../molecules/DeleteConfirmation';
 import useSupplies from '../../../hooks/useSupplies';
@@ -8,15 +8,15 @@ const SupplyDelete = () => {
     const navigate = useNavigate();
     const { handleDeleteSupply } = useSupplies();
 
-    const handleConfirm = useCallback(async () => {
+    const handleConfirm = async () => {
         await handleDeleteSupply(supplyId);
         navigate('/supplies');
-    }, [handleDeleteSupply, supplyId, navigate]);
-
-    const handleCancel = useCallback(() => {
+    };
+    
+    const handleCancel = () => {
         navigate(`/supplies/details/${supplyId}`);
-    }, [navigate, supplyId]);
-
+    };
+    
     return (
         <DeleteConfirmation
             itemName={`Supply #${supplyId}`}

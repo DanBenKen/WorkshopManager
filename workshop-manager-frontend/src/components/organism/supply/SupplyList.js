@@ -34,11 +34,11 @@ const SupplyList = () => {
         handleAddMoreQuantity(supply, quantity);
     }, [handleAddMoreQuantity]);
 
-    const onAddQuantity = useCallback((supply) => ({
+    const onAddQuantity = (supply) => ({
         label: 'Add Quantity',
         onClick: (quantity) => handleAddMore(supply, quantity),
         requiresInput: true,
-    }), [handleAddMore]);
+     });     
 
     const columns = [
         { label: 'Name', field: 'name' },

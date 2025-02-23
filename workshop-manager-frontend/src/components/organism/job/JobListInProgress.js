@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import useJobs from '../../../hooks/useJobs';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Pagination from '../../molecules/Pagination';
@@ -23,9 +23,9 @@ const JobListInProgress = () => {
 
     const paginatedData = useMemo(() => getPaginatedData(filteredJobs), [getPaginatedData, filteredJobs]);
 
-    const handleBack = useCallback(() => {
+    const handleBack = () => {
         navigate(`/`);
-    }, [navigate]);
+    };
 
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;

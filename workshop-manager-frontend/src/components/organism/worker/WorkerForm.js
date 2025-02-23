@@ -65,13 +65,13 @@ const WorkerForm = () => {
         }
     }, [validateForm, resetErrors, handleCreateWorker, handleUpdateWorker, navigate, isEditMode, workerId, formFirstName, formLastName, formPosition]);
 
-    const handleBack = useCallback(() => {
+    const handleBack = () => {
         if (isEditMode && worker) {
             navigate(`/workers/details/${worker.id}`);
         } else {
             navigate('/workers');
         }
-    }, [navigate, isEditMode, worker]);
+    };    
 
     return (
         <div>
