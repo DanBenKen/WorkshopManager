@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Details from '../../molecules/Details';
@@ -18,17 +18,17 @@ const SupplyDetails = () => {
         }
     }, [supplyId, supply, fetchSupplyById]);
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         navigate(`/supplies/`);
-    };
+    }, [navigate]);
 
-    const handleEdit = (supply) => {
+    const handleEdit = useCallback((supply) => {
         navigate(`/supplies/edit/${supply.id}`);
-    };
+    }, [navigate]);
 
-    const handleDelete = (supply) => {
+    const handleDelete = useCallback((supply) => {
         navigate(`/supplies/delete/${supply.id}`);
-    };
+    }, [navigate]);
 
     if (error) {
         return (

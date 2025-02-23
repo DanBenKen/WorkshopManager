@@ -1,14 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-    getSupplies, 
-    getSupplyById, 
-    getTotalSuppliesCount, 
-    getLowStockSuppliesCount, 
-    createSupply, 
-    updateSupply, 
-    deleteSupply, 
-    getLowStockSupplies 
-} from '../services/supplyService';
+import { getSupplies, getSupplyById, getTotalSuppliesCount, getLowStockSuppliesCount, createSupply, updateSupply, deleteSupply, getLowStockSupplies } from '../services/supplyService';
 
 const useSupplies = () => {
     const [supplies, setSupplies] = useState([]);
@@ -19,10 +10,10 @@ const useSupplies = () => {
     const [lowStockSuppliesCount, setLowStockSuppliesCount] = useState(0);
     const [lowStockSupplies, setLowStockSupplies] = useState([]);
 
-    const handleError = (error) => {
+    const handleError = useCallback((error) => {
         setError(error.message || 'An error occurred. Please try again later.');
         console.error(error);
-    };
+    }, []);
 
     const handleAsyncAction = useCallback(async (actionFunc) => {
         setIsLoading(true);
@@ -36,7 +27,7 @@ const useSupplies = () => {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [handleError]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,22 +48,22 @@ const useSupplies = () => {
         fetchData();
     }, [handleAsyncAction]);
 
-    const fetchSupplyById = async (id) => {
+    const fetchSupplyById = useCallback(async (id) => {
         await handleAsyncAction(async () => {
             const data = await getSupplyById(id);
             setSupply(data);
         });
-    };
+    }, [handleAsyncAction]);
 
-    const handleCreateSupply = async (supplyData) => {
+    const handleCreateSupply = useCallback(async (supplyData) => {
         const success = await handleAsyncAction(async () => {
             const createdSupply = await createSupply(supplyData);
             setSupplies((prev) => [...prev, createdSupply]);
         });
         return success;
-    };    
+    }, [handleAsyncAction]);
 
-    const handleUpdateSupply = async (id, supplyData) => {
+    const handleUpdateSupply = useCallback(async (id, supplyData) => {
         const success = await handleAsyncAction(async () => {
             const updatedSupply = await updateSupply(id, supplyData);
             setSupplies((prev) =>
@@ -80,9 +71,9 @@ const useSupplies = () => {
             );
         });
         return success;
-    };
+    }, [handleAsyncAction]);
 
-    const handleUpdateQuantity = async (id, quantity) => {
+    const handleUpdateQuantity = useCallback(async (id, quantity) => {
         await handleAsyncAction(async () => {
             const supply = await getSupplyById(id);
             if (supply.quantity < quantity) {
@@ -96,16 +87,16 @@ const useSupplies = () => {
                 prev.map((item) => (item.id === id ? updatedSupply : item))
             );
         });
-    };
+    }, [handleAsyncAction]);
 
-    const handleDeleteSupply = async (id) => {
+    const handleDeleteSupply = useCallback(async (id) => {
         await handleAsyncAction(async () => {
             await deleteSupply(id);
             setSupplies((prev) => prev.filter((supply) => supply.id !== id));
         });
-    };
+    }, [handleAsyncAction]);
 
-    const handleAddMoreQuantity = async (supply, quantityToAdd) => {
+    const handleAddMoreQuantity = useCallback(async (supply, quantityToAdd) => {
         if (quantityToAdd <= 0) {
             setError("Quantity to add must be a positive number.");
             return;
@@ -122,7 +113,7 @@ const useSupplies = () => {
 
             await updateSupply(supply.id, updatedSupply);
         });
-    };
+    }, [handleAsyncAction]);
 
     return {
         supply,

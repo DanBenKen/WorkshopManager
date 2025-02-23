@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
@@ -14,27 +14,31 @@ const SupplyList = () => {
     const [typeFilter, setTypeFilter] = useState('');
     const navigate = useNavigate();
 
-    const filteredSupplies = supplies.filter((supply) => {
-        const matchesName = nameFilter ? supply.name.toLowerCase().includes(nameFilter.toLowerCase()) : true;
-        const matchesType = typeFilter ? supply.type.toLowerCase().includes(typeFilter.toLowerCase()) : true;
-        return matchesName && matchesType;
-    });
+    const filteredSupplies = useMemo(() => {
+        return supplies.filter((supply) => {
+            const matchesName = nameFilter ? supply.name.toLowerCase().includes(nameFilter.toLowerCase()) : true;
+            const matchesType = typeFilter ? supply.type.toLowerCase().includes(typeFilter.toLowerCase()) : true;
+            return matchesName && matchesType;
+        });
+    }, [supplies, nameFilter, typeFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredSupplies, 5);
 
-    const handleDetails = (supply) => {
-        navigate(`/supplies/details/${supply.id}`);
-    };
+    const paginatedData = useMemo(() => getPaginatedData(filteredSupplies), [getPaginatedData, filteredSupplies]);
 
-    const onAddQuantity = (supply) => ({
+    const handleDetails = useCallback((supply) => {
+        navigate(`/supplies/details/${supply.id}`);
+    }, [navigate]);
+
+    const handleAddMore = useCallback((supply, quantity) => {
+        handleAddMoreQuantity(supply, quantity);
+    }, [handleAddMoreQuantity]);
+
+    const onAddQuantity = useCallback((supply) => ({
         label: 'Add Quantity',
         onClick: (quantity) => handleAddMore(supply, quantity),
         requiresInput: true,
-    });
-
-    const handleAddMore = (supply, quantity) => {
-        handleAddMoreQuantity(supply, quantity);
-    };
+    }), [handleAddMore]);
 
     const columns = [
         { label: 'Name', field: 'name' },
@@ -77,7 +81,7 @@ const SupplyList = () => {
             ) : (
                 <div className="overflow-x-auto">
                     <List
-                        data={getPaginatedData(filteredSupplies)}
+                        data={paginatedData}
                         columns={columns}
                         onDetails={handleDetails}
                         getCustomAction={onAddQuantity}

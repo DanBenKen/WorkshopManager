@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import useSupplies from '../../../hooks/useSupplies';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import usePagination from '../../../hooks/usePagination';
@@ -12,18 +12,22 @@ const SupplyListWithLowStock = () => {
     const [nameFilter, setNameFilter] = useState('');
     const navigate = useNavigate();
 
-    const filteredSupplies = lowStockSupplies.filter((supply) =>
-        nameFilter ? supply.name.toLowerCase().includes(nameFilter.toLowerCase()) : true
-    );
+    const filteredSupplies = useMemo(() => {
+        return lowStockSupplies.filter((supply) =>
+            nameFilter ? supply.name.toLowerCase().includes(nameFilter.toLowerCase()) : true
+        );
+    }, [lowStockSupplies, nameFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredSupplies, 5);
 
+    const paginatedData = useMemo(() => getPaginatedData(filteredSupplies), [getPaginatedData, filteredSupplies]);
+
+    const handleBack = useCallback(() => {
+        navigate(`/`);
+    }, [navigate]);
+
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;
-
-    const handleBack = () => {
-        navigate(`/`);
-    };
 
     return (
         <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg max-w-screen-xl">
@@ -42,7 +46,7 @@ const SupplyListWithLowStock = () => {
                 <p className="mt-3 text-center text-gray-600">No results found</p>
             ) : (
                 <div className="divide-y divide-gray-200">
-                    {getPaginatedData(filteredSupplies).map((supply) => (
+                    {paginatedData.map((supply) => (
                         <div
                             key={`${supply.id}-${supply.name}`}
                             className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"
