@@ -65,3 +65,15 @@ export const validateSupplyForm = (values) => {
 
     return errors;
 };
+
+// Worker validation
+export const validateWorkerForm = (values) => {
+    const errors = {};
+
+    errors.firstName = isRequired(values.firstName, 'First Name');
+    errors.lastName = isRequired(values.lastName, 'Last Name');    
+    errors.position = isRequired(values.position, 'Position');
+    Object.keys(errors).forEach((key) => errors[key] === undefined && delete errors[key]);
+
+    return errors;
+};
