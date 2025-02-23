@@ -5,7 +5,7 @@ const ErrorMessage = ({ message }) => {
         return null;
 
     return (
-        <div className="text-sm text-red-500">
+        <div className="m-3 text-sm text-red-500">
             {Array.isArray(message) ? (
                 <ul className="list-inside">
                     {message.map((error, index) => (
