@@ -18,20 +18,6 @@ const useWorkers = (workerId, fetchType = 'all') => {
         console.error(error);
     }, []);
 
-    const handleAsyncAction = useCallback(async (actionFunc) => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            await actionFunc();
-            return true;
-        } catch (error) {
-            handleError(error);
-            return false;
-        } finally {
-            setIsLoading(false);
-        }
-    }, [handleError]);
-
     const fetchData = useCallback(async () => {
         if (workerId) {
             const data = await getWorkerById(workerId);
@@ -64,47 +50,44 @@ const useWorkers = (workerId, fetchType = 'all') => {
         }
     }, [fetchType, workerId]);
 
+    const handleAsyncAction = useCallback(
+        async (actionFunc, shouldRefetch = true) => {
+          setIsLoading(true);
+          setError(null);
+          try {
+            await actionFunc();
+            if (shouldRefetch) {
+              await fetchData();
+            }
+            return true;
+          } catch (error) {
+            handleError(error);
+            return false;
+          } finally {
+            setIsLoading(false);
+          }
+        },
+        [handleError, fetchData]
+      );
+
     useEffect(() => {
         handleAsyncAction(fetchData);
     }, [fetchData, handleAsyncAction]);
 
-    const handleWorkerAction = useCallback(async (actionFunc, updateStateFunc) => {
-        return handleAsyncAction(async () => {
-            const result = await actionFunc();
-            updateStateFunc(result);
-        });
-    }, [handleAsyncAction]);
-
-    const handleCreateWorker = useCallback(async (workerData) => {
-        return handleWorkerAction(
-            async () => await createWorker(workerData),
-            (createdWorker) => setWorkers(prev => [...prev, enhanceWorkerData(createdWorker)])
-        );
-    }, [handleWorkerAction]);
-
-    const handleUpdateWorker = useCallback(async (id, workerData) => {
-        return handleWorkerAction(
-            async () => await updateWorker(id, workerData),
-            (updatedWorker) => {
-                setWorkers(prev => prev.map(worker => worker.id === id ? enhanceWorkerData(updatedWorker) : worker));
-                if (worker?.id === id) {
-                    setWorker(enhanceWorkerData(updatedWorker));
-                }
-            }
-        );
-    }, [handleWorkerAction, worker]);
-
-    const handleDeleteWorker = useCallback(async (id) => {
-        return handleWorkerAction(
-            async () => await deleteWorker(id),
-            () => {
-                setWorkers(prev => prev.filter(worker => worker.id !== id));
-                if (worker?.id === id) {
-                    setWorker(null);
-                }
-            }
-        );
-    }, [handleWorkerAction, worker]);
+    const handleCreateWorker = useCallback(
+        async (workerData) => handleAsyncAction(() => createWorker(workerData)),
+        [handleAsyncAction]
+      );
+      
+      const handleUpdateWorker = useCallback(
+        async (id, workerData) => handleAsyncAction(() => updateWorker(id, workerData)),
+        [handleAsyncAction]
+      );
+      
+      const handleDeleteWorker = useCallback(
+        async (id) => handleAsyncAction(() => deleteWorker(id)),
+        [handleAsyncAction]
+      );
 
     return {
         workers,

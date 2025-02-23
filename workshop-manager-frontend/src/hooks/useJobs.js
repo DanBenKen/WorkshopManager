@@ -54,39 +54,43 @@ const useJobs = (jobId, fetchType = 'all') => {
         fetchData();
     }, [fetchData]);
 
+    const checkSupplyQuantity = useCallback((supply, requiredQuantity) => {
+        if (supply.quantity < requiredQuantity) {
+            throw new Error('Entered quantity exceeds available stock.');
+        }
+    }, []);
+
     const validateJobData = useCallback(async (jobData) => {
         const errors = [];
         let supply = null;
-
+    
         try {
             await getWorkerById(jobData.workerId);
         } catch {
             errors.push(`Worker with ID ${jobData.workerId} not found.`);
         }
-
+    
         if (jobData.supplyId) {
             try {
                 supply = await getSupplyById(jobData.supplyId);
-                if (supply.quantity < jobData.supplyQuantity) {
-                    errors.push('Entered quantity exceeds available stock.');
-                }
-            } catch {
-                errors.push(`Supply with ID ${jobData.supplyId} not found.`);
+                checkSupplyQuantity(supply, jobData.supplyQuantity);
+            } catch (error) {
+                errors.push(error.message || `Supply with ID ${jobData.supplyId} not found.`);
             }
         }
-
+    
         if (errors.length) throw errors;
         return supply;
-    }, []);
+    }, [checkSupplyQuantity]);
 
     const adjustSupplyQuantity = useCallback(async (supplyId, oldQuantity, newQuantity) => {
         const supply = await getSupplyById(supplyId);
         const diff = newQuantity - oldQuantity;
-        if (diff > 0 && supply.quantity < diff) {
-            throw new Error('Entered quantity exceeds available stock.');
+        if (diff > 0) {
+            checkSupplyQuantity(supply, diff);
         }
         await updateSupply(supplyId, { ...supply, quantity: supply.quantity - diff });
-    }, []);
+    }, [checkSupplyQuantity]);
 
     const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
         const supply = await validateJobData(jobData);
