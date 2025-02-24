@@ -1,13 +1,14 @@
 const isRequired = (value, fieldName) => value ? undefined : `${fieldName} is required.`;
-
-// Account validation
+const isNumber = (value, fieldName) => !isNaN(value) ? undefined : `${fieldName} must be a valid number.`;
 const minLength = (value, length, fieldName) => value.length >= length ? undefined : `${fieldName} must be at least ${length} characters long.`;
 const isEmail = (value) => /\S+@\S+\.\S+/.test(value) ? undefined : "Email address is invalid.";
 const hasNumber = (value) => /[0-9]/.test(value) ? undefined : "Password must contain at least one number.";
 const hasLowercase = (value) => /[a-z]/.test(value) ? undefined : "Password must contain at least one lowercase letter.";
 const hasUppercase = (value) => /[A-Z]/.test(value) ? undefined : "Password must contain at least one uppercase letter.";
 const passwordsMatch = (password, confirmPassword) => password === confirmPassword ? undefined : "Passwords do not match.";
+const isPositiveNumber = (value, fieldName) => value > 0 ? undefined : `${fieldName} must be a positive number.`;
 
+// Account validation
 export const validateRegistration = (values) => {
     const errors = {};
 
@@ -37,8 +38,6 @@ export const validateLogin = (values) => {
 };
 
 // Job validation
-const isNumber = (value, fieldName) => !isNaN(value) ? undefined : `${fieldName} must be a valid number.`;
-
 export const validateJobForm = (values) => {
     const errors = {};
     
@@ -53,8 +52,6 @@ export const validateJobForm = (values) => {
 };
 
 // Supply validation
-const isPositiveNumber = (value, fieldName) => value > 0 ? undefined : `${fieldName} must be a positive number.`;
-
 export const validateSupplyForm = (values) => {
     const errors = {};
 
