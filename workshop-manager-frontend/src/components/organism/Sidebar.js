@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { logout } from '../../services/authService';
+import useAuth from '../../hooks/useAuth';
 
 const Sidebar = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const navigate = useNavigate();
+    const { handleLogout } = useAuth();
 
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setSidebarOpen(false);
-
-    const handleLogout = async () => {
-        await logout();
-        navigate('/account/login');
-    };
 
     const handleNavigation = (path) => {
         if (window.location.pathname === path) {
@@ -21,6 +17,11 @@ const Sidebar = () => {
             navigate(path);
         }
         closeSidebar();
+    };
+
+    const handleLogoutClick = async () => {
+        await handleLogout();
+        navigate('/account/login');
     };
 
     return (
@@ -33,9 +34,8 @@ const Sidebar = () => {
             )}
 
             <div
-                className={`fixed z-50 bg-gray-800 text-white h-full w-64 transition-transform transform ${
-                    isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                } md:translate-x-0 ${isSidebarOpen ? 'block' : 'hidden'} lg:block xl:block`}
+                className={`fixed z-50 bg-gray-800 text-white h-full w-64 transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                    } md:translate-x-0 ${isSidebarOpen ? 'block' : 'hidden'} lg:block xl:block`}
             >
                 <div className="text-center py-4">
                     <button onClick={() => handleNavigation('/')} className="text-2xl font-bold">Workshop Manager</button>
@@ -55,7 +55,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <button
-                            onClick={handleLogout}
+                            onClick={handleLogoutClick}
                             className="mt-4 block py-2 px-4 hover:bg-gray-700 w-full text-left"
                         >
                             Logout

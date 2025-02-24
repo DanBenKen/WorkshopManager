@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { login as loginService, register as registerService, logout as logoutService, setToken, removeToken, handleAuthError } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
 
 const useAuth = () => {
     const [authError, setAuthError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
 
     const handleAsyncAction = async (actionFunc) => {
         setIsLoading(true);
@@ -38,7 +36,6 @@ const useAuth = () => {
         removeToken();
         await handleAsyncAction(async () => {
             await logoutService();
-            navigate('/account/login');
         });
     };
 
