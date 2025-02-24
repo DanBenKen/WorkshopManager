@@ -59,12 +59,13 @@ namespace WorkshopManager.Middlewares
             };
 
             _logger.LogError(exception, "Exception occurred during processing request. " +
-                "Method: {Method}, Path: {Path}, User: {User}, Status Code: {StatusCode}, Request Body: {RequestBody}",
+                "Method: {Method}, Path: {Path}, User: {User}, Status Code: {StatusCode}, Request Body: {RequestBody}, Stack Trace: {StackTrace}",
                 context.Request.Method,
                 context.Request.Path,
                 context.User.Identity?.Name ?? "Anonymous",
                 statusCode,
-                await GetRequestBody(context));
+                await GetRequestBody(context),
+                exception.StackTrace);
 
             context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/problem+json";
