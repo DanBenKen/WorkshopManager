@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const usePagination = (data, itemsPerPage) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -16,11 +16,11 @@ const usePagination = (data, itemsPerPage) => {
         setCurrentPage(page);
     };
 
-    const getPaginatedData = () => {
+    const getPaginatedData = useCallback(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return data.slice(startIndex, endIndex);
-    };
+    }, [currentPage, itemsPerPage, data]);
 
     return {
         currentPage,
