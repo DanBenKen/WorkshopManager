@@ -3,6 +3,10 @@ import PaginationButton from '../atoms/PaginationButton';
 import PageNumberButton from '../atoms/PageNumberButton';
 
 const Pagination = ({ currentPage, totalPages, goToPage }) => {
+    if (totalPages <= 1) {
+        return null;
+    }
+
     const pageNumbers = [];
     for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
