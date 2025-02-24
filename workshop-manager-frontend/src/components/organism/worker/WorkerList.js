@@ -29,6 +29,7 @@ const WorkersList = () => {
     const columns = [
         { label: 'Full Name', field: 'fullName' },
         { label: 'Position', field: 'position' },
+        { label: 'ID', field: 'id'}
     ];    
 
     return (
