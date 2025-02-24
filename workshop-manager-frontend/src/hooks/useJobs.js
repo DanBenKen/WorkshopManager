@@ -103,7 +103,6 @@ const useJobs = (jobId, fetchType = 'all') => {
 
     const handleUpdateJob = useCallback(async (id, jobData) => handleAsyncAction(async () => {
         const currentJob = await getJobById(id);
-        if (!currentJob) throw new Error(`Job with ID ${id} not found.`);
 
         if (jobData.supplyId) {
             await adjustSupplyQuantity(jobData.supplyId, currentJob.supplyQuantity, jobData.supplyQuantity);
