@@ -7,8 +7,8 @@ import Row from './Row';
 
 const List = ({ data, columns, onDetails, getCustomAction }) => {
     return (
-        <div className="overflow-x-auto h-[500px] overflow-y-auto flex justify-center w-full">
-            <Table className="w-full min-w-[800px] table-fixed border border-gray-300">
+        <div className="overflow-x-auto h-[550px] overflow-y-auto flex justify-center w-full">
+            <Table>
                 <TableHeader>
                     {columns.map((col, index) => (
                         <TableCell key={index} className="text-sm font-semibold w-[500px]">

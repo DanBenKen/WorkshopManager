@@ -47,7 +47,7 @@ const SupplyList = () => {
     ];
 
     return (
-        <div className="max-w-[1000px] mx-auto px-4 py-8">
+        <div>
             <h2 className="text-3xl font-bold mb-4">Supplies</h2>
 
             <div className="flex flex-col sm:flex-row md:items-center justify-between gap-4 mb-4">
