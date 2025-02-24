@@ -9,7 +9,7 @@ const PrivateRoute = () => {
         if (!isAuthenticated()) {
             navigate('/account/login');
         }
-    }, [navigate]);
+    });
 
     return <Outlet />;
 };
