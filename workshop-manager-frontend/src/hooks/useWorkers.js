@@ -85,7 +85,7 @@ const useWorkers = (workerId, fetchType = 'all') => {
       );
       
       const handleDeleteWorker = useCallback(
-        async (id) => handleAsyncAction(() => deleteWorker(id)),
+        async (id) => handleAsyncAction(() => deleteWorker(id), false),
         [handleAsyncAction]
       );
 
