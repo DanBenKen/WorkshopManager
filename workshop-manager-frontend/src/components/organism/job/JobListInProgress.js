@@ -6,6 +6,7 @@ import Filter from '../../molecules/Filter';
 import usePagination from '../../../hooks/usePagination';
 import ButtonCancel from '../../atoms/ButtonCancel';
 import { useNavigate } from 'react-router-dom';
+import CardData from '../../molecules/CardData';
 
 const JobListInProgress = () => {
     const { jobs, isLoading, error } = useJobs(null, 'all');
@@ -47,18 +48,15 @@ const JobListInProgress = () => {
             {filteredJobs.length === 0 ? (
                 <p className="mt-3 text-center text-gray-600">No results found</p>
             ) : (
-                <div className="divide-y divide-gray-200">
-                    {paginatedData.map((job) => (
-                        <div
-                            key={job.id}
-                            className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"
-                        >
-                            <h3 className="text-lg font-semibold text-gray-800">{job.jobName}</h3>
-                            <p className="text-sm text-gray-500 mt-2">Status: In Progress</p>
-                        </div>
-                    ))}
-                </div>
+                <CardData
+                    data={paginatedData}
+                    renderItem={(job) => ({
+                        title: job.jobName,
+                        description: `Status: ${job.status}`,
+                    })}
+                />
             )}
+
             <div>
                 <Pagination
                     currentPage={currentPage}

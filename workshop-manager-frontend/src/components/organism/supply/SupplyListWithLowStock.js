@@ -6,6 +6,7 @@ import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import ButtonCancel from '../../atoms/ButtonCancel';
 import { useNavigate } from 'react-router-dom';
+import CardData from '../../molecules/CardData';
 
 const SupplyListWithLowStock = () => {
     const { lowStockSupplies = [], isLoading, error } = useSupplies();
@@ -32,6 +33,7 @@ const SupplyListWithLowStock = () => {
     return (
         <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg max-w-screen-xl">
             <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">Supplies with Low Stock</h2>
+
             <div className="mb-4">
                 <Filter
                     type="input"
@@ -45,18 +47,15 @@ const SupplyListWithLowStock = () => {
             {filteredSupplies.length === 0 ? (
                 <p className="mt-3 text-center text-gray-600">No results found</p>
             ) : (
-                <div className="divide-y divide-gray-200">
-                    {paginatedData.map((supply) => (
-                        <div
-                            key={`${supply.id}-${supply.name}`}
-                            className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm"
-                        >
-                            <h3 className="text-lg font-semibold text-gray-800">{supply.name}</h3>
-                            <p className="text-sm text-gray-500 mt-2">Low stock: {supply.quantity}</p>
-                        </div>
-                    ))}
-                </div>
+                <CardData
+                    data={paginatedData}
+                    renderItem={(supply) => ({
+                        title: supply.name,
+                        description: `Low stock: ${supply.quantity}`,
+                    })}
+                />
             )}
+
             <div>
                 <Pagination
                     currentPage={currentPage}
