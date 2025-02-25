@@ -113,10 +113,9 @@ const JobForm = () => {
                 <FormField
                     label="Status"
                     type="select"
-                    id="Status"
                     name="status"
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
+                    value={formStatus}
+                    onChange={handleChange}
                     options={statusOptions}
                 />
                 <FormField

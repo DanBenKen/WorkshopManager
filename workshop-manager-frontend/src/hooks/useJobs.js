@@ -76,13 +76,14 @@ const useJobs = (jobId, fetchType = 'all') => {
                 supply = await getSupplyById(jobData.supplyId);
                 checkSupplyQuantity(supply, jobData.supplyQuantity);
             } catch (error) {
-                errors.push(error.message || `Supply with ID ${jobData.supplyId} not found.`);
+                errors.push(`Supply with ID ${jobData.supplyId} not found.`);
             }
         }
     
         if (errors.length) throw errors;
         return supply;
     }, [checkSupplyQuantity]);
+    
 
     const adjustSupplyQuantity = useCallback(async (supplyId, oldQuantity, newQuantity) => {
         const supply = await getSupplyById(supplyId);
