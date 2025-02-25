@@ -15,12 +15,12 @@ import JobDeletePage from './pages/job/JobDeletePage';
 import SupplyFormPage from './pages/supply/SupplyFormPage';
 import WorkersFormPage from './pages/worker/WorkerFormPage';
 import WorkersListWithJobsPage from './pages/worker/WorkersListWithJobsPage';
-import AdminDashboard from './pages/AdminDashboard';
 import WorkersListWithoutJobsPage from './pages/worker/WorkersListWithoutJobsPage';
 import SupplyListWithLowStockPage from './pages/supply/SupplyListWithLowStockPage';
 import JobListInProgressPage from './pages/job/JobListInProgressPage';
 import PrivateRoute from './components/organism/auth/PrivateRoute';
 import Sidebar from './components/organism/Sidebar';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 
 const App = () => {
     return (
@@ -31,7 +31,7 @@ const App = () => {
 
                 <Route element={<PrivateRoute />}>
                     <Route path="/" element={<Sidebar />}>
-                        <Route path="/" element={<AdminDashboard />} />
+                        <Route path="/" element={<AdminDashboardPage />} />
                         <Route path="/workers" element={<WorkersPage />} />
                         <Route path="/supplies" element={<SuppliesPage />} />
                         <Route path="/supplies/create" element={<SupplyFormPage />} />
