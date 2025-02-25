@@ -64,7 +64,7 @@ const useSupplies = () => {
         },
         [handleAsyncAction]
     );
-    
+
     const handleUpdateSupply = useCallback(
         async (id, supplyData) => {
             return handleAsyncAction(async () => {
@@ -96,8 +96,7 @@ const useSupplies = () => {
         [handleAsyncAction]
     );
 
-    const handleDeleteSupply = useCallback(
-        async (id) => {
+    const handleDeleteSupply = useCallback( async (id) => {
             await handleAsyncAction(async () => {
                 await deleteSupply(id);
                 setSupplies((prev) => prev.filter((supply) => supply.id !== id));
