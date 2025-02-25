@@ -57,17 +57,17 @@ const useSupplies = () => {
 
     const handleCreateSupply = useCallback(
         async (supplyData) => {
-            await handleAsyncAction(async () => {
+            return handleAsyncAction(async () => {
                 const createdSupply = await createSupply(supplyData);
                 setSupplies((prev) => [...prev, createdSupply]);
             });
         },
         [handleAsyncAction]
     );
-
+    
     const handleUpdateSupply = useCallback(
         async (id, supplyData) => {
-            await handleAsyncAction(async () => {
+            return handleAsyncAction(async () => {
                 const updatedSupply = await updateSupply(id, supplyData);
                 setSupplies((prev) =>
                     prev.map((supply) => (supply.id === id ? updatedSupply : supply))

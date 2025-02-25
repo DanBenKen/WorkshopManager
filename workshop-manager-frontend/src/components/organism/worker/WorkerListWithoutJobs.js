@@ -52,7 +52,7 @@ const WorkerListWithoutJobs = () => {
                     data={paginatedData}
                     renderItem={(worker) => ({
                         title: worker.fullName,
-                        description: `Worker Position: ${worker.position} ID: ${worker.id}`,
+                        description: `Position: ${worker.position} ID: ${worker.id}`,
                     })}
                 />
             )}

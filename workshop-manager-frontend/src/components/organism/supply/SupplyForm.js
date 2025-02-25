@@ -53,11 +53,11 @@ const SupplyForm = () => {
             quantity: parseInt(formQuantity, 10),
             type: formType,
         };
-    
+
         const success = isEditMode
             ? await handleUpdateSupply(supplyId, supplyData)
             : await handleCreateSupply(supplyData);
-    
+
         if (success) {
             navigate('/supplies');
         }
