@@ -10,7 +10,7 @@ import { validateWorkerForm } from '../../../utils/validators';
 
 const WorkerForm = () => {
     const { workerId } = useParams();
-    const { worker, fetchWorkerById, handleCreateWorker, handleUpdateWorker, isLoading, error } = useWorkers();
+    const { worker, handleCreateWorker, handleUpdateWorker, isLoading, error } = useWorkers(workerId);
     const navigate = useNavigate();
 
     const isEditMode = !!workerId;
@@ -29,12 +29,6 @@ const WorkerForm = () => {
         { firstName, lastName, position },
         validateWorkerForm
     );
-
-    useEffect(() => {
-        if (isEditMode && !worker) {
-            fetchWorkerById(workerId);
-        }
-    }, [workerId, isEditMode, worker, fetchWorkerById]);
 
     useEffect(() => {
         if (worker) {
