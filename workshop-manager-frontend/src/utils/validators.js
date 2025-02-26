@@ -8,6 +8,7 @@ const hasUppercase = (value) => /[A-Z]/.test(value) ? undefined : "Password must
 const passwordsMatch = (password, confirmPassword) => password === confirmPassword ? undefined : "Passwords do not match.";
 const isPositiveNumber = (value, fieldName) => value > 0 ? undefined : `${fieldName} must be a positive number.`;
 const isAlphabetic = (value, fieldName) => /^[A-Za-z- ]+$/.test(value) ? undefined : `${fieldName} must contain only letters, spaces, or hyphens.`;
+const isAlphanumericWithLetters = (value, fieldName) => /^[A-Za-z0-9- ]+$/.test(value) && /[A-Za-z]/.test(value) ? undefined : `${fieldName} must contain at least one letter and can include numbers, spaces, or hyphens.`;
 
 // Account validation
 export const validateRegistration = (values) => {
@@ -56,9 +57,10 @@ export const validateJobForm = (values) => {
 export const validateSupplyForm = (values) => {
     const errors = {};
 
-    errors.name = isRequired(values.name, 'Supply Name') || isAlphabetic(values.name, 'Supply Name');
+    errors.name = isRequired(values.name, 'Supply Name') || isAlphanumericWithLetters(values.name, 'Supply Name');
     errors.quantity = isRequired(values.quantity, 'Quantity') || isPositiveNumber(values.quantity, 'Quantity');
     errors.type = isRequired(values.type, 'Supply Type');
+
     Object.keys(errors).forEach(key => errors[key] === undefined && delete errors[key]);
 
     return errors;
