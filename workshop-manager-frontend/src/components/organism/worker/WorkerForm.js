@@ -4,6 +4,7 @@ import { WORKER_POSITIONS, POSITION_OPTIONS } from '../../../constants/workerPos
 import FormField from '../../molecules/FormField';
 import useWorkers from '../../../hooks/useWorkers';
 import ErrorMessage from '../../atoms/ErrorMessage';
+import SuccessMessage from '../../atoms/SuccessMessage';
 import Button from '../../atoms/Button';
 import ButtonCancel from '../../atoms/ButtonCancel';
 import useValidation from '../../../hooks/useValidation';
@@ -13,12 +14,14 @@ const WorkerForm = () => {
     const { workerId } = useParams();
     const { worker, handleCreateWorker, handleUpdateWorker, isLoading, error } = useWorkers(workerId);
     const navigate = useNavigate();
+    const [isButtonLoading, setIsButtonLoading] = useState(false);
 
     const isEditMode = !!workerId;
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [position, setPosition] = useState(WORKER_POSITIONS.MECHANIC.apiValue);
+    const [successMessage, setSuccessMessage] = useState('');
 
     const {
         values: { firstName: formFirstName, lastName: formLastName, position: formPosition },
@@ -42,6 +45,7 @@ const WorkerForm = () => {
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         resetErrors();
+        setSuccessMessage('');
         const isValidForm = validateForm();
         if (!isValidForm) return;
 
@@ -51,12 +55,17 @@ const WorkerForm = () => {
             position: formPosition,
         };
 
+        setIsButtonLoading(true);
+
         const success = isEditMode
             ? await handleUpdateWorker(workerId, workerData)
             : await handleCreateWorker(workerData);
 
         if (success) {
-            navigate('/workers');
+            setSuccessMessage(isEditMode ? 'Worker updated successfully!' : 'Worker created successfully!');
+            setTimeout(() => navigate('/workers'), 2000);
+        } else {
+            setIsButtonLoading(false);
         }
     }, [validateForm, resetErrors, handleCreateWorker, handleUpdateWorker, navigate, isEditMode, workerId, formFirstName, formLastName, formPosition]);
 
@@ -71,6 +80,9 @@ const WorkerForm = () => {
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Worker' : 'Create New Worker'}</h2>
+
+            {successMessage && <SuccessMessage message={successMessage} />}
+
             {error && !Object.values(errors).some((e) => e) && <ErrorMessage message={error} />}
             <form onSubmit={handleSubmit}>
                 <FormField
@@ -99,8 +111,8 @@ const WorkerForm = () => {
                     onChange={handleChange}
                     options={POSITION_OPTIONS}
                 />
-                <Button type="submit" disabled={isLoading}>
-                    {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Worker' : 'Create Worker'}
+                <Button type="submit" disabled={isButtonLoading}>
+                    {isButtonLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Worker' : 'Create Worker'}
                 </Button>
             </form>
 

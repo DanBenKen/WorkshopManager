@@ -1,32 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DeleteConfirmation from '../../molecules/DeleteConfirmation';
 import useWorkers from '../../../hooks/useWorkers';
+import SuccessMessage from '../../atoms/SuccessMessage';
 
 const WorkerDelete = () => {
     const { workerId } = useParams();
     const navigate = useNavigate();
-    const { worker, handleDeleteWorker } = useWorkers(workerId);
+    const { handleDeleteWorker } = useWorkers(workerId);
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleConfirm = async () => {
-        if (worker) {
-            await handleDeleteWorker(worker.id);
-            navigate('/workers');
-        }
-    };    
+        const success = await handleDeleteWorker(workerId);
 
-    const handleCancel = () => {
-        if (worker) {
-            navigate(`/workers/details/${worker.id}`);
+        if (success) {
+            setSuccessMessage(`Worker #${workerId} deleted successfully!`);
+            setTimeout(() => navigate('/workers'), 2000);
         }
     };
 
+    const handleCancel = () => {
+        navigate(`/workers/details/${workerId}`);
+    };
+
     return (
-        <DeleteConfirmation
-            itemName={`Worker #${workerId}`}
-            onConfirm={handleConfirm}
-            onCancel={handleCancel}
-        />
+        <div>
+            <SuccessMessage message={successMessage} />
+
+            <DeleteConfirmation
+                itemName={`Worker #${workerId}`}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+            />
+        </div>
     );
 };
 
