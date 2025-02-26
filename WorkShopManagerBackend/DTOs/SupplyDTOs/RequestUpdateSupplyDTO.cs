@@ -8,7 +8,7 @@ namespace WorkshopManager.DTOs.SupplyDTOs
 
         [Required(ErrorMessage = "Name is required.")]
         [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
-        [RegularExpression(@"^(?=.*[A-Za-z])[A-Za-z0-9- ]+$", ErrorMessage = "Name must contain at least one letter and can include numbers, spaces, or hyphens.")]
+        [RegularExpression(@"^(?=.*[A-Za-z])[A-Za-z0-9-/ ]+$", ErrorMessage = "Name must contain at least one letter and can include numbers, spaces, hyphens, or slashes.")]
         public required string Name { get; set; }
 
         [Required(ErrorMessage = "Quantity is required.")]

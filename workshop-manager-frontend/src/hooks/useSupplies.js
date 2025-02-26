@@ -95,12 +95,12 @@ const useSupplies = () => {
         [handleAsyncAction]
     );
 
-    const handleDeleteSupply = useCallback( async (id) => {
-            await handleAsyncAction(async () => {
-                await deleteSupply(id);
-                setSupplies((prev) => prev.filter((supply) => supply.id !== id));
-            });
-        },
+    const handleDeleteSupply = useCallback(async (id) => {
+        return handleAsyncAction(async () => {
+            await deleteSupply(id);
+            setSupplies((prev) => prev.filter((supply) => supply.id !== id));
+        });
+    },
         [handleAsyncAction]
     );
 

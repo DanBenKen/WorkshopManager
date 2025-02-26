@@ -8,6 +8,7 @@ import ButtonCancel from '../../atoms/ButtonCancel';
 import useValidation from '../../../hooks/useValidation';
 import { validateSupplyForm } from '../../../utils/validators';
 import { SUPPLY_OPTIONS, SUPPLY_TYPE } from '../../../constants/supplyType';
+import SuccessMessage from '../../atoms/SuccessMessage';
 
 const SupplyForm = () => {
     const { supplyId } = useParams();
@@ -62,11 +63,7 @@ const SupplyForm = () => {
         <div>
             <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Supply' : 'Create New Supply'}</h2>
 
-            {successMessage && (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded-md mb-4">
-                    {successMessage}
-                </div>
-            )}
+            <SuccessMessage message={successMessage} />
 
             {error && !Object.values(errors).some((e) => e) && <ErrorMessage message={error} />}
 
