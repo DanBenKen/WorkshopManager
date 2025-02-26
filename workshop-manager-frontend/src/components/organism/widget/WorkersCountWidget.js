@@ -29,7 +29,7 @@ const WorkersCountWidget = () => {
                 colorClass={unemployedCounts.unemployed === 0 ? "text-green-400" : "text-red-400"}
             />
             <Button
-                onClick={() => navigate("/workers/without-jobs", { state: { from: "/admin-dashboard" } })}
+                onClick={() => navigate("/workers/without-jobs", { state: { from: "/" } })}
                 className="mt-4"
             >
                 View Unemployed Workers
