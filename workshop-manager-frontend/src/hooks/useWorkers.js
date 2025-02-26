@@ -15,7 +15,6 @@ const useWorkers = (workerId, fetchType = 'all') => {
 
     const handleError = useCallback((error) => {
         setError(error.message || 'An error occurred. Please try again later.');
-        console.error(error);
     }, []);
 
     const fetchData = useCallback(async () => {

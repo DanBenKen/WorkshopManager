@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { WORKER_POSITIONS, POSITION_OPTIONS } from '../../../constants/workerPosition';
 import FormField from '../../molecules/FormField';
 import useWorkers from '../../../hooks/useWorkers';
 import ErrorMessage from '../../atoms/ErrorMessage';
@@ -17,7 +18,7 @@ const WorkerForm = () => {
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [position, setPosition] = useState('');
+    const [position, setPosition] = useState(WORKER_POSITIONS.MECHANIC.apiValue);
 
     const {
         values: { firstName: formFirstName, lastName: formLastName, position: formPosition },
@@ -65,7 +66,7 @@ const WorkerForm = () => {
         } else {
             navigate('/workers');
         }
-    };    
+    };
 
     return (
         <div>
@@ -92,27 +93,18 @@ const WorkerForm = () => {
                 />
                 <FormField
                     label="Position"
-                    type="text"
+                    type="select"
                     name="position"
                     value={formPosition}
                     onChange={handleChange}
-                    placeholder="Enter position"
-                    errorMessage={errors.position}
+                    options={POSITION_OPTIONS}
                 />
-                <Button
-                    type="submit"
-                    disabled={isLoading}
-                >
+                <Button type="submit" disabled={isLoading}>
                     {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Worker' : 'Create Worker'}
                 </Button>
             </form>
 
-            <ButtonCancel
-                type="button"
-                disabled={isLoading}
-                onClick={handleBack}
-                className="mt-2"
-            >
+            <ButtonCancel type="button" disabled={isLoading} onClick={handleBack} className="mt-2">
                 Go Back
             </ButtonCancel>
         </div>
