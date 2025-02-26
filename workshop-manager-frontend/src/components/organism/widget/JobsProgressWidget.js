@@ -44,7 +44,7 @@ const JobsProgressWidget = () => {
                 onClick={() => navigate("/jobs/list-in-progress")}
                 className="mt-4"
             >
-                View All Jobs
+                View Jobs In Progress
             </Button>
         </div>
     );
