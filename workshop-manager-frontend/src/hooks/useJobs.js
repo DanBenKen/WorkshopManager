@@ -95,16 +95,20 @@ const useJobs = (jobId, fetchType = 'all') => {
     }, [checkSupplyQuantity]);
 
     const updateSupplyOnJobChange = useCallback(async (currentJob, jobData) => {
-        if (currentJob.supplyId && currentJob.supplyId !== jobData.supplyId) {
-            await adjustSupplyQuantity(currentJob.supplyId, currentJob.supplyQuantity);
-            await adjustSupplyQuantity(jobData.supplyId, -jobData.supplyQuantity);
-        } else if (currentJob.supplyId === jobData.supplyId) {
+        if (currentJob.supplyId !== jobData.supplyId) {
+            if (currentJob.supplyId) {
+                await adjustSupplyQuantity(currentJob.supplyId, currentJob.supplyQuantity);
+            }
+            if (jobData.supplyId) {
+                await adjustSupplyQuantity(jobData.supplyId, -jobData.supplyQuantity);
+            }
+        } else if (currentJob.supplyQuantity !== jobData.supplyQuantity) {
             const diff = jobData.supplyQuantity - currentJob.supplyQuantity;
             if (diff !== 0) {
                 await adjustSupplyQuantity(jobData.supplyId, -diff);
             }
         }
-    }, [adjustSupplyQuantity]);
+    }, [adjustSupplyQuantity]);    
 
     const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
         const supplyId = await validateJobData(jobData);
