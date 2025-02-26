@@ -56,6 +56,7 @@ const WorkersList = () => {
                     type="select"
                     value={positionFilter}
                     onChange={setPositionFilter}
+                    defaultOptionLabel='Position'
                     options={POSITION_OPTIONS}
                     className="w-full sm:w-auto"
                 />

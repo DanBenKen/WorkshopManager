@@ -1,12 +1,12 @@
 import Input from '../atoms/Input';
 import React from 'react';
 
-const Filter = ({ type, options, value, onChange, placeholder, className }) => {
+const Filter = ({ type, options, value, onChange, placeholder, className, defaultOptionLabel = "All" }) => {
     if (type === 'select') {
         return (
             <div className={`${className}`}>
                 <select value={value} onChange={(e) => onChange(e.target.value)} className="border p-2">
-                    <option value="">All</option>
+                    <option value="">{defaultOptionLabel}</option>
                     {options.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}

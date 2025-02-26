@@ -66,6 +66,7 @@ const SupplyList = () => {
                     type="select"
                     value={typeFilter}
                     onChange={setTypeFilter}
+                    defaultOptionLabel='Type'
                     options={SUPPLY_OPTIONS}
                     className="w-full md:w-auto sm:w-1/3"
                 />
