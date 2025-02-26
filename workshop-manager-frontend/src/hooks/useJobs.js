@@ -35,21 +35,13 @@ const useJobs = (jobId, fetchType = 'all') => {
         }
     }, [handleError]);
 
-    const fetchData = useCallback(async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            if (jobId) {
-                setJob(await getJobById(jobId));
-            } else {
-                await dataFetchers[fetchType]?.();
-            }
-        } catch (error) {
-            handleError(error);
-        } finally {
-            setIsLoading(false);
+    const fetchData = useCallback(() => handleAsyncAction(async () => {
+        if (jobId) {
+            setJob(await getJobById(jobId));
+        } else {
+            await dataFetchers[fetchType]?.();
         }
-    }, [jobId, fetchType, handleError, dataFetchers]);
+    }), [jobId, fetchType, dataFetchers, handleAsyncAction]);
 
     useEffect(() => {
         fetchData();
@@ -63,54 +55,71 @@ const useJobs = (jobId, fetchType = 'all') => {
 
     const validateJobData = useCallback(async (jobData) => {
         const errors = [];
-        let supply = null;
-    
-        try {
-            await getWorkerById(jobData.workerId);
-        } catch {
-            errors.push(`Worker with ID ${jobData.workerId} not found.`);
-        }
-    
-        if (jobData.supplyId) {
+
+        const validateWorker = async () => {
             try {
-                supply = await getSupplyById(jobData.supplyId);
+                await getWorkerById(jobData.workerId);
+            } catch {
+                errors.push(`Worker with ID ${jobData.workerId} not found.`);
+            }
+        };
+        const validateSupply = async () => {
+            if (!jobData.supplyId) return null;
+
+            try {
+                const supply = await getSupplyById(jobData.supplyId);
                 checkSupplyQuantity(supply, jobData.supplyQuantity);
+                return supply;
             } catch (error) {
-                errors.push(`Supply with ID ${jobData.supplyId} not found.`);
+                const errorMessage = error.message === 'Entered quantity exceeds available stock.'
+                    ? error.message : `Supply with ID ${jobData.supplyId} not found.`;
+                errors.push(errorMessage);
+            }
+
+            return null;
+        };
+
+        await Promise.all([validateWorker(), validateSupply()]);
+
+        if (errors.length) throw errors;
+
+        return jobData.supplyId;
+    }, [checkSupplyQuantity]);
+
+    const adjustSupplyQuantity = useCallback(async (supplyId, quantityChange) => {
+        const supply = await getSupplyById(supplyId);
+        if (quantityChange < 0) checkSupplyQuantity(supply, Math.abs(quantityChange));
+        await updateSupply(supplyId, { ...supply, quantity: supply.quantity + quantityChange });
+    }, [checkSupplyQuantity]);
+
+    const updateSupplyOnJobChange = useCallback(async (currentJob, jobData) => {
+        if (!jobData.supplyId) return;
+
+        if (currentJob.supplyId && currentJob.supplyId !== jobData.supplyId) {
+            await adjustSupplyQuantity(currentJob.supplyId, currentJob.supplyQuantity);
+            await adjustSupplyQuantity(jobData.supplyId, -jobData.supplyQuantity);
+        } else if (currentJob.supplyId === jobData.supplyId) {
+            const diff = jobData.supplyQuantity - currentJob.supplyQuantity;
+            if (diff !== 0) {
+                await adjustSupplyQuantity(jobData.supplyId, -diff);
             }
         }
-    
-        if (errors.length) throw errors;
-        return supply;
-    }, [checkSupplyQuantity]);
-    
-
-    const adjustSupplyQuantity = useCallback(async (supplyId, oldQuantity, newQuantity) => {
-        const supply = await getSupplyById(supplyId);
-        const diff = newQuantity - oldQuantity;
-        if (diff > 0) {
-            checkSupplyQuantity(supply, diff);
-        }
-        await updateSupply(supplyId, { ...supply, quantity: supply.quantity - diff });
-    }, [checkSupplyQuantity]);
+    }, [adjustSupplyQuantity]);
 
     const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
-        const supply = await validateJobData(jobData);
-        if (supply) {
-            await updateSupply(jobData.supplyId, { ...supply, quantity: supply.quantity - jobData.supplyQuantity });
+        const supplyId = await validateJobData(jobData);
+        if (supplyId) {
+            await adjustSupplyQuantity(supplyId, -jobData.supplyQuantity);
         }
         await createJob(jobData);
-    }), [handleAsyncAction, validateJobData]);
+    }), [handleAsyncAction, validateJobData, adjustSupplyQuantity]);
 
     const handleUpdateJob = useCallback(async (id, jobData) => handleAsyncAction(async () => {
         const currentJob = await getJobById(id);
-
-        if (jobData.supplyId) {
-            await adjustSupplyQuantity(jobData.supplyId, currentJob.supplyQuantity, jobData.supplyQuantity);
-        }
+        await updateSupplyOnJobChange(currentJob, jobData);
         await updateJob(id, jobData);
-    }), [handleAsyncAction, adjustSupplyQuantity]);
-
+    }), [handleAsyncAction, updateSupplyOnJobChange]);
+    
     const handleDeleteJob = useCallback(async (id) => handleAsyncAction(async () => {
         await deleteJob(id);
         setJobs((prevJobs) => prevJobs.filter(job => job.id !== id));

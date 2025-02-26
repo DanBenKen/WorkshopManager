@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { validateJobForm } from '../../../utils/validators';
+import { JOB_STATUSES, STATUS_OPTIONS } from '../../../constants/jobStatus';
 import FormField from '../../molecules/FormField';
 import useJobs from '../../../hooks/useJobs';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
 import ButtonCancel from '../../atoms/ButtonCancel';
 import useValidation from '../../../hooks/useValidation';
-import { validateJobForm } from '../../../utils/validators';
 
 const JobForm = () => {
     const { jobId } = useParams();
@@ -15,7 +16,7 @@ const JobForm = () => {
 
     const [jobName, setJobName] = useState('');
     const [description, setDescription] = useState('');
-    const [status, setStatus] = useState('1');
+    const [status, setStatus] = useState(JOB_STATUSES.IN_PROGRESS.id.toString());
     const [workerId, setWorkerId] = useState('');
     const [supplyId, setSupplyId] = useState('');
     const [quantity, setQuantity] = useState('');
@@ -35,14 +36,33 @@ const JobForm = () => {
 
     useEffect(() => {
         if (job) {
+            const statusEntry = Object.values(JOB_STATUSES).find(s => s.apiValue === job.status);
+
             setJobName(job.jobName);
             setDescription(job.description);
-            setStatus(job.status);
+            setStatus(statusEntry?.id.toString() || JOB_STATUSES.IN_PROGRESS.id.toString());
             setWorkerId(job.workerId);
             setSupplyId(job.supplyId || '');
             setQuantity(job.supplyQuantity || '');
         }
     }, [job]);
+
+    const prevSupplyIdRef = useRef(formSupplyId);
+    
+    useEffect(() => {
+        if (!isEditMode)
+        {
+            if (prevSupplyIdRef.current !== formSupplyId) {
+                handleChange({
+                    target: {
+                        name: 'quantity',
+                        value: '',
+                    },
+                });
+                prevSupplyIdRef.current = formSupplyId;
+            }
+        }
+    }, [formSupplyId, handleChange, isEditMode]);
 
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
@@ -50,16 +70,15 @@ const JobForm = () => {
         const isValidForm = validateForm();
         if (!isValidForm) return;
 
-        const statusMap = {
-            1: 'InProgress',
-            2: 'Completed',
-        };
+        const selectedStatus = Object.values(JOB_STATUSES).find(
+            s => s.id === parseInt(formStatus, 10)
+        );
 
         const jobData = {
             id: jobId ? parseInt(jobId, 10) : 0,
             jobName: formJobName,
             description: formDescription,
-            status: statusMap[formStatus],
+            status: selectedStatus.apiValue,
             workerId: parseInt(formWorkerId, 10),
             supplyId: formSupplyId ? parseInt(formSupplyId, 10) : null,
             supplyQuantity: parseInt(formQuantity, 10),
@@ -81,11 +100,6 @@ const JobForm = () => {
             navigate('/jobs');
         }
     };
-
-    const statusOptions = [
-        { value: 1, label: 'In Progress' },
-        { value: 2, label: 'Completed' }
-    ];    
 
     return (
         <div>
@@ -116,7 +130,7 @@ const JobForm = () => {
                     name="status"
                     value={formStatus}
                     onChange={handleChange}
-                    options={statusOptions}
+                    options={STATUS_OPTIONS}
                 />
                 <FormField
                     label="Worker ID"
