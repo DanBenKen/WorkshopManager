@@ -20,7 +20,7 @@ import SupplyListWithLowStockPage from './pages/supply/SupplyListWithLowStockPag
 import JobListInProgressPage from './pages/job/JobListInProgressPage';
 import PrivateRoute from './components/organism/auth/PrivateRoute';
 import Sidebar from './components/organism/Sidebar';
-import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminDashboardPage from './pages/auth/AdminDashboardPage';
 
 const App = () => {
     return (
