@@ -7,31 +7,33 @@ import List from '../../molecules/List';
 import usePagination from '../../../hooks/usePagination';
 import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
+import { STATUS_OPTIONS, JOB_STATUSES } from '../../../constants/jobStatus';
 
 const JobList = () => {
     const { jobs, isLoading, error, handleSetCompleted } = useJobs();
     const [nameFilter, setNameFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
-    const navigate = useNavigate();
 
     const filteredJobs = useMemo(() => {
         return jobs.filter((job) => {
             const matchesName = nameFilter ? job.jobName.toLowerCase().includes(nameFilter.toLowerCase()) : true;
-            const matchesStatus = statusFilter ? job.status.toLowerCase() === statusFilter.toLowerCase() : true;
+            const selectedStatus = Object.values(JOB_STATUSES).find(status => status.id === Number(statusFilter));
+            const matchesStatus = selectedStatus ? job.status === selectedStatus.apiValue : true;
             return matchesName && matchesStatus;
         });
     }, [jobs, nameFilter, statusFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredJobs, 5);
-
     const paginatedData = useMemo(() => getPaginatedData(filteredJobs), [getPaginatedData, filteredJobs]);
+
+    const navigate = useNavigate();
 
     const handleDetails = (job) => {
         navigate(`/jobs/details/${job.id}`);
     };
 
     const handleComplete = (job) => {
-        if (job.status === 'InProgress') {
+        if (job.status === JOB_STATUSES.IN_PROGRESS.apiValue) {
             return {
                 label: 'Complete Job',
                 onClick: () => handleSetCompleted(job),
@@ -46,11 +48,6 @@ const JobList = () => {
         { label: 'Description', field: 'description' },
         { label: 'Status', field: 'status' },
     ];
-    
-    const statusOptions = [
-        { label: 'In Progress', value: 'InProgress' },
-        { label: 'Completed', value: 'Completed' },
-    ];   
 
     return (
         <div>
@@ -70,8 +67,9 @@ const JobList = () => {
                     />
                     <Filter
                         type="select"
-                        options={statusOptions}
+                        options={STATUS_OPTIONS}
                         value={statusFilter}
+                        defaultOptionLabel='Status'
                         onChange={setStatusFilter}
                         placeholder="Filter by status"
                         className="w-full sm:w-1/3"
