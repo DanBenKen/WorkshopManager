@@ -6,8 +6,8 @@ export const SUPPLY_TYPE = {
     },
     LUBRICANT: {
         id: 2,
-        label: 'Lubricant and Corrosion Inhibitor',
-        apiValue: 'Lubricant and Corrosion Inhibitor'
+        label: 'Lubricant',
+        apiValue: 'Lubricant'
     },
     COOLANT: {
         id: 3,
