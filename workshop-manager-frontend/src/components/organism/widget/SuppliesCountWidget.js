@@ -28,7 +28,7 @@ const SuppliesCountWidget = () => {
                 icon={FaExclamationTriangle}
                 colorClass={lowStockSuppliesCount === 0 ? "text-green-400" : "text-red-400"}
             />
-            <Button onClick={() => navigate("/supplies/low-stock")} className="mt-4">
+            <Button onClick={() => navigate("/supplies/low-stock", { state: { from: "/" } })} className="mt-4">
                 View Low Stock Supplies
             </Button>
         </div>

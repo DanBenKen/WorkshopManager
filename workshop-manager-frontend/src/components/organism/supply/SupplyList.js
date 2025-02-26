@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
 import useSupplies from '../../../hooks/useSupplies';
@@ -52,25 +52,30 @@ const SupplyList = () => {
             <h2 className="text-3xl font-bold mb-4">Supplies</h2>
 
             <div className="flex flex-col sm:flex-row md:items-center justify-between gap-4 mb-4">
-                <Link to="/supplies/create">
-                    <Button className="w-full md:w-auto">Add New Supply</Button>
-                </Link>
-                <div className="flex flex-col sm:flex-row gap-4 w-full">
-                    <Filter
-                        type="input"
-                        value={nameFilter}
-                        onChange={setNameFilter}
-                        placeholder="Filter by name"
-                        className="w-full sm:w-1/3"
-                    />
-                    <Filter
-                        type="select"
-                        value={typeFilter}
-                        onChange={setTypeFilter}
-                        options={SUPPLY_OPTIONS}
-                        className="w-full sm:w-1/3"
-                    />
+                <Button className="w-full md:w-auto" onClick={() => navigate('/supplies/create')}>
+                    Add New Supply
+                </Button>
+                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                    <Button className="md:w-auto" onClick={() => navigate('/supplies/low-stock')}>
+                        Low Stock Supplies
+                    </Button>
                 </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 mb-3">
+                <Filter
+                    type="select"
+                    value={typeFilter}
+                    onChange={setTypeFilter}
+                    options={SUPPLY_OPTIONS}
+                    className="w-full md:w-auto sm:w-1/3"
+                />
+                <Filter
+                    type="input"
+                    value={nameFilter}
+                    onChange={setNameFilter}
+                    placeholder="Filter by name"
+                    className="w-full md:w-auto sm:w-1/3"
+                />
             </div>
 
             {isLoading ? (

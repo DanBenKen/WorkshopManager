@@ -5,13 +5,14 @@ import usePagination from '../../../hooks/usePagination';
 import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import ButtonCancel from '../../atoms/ButtonCancel';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CardData from '../../molecules/CardData';
 
 const SupplyListWithLowStock = () => {
     const { lowStockSupplies = [], isLoading, error } = useSupplies();
     const [nameFilter, setNameFilter] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
 
     const filteredSupplies = useMemo(() => {
         return lowStockSupplies.filter((supply) =>
@@ -23,9 +24,7 @@ const SupplyListWithLowStock = () => {
 
     const paginatedData = useMemo(() => getPaginatedData(filteredSupplies), [getPaginatedData, filteredSupplies]);
 
-    const handleBack = () => {
-        navigate(`/`);
-    };
+    const handleBack = () => { navigate(location.state?.from || "/supplies"); };
 
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;
