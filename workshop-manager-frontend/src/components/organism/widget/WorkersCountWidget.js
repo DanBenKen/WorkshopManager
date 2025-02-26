@@ -28,7 +28,10 @@ const WorkersCountWidget = () => {
                 icon={FaUserSlash}
                 colorClass={unemployedCounts.unemployed === 0 ? "text-green-400" : "text-red-400"}
             />
-            <Button onClick={() => navigate("/workers/without-jobs")} className="mt-4">
+            <Button
+                onClick={() => navigate("/workers/without-jobs", { state: { from: "/admin-dashboard" } })}
+                className="mt-4"
+            >
                 View Unemployed Workers
             </Button>
         </div>
