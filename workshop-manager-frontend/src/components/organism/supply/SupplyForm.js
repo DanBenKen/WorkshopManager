@@ -13,9 +13,10 @@ const SupplyForm = () => {
     const { supplyId } = useParams();
     const navigate = useNavigate();
     const [successMessage, setSuccessMessage] = useState('');
-    
+    const [isButtonLoading, setIsButtonLoading] = useState(false);
+
     const isEditMode = !!supplyId;
-    
+
     const { supply, fetchSupplyById, handleCreateSupply, handleUpdateSupply, isLoading, error } = useSupplies();
     const [formData, setFormData] = useState({ name: '', quantity: Number(0), type: SUPPLY_TYPE.MOTOROIL.apiValue });
 
@@ -38,12 +39,14 @@ const SupplyForm = () => {
             ? await handleUpdateSupply(supplyId, { ...values, quantity: Number(values.quantity) })
             : await handleCreateSupply({ ...values, quantity: Number(values.quantity) });
 
+        setIsButtonLoading(true);
+
         if (success) {
             setSuccessMessage(isEditMode ? 'Supply updated successfully!' : 'Supply created successfully!');
-
-            setTimeout(() => {
-                navigate('/supplies');
-            }, 2000);
+    
+            setTimeout(() => { navigate('/supplies'); }, 2000);
+        } else {
+            setIsButtonLoading(false);
         }
     };
 
@@ -95,8 +98,8 @@ const SupplyForm = () => {
                     options={SUPPLY_OPTIONS}
                     errorMessage={errors.type}
                 />
-                <Button type="submit" disabled={isLoading}>
-                    {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Supply' : 'Create Supply'}
+                <Button type="submit" disabled={isButtonLoading}>
+                    {isButtonLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Supply' : 'Create Supply'}
                 </Button>
             </form>
 
