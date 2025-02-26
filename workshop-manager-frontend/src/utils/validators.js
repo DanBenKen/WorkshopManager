@@ -43,8 +43,8 @@ export const validateJobForm = (values) => {
     
     errors.jobName = isRequired(values.jobName, 'Job Name');
     errors.description = isRequired(values.description, 'Description');
-    errors.workerId = isRequired(values.workerId, 'Worker ID');
-    errors.supplyId = isRequired(values.supplyId, 'Supply ID');
+    errors.workerId = isRequired(values.workerId, 'Worker ID') || isPositiveNumber(values.workerId, 'Worker ID');
+    errors.supplyId = isRequired(values.supplyId, 'Supply ID') || isPositiveNumber(values.supplyId, 'Supply ID');    
     errors.quantity = values.supplyId && !values.quantity ? 'Quantity is required if Supply ID is provided.' : undefined;
     errors.quantity = errors.quantity || isNumber(values.quantity, 'Quantity');
     
