@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createJob, getJobs, updateJob, getJobById, deleteJob, getTotalCompletedJobs, getJobsInProgressCount } from '../services/jobService';
 import { getSupplyById, updateSupply } from '../services/supplyService';
 import { getWorkerById } from '../services/workerService';
+import { JOB_STATUSES } from '../constants/jobStatus';
 
 const useJobs = (jobId, fetchType = 'all') => {
     const [jobs, setJobs] = useState([]);
@@ -63,6 +64,7 @@ const useJobs = (jobId, fetchType = 'all') => {
                 errors.push(`Worker with ID ${jobData.workerId} not found.`);
             }
         };
+
         const validateSupply = async () => {
             if (!jobData.supplyId) return null;
 
@@ -93,8 +95,6 @@ const useJobs = (jobId, fetchType = 'all') => {
     }, [checkSupplyQuantity]);
 
     const updateSupplyOnJobChange = useCallback(async (currentJob, jobData) => {
-        if (!jobData.supplyId) return;
-
         if (currentJob.supplyId && currentJob.supplyId !== jobData.supplyId) {
             await adjustSupplyQuantity(currentJob.supplyId, currentJob.supplyQuantity);
             await adjustSupplyQuantity(jobData.supplyId, -jobData.supplyQuantity);
@@ -115,10 +115,11 @@ const useJobs = (jobId, fetchType = 'all') => {
     }), [handleAsyncAction, validateJobData, adjustSupplyQuantity]);
 
     const handleUpdateJob = useCallback(async (id, jobData) => handleAsyncAction(async () => {
+        await validateJobData(jobData);    
         const currentJob = await getJobById(id);
         await updateSupplyOnJobChange(currentJob, jobData);
         await updateJob(id, jobData);
-    }), [handleAsyncAction, updateSupplyOnJobChange]);
+    }), [handleAsyncAction, updateSupplyOnJobChange, validateJobData]);
     
     const handleDeleteJob = useCallback(async (id) => handleAsyncAction(async () => {
         await deleteJob(id);
@@ -126,10 +127,10 @@ const useJobs = (jobId, fetchType = 'all') => {
     }), [handleAsyncAction]);
 
     const handleSetCompleted = useCallback(async (job) => handleAsyncAction(async () => {
-        const updatedJob = { ...job, status: 'Completed' };
+        const updatedJob = { ...job, status: JOB_STATUSES.COMPLETED.apiValue };
         await updateJob(job.id, updatedJob);
         setJobs((prevJobs) => prevJobs.map(j => (j.id === job.id ? updatedJob : j)));
-    }), [handleAsyncAction]);
+    }), [handleAsyncAction]);    
 
     return {
         jobs, job, isLoading, error, inProgress, totalCompleted,
