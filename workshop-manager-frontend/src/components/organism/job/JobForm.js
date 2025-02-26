@@ -8,11 +8,14 @@ import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
 import ButtonCancel from '../../atoms/ButtonCancel';
 import useValidation from '../../../hooks/useValidation';
+import SuccessMessage from '../../atoms/SuccessMessage';
 
 const JobForm = () => {
     const { jobId } = useParams();
     const { job, handleCreateJob, handleUpdateJob, isLoading, error } = useJobs(jobId);
     const navigate = useNavigate();
+    const [successMessage, setSuccessMessage] = useState('');
+    const [isButtonLoading, setIsButtonLoading] = useState(false);
 
     const [jobName, setJobName] = useState('');
     const [description, setDescription] = useState('');
@@ -48,10 +51,9 @@ const JobForm = () => {
     }, [job]);
 
     const prevSupplyIdRef = useRef(formSupplyId);
-    
+
     useEffect(() => {
-        if (!isEditMode)
-        {
+        if (!isEditMode) {
             if (prevSupplyIdRef.current !== formSupplyId) {
                 handleChange({
                     target: {
@@ -88,8 +90,14 @@ const JobForm = () => {
             ? await handleUpdateJob(jobId, jobData)
             : await handleCreateJob(jobData);
 
+        setIsButtonLoading(true);
+
         if (success) {
-            navigate('/jobs');
+            setSuccessMessage(isEditMode ? 'Job updated successfully!' : 'Job created successfully!');
+
+            setTimeout(() => { navigate('/jobs'); }, 2000);
+        } else {
+            setIsButtonLoading(false);
         }
     }, [validateForm, resetErrors, handleCreateJob, handleUpdateJob, navigate, isEditMode, jobId, formJobName, formDescription, formStatus, formWorkerId, formSupplyId, formQuantity]);
 
@@ -104,6 +112,10 @@ const JobForm = () => {
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Job' : 'Create New Job'}</h2>
+
+            <SuccessMessage message={successMessage} />
+
+
             {error && !Object.values(errors).some((e) => e) && <ErrorMessage message={error} />}
             <form onSubmit={handleSubmit}>
                 <FormField
@@ -160,15 +172,8 @@ const JobForm = () => {
                     errorMessage={errors.quantity}
                 />
 
-                <Button
-                    type="submit"
-                    disabled={isLoading}
-                >
-                    {isLoading
-                        ? (isEditMode ? 'Updating...' : 'Creating...')
-                        : isEditMode
-                            ? 'Update Job'
-                            : 'Create Job'}
+                <Button type="submit" disabled={isButtonLoading}>
+                    {isButtonLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Supply' : 'Create Supply'}
                 </Button>
             </form>
 

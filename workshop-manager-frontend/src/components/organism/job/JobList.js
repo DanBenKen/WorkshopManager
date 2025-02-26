@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
 import useJobs from '../../../hooks/useJobs';
@@ -54,9 +54,9 @@ const JobList = () => {
             <h2 className="text-3xl font-bold mb-4">Jobs</h2>
 
             <div className="flex flex-col sm:flex-row md:items-center justify-between gap-4 mb-4">
-                <Link to="/jobs/create">
-                    <Button className="w-full md:w-auto">Add New Job</Button>
-                </Link>
+                <Button className="w-full md:w-auto" onClick={() => navigate('/jobs/create')}>
+                    Add New Job
+                </Button>
                 <div className="flex flex-col sm:flex-row gap-4 w-full">
                     <Filter
                         type="input"

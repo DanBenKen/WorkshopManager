@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DeleteConfirmation from '../../molecules/DeleteConfirmation';
 import useJobs from '../../../hooks/useJobs';
+import SuccessMessage from '../../atoms/SuccessMessage';
 
 const JobDelete = () => {
     const { jobId } = useParams();
     const navigate = useNavigate();
     const { handleDeleteJob } = useJobs();
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleConfirm = async () => {
-        await handleDeleteJob(jobId);
-        navigate('/jobs');
+        const success = await handleDeleteJob(jobId);
+
+        if (success) {
+            setSuccessMessage(`Job #${jobId} deleted successfully!`);
+            setTimeout(() => navigate('/jobs'), 2000);
+        }
     };
 
     const handleCancel = () => {
@@ -18,11 +24,15 @@ const JobDelete = () => {
     };
 
     return (
-        <DeleteConfirmation
-            itemName={`Job #${jobId}`}
-            onConfirm={handleConfirm}
-            onCancel={handleCancel}
-        />
+        <div>
+            <SuccessMessage message={successMessage} />
+
+            <DeleteConfirmation
+                itemName={`Job #${jobId}`}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+            />
+        </div>
     );
 };
 
