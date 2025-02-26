@@ -12,7 +12,6 @@ const useSupplies = () => {
 
     const handleError = useCallback((error) => {
         setError(error.message || 'An error occurred. Please try again later.');
-        console.error(error);
     }, []);
 
     const handleAsyncAction = useCallback(async (actionFunc) => {

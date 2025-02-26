@@ -7,6 +7,7 @@ import List from '../../molecules/List';
 import usePagination from '../../../hooks/usePagination';
 import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
+import { SUPPLY_OPTIONS } from '../../../constants/supplyType';
 
 const SupplyList = () => {
     const { supplies, isLoading, error, handleAddMoreQuantity } = useSupplies();
@@ -17,13 +18,12 @@ const SupplyList = () => {
     const filteredSupplies = useMemo(() => {
         return supplies.filter((supply) => {
             const matchesName = nameFilter ? supply.name.toLowerCase().includes(nameFilter.toLowerCase()) : true;
-            const matchesType = typeFilter ? supply.type.toLowerCase().includes(typeFilter.toLowerCase()) : true;
+            const matchesType = typeFilter ? supply.type.includes(typeFilter) : true;
             return matchesName && matchesType;
         });
     }, [supplies, nameFilter, typeFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredSupplies, 5);
-
     const paginatedData = useMemo(() => getPaginatedData(filteredSupplies), [getPaginatedData, filteredSupplies]);
 
     const handleDetails = (supply) => {
@@ -38,9 +38,10 @@ const SupplyList = () => {
         label: 'Add Quantity',
         onClick: (quantity) => handleAddMore(supply, quantity),
         requiresInput: true,
-     });     
+    });
 
     const columns = [
+        { label: 'ID', field: 'id' },
         { label: 'Name', field: 'name' },
         { label: 'Quantity', field: 'quantity' },
         { label: 'Type', field: 'type' },
@@ -63,10 +64,10 @@ const SupplyList = () => {
                         className="w-full sm:w-1/3"
                     />
                     <Filter
-                        type="input"
+                        type="select"
                         value={typeFilter}
                         onChange={setTypeFilter}
-                        placeholder="Filter by type"
+                        options={SUPPLY_OPTIONS}
                         className="w-full sm:w-1/3"
                     />
                 </div>

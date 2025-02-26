@@ -7,69 +7,46 @@ import Button from '../../atoms/Button';
 import ButtonCancel from '../../atoms/ButtonCancel';
 import useValidation from '../../../hooks/useValidation';
 import { validateSupplyForm } from '../../../utils/validators';
+import { SUPPLY_OPTIONS, SUPPLY_TYPE } from '../../../constants/supplyType';
 
 const SupplyForm = () => {
     const { supplyId } = useParams();
-    const { supply, fetchSupplyById, handleCreateSupply, handleUpdateSupply, isLoading, error } = useSupplies();
     const navigate = useNavigate();
 
     const isEditMode = !!supplyId;
 
-    const [name, setName] = useState('');
-    const [quantity, setQuantity] = useState(0);
-    const [type, setType] = useState('');
+    const { supply, fetchSupplyById, handleCreateSupply, handleUpdateSupply, isLoading, error } = useSupplies();
+    const [formData, setFormData] = useState({ name: '', quantity: Number(0), type: SUPPLY_TYPE.MOTOROIL.apiValue });
 
-    const {
-        values: { name: formName, quantity: formQuantity, type: formType },
-        errors,
-        handleChange,
-        resetErrors,
-        validateForm
-    } = useValidation(
-        { name, quantity, type },
-        validateSupplyForm
-    );
+    const { values, errors, handleChange, resetErrors, validateForm } = useValidation(formData, validateSupplyForm);
 
     useEffect(() => {
-        if (isEditMode) {
-            if (!supply) {
-                fetchSupplyById(supplyId);
-            } else {
-                setName(supply.name);
-                setQuantity(supply.quantity);
-                setType(supply.type);
-            }
+        if (isEditMode && !supply) {
+            fetchSupplyById(supplyId);
+        } else if (supply) {
+            setFormData({ name: supply.name, quantity: Number(supply.quantity), type: supply.type });
         }
-    }, [supplyId, isEditMode, supply, fetchSupplyById]);    
+    }, [supplyId, isEditMode, supply, fetchSupplyById]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         resetErrors();
-        const isValidForm = validateForm();
-        if (!isValidForm) return;
-    
-        const supplyData = {
-            name: formName,
-            quantity: parseInt(formQuantity, 10),
-            type: formType,
-        };
+        if (!validateForm()) return;
 
         const success = isEditMode
-            ? await handleUpdateSupply(supplyId, supplyData)
-            : await handleCreateSupply(supplyData);
+            ? await handleUpdateSupply(supplyId, { ...values, quantity: Number(values.quantity) })
+            : await handleCreateSupply({ ...values, quantity: Number(values.quantity) });
 
-        if (success) {
-            navigate('/supplies');
-        }
-    };
-    
+        if (success) navigate('/supplies');
+    };  
+
     const handleBack = () => {
         if (isEditMode && supply) {
             navigate(`/supplies/details/${supply.id}`);
         } else {
             navigate('/supplies');
         }
-    };    
+    }; 
 
     return (
         <div>
@@ -80,7 +57,7 @@ const SupplyForm = () => {
                     label="Name"
                     type="text"
                     name="name"
-                    value={formName}
+                    value={values.name}
                     onChange={handleChange}
                     placeholder="Enter supply name"
                     errorMessage={errors.name}
@@ -89,24 +66,21 @@ const SupplyForm = () => {
                     label="Quantity"
                     type="number"
                     name="quantity"
-                    value={formQuantity}
+                    value={values.quantity}
                     onChange={handleChange}
                     placeholder="Enter quantity"
                     errorMessage={errors.quantity}
                 />
                 <FormField
                     label="Type"
-                    type="text"
+                    type="select"
                     name="type"
-                    value={formType}
+                    value={values.type}
                     onChange={handleChange}
-                    placeholder="Enter supply type"
+                    options={SUPPLY_OPTIONS}
                     errorMessage={errors.type}
                 />
-                <Button
-                    type="submit"
-                    disabled={isLoading}
-                >
+                <Button type="submit" disabled={isLoading}>
                     {isLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Supply' : 'Create Supply'}
                 </Button>
             </form>

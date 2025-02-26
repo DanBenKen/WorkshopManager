@@ -56,7 +56,7 @@ export const validateJobForm = (values) => {
 export const validateSupplyForm = (values) => {
     const errors = {};
 
-    errors.name = isRequired(values.name, 'Supply Name');
+    errors.name = isRequired(values.name, 'Supply Name') || isAlphabetic(values.name, 'Supply Name');
     errors.quantity = isRequired(values.quantity, 'Quantity') || isPositiveNumber(values.quantity, 'Quantity');
     errors.type = isRequired(values.type, 'Supply Type');
     Object.keys(errors).forEach(key => errors[key] === undefined && delete errors[key]);
