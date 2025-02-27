@@ -12,7 +12,7 @@ import { validateWorkerForm } from '../../../utils/validators';
 
 const WorkerForm = () => {
     const { workerId } = useParams();
-    const { worker, handleCreateWorker, handleUpdateWorker, isLoading, error } = useWorkers(workerId);
+    const { worker, handleCreateWorker, handleUpdateWorker, error } = useWorkers(workerId);
     const navigate = useNavigate();
     const [isButtonLoading, setIsButtonLoading] = useState(false);
 
@@ -116,7 +116,11 @@ const WorkerForm = () => {
                 </Button>
             </form>
 
-            <ButtonCancel type="button" disabled={isLoading} onClick={handleBack} className="mt-2">
+            <ButtonCancel
+                type="button"
+                disabled={isButtonLoading}
+                onClick={handleBack}
+                className="mt-2">
                 Go Back
             </ButtonCancel>
         </div>

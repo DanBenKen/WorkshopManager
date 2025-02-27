@@ -10,7 +10,7 @@ const DeleteConfirmation = ({ itemName, onConfirm, onCancel, isButtonLoading }) 
             <Text content={`Are you sure you want to delete "${itemName}"? This action cannot be undone.`} />
             <div className="flex justify-end space-x-4 mt-6">
                 <ButtonCancel onClick={onCancel} disabled={isButtonLoading}>Cancel</ButtonCancel>
-                <ButtonDelete onClick={onConfirm} isButtonLoading={isButtonLoading}>Delete</ButtonDelete>
+                <ButtonDelete onClick={onConfirm} disabled={isButtonLoading} isButtonLoading={isButtonLoading}>Delete</ButtonDelete>
             </div>
         </div>
     );

@@ -18,7 +18,7 @@ const SupplyForm = () => {
 
     const isEditMode = !!supplyId;
 
-    const { supply, fetchSupplyById, handleCreateSupply, handleUpdateSupply, isLoading, error } = useSupplies();
+    const { supply, fetchSupplyById, handleCreateSupply, handleUpdateSupply, error } = useSupplies();
     const [formData, setFormData] = useState({ name: '', quantity: Number(0), type: SUPPLY_TYPE.MOTOROIL.apiValue });
 
     const { values, errors, handleChange, resetErrors, validateForm } = useValidation(formData, validateSupplyForm);
@@ -102,10 +102,9 @@ const SupplyForm = () => {
 
             <ButtonCancel
                 type="button"
-                disabled={isLoading}
+                disabled={isButtonLoading}
                 onClick={handleBack}
-                className="mt-2"
-            >
+                className="mt-2">
                 Go Back
             </ButtonCancel>
         </div>

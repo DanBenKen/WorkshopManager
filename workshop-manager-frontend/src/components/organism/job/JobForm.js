@@ -12,7 +12,7 @@ import SuccessMessage from '../../atoms/SuccessMessage';
 
 const JobForm = () => {
     const { jobId } = useParams();
-    const { job, handleCreateJob, handleUpdateJob, isLoading, error } = useJobs(jobId);
+    const { job, handleCreateJob, handleUpdateJob, error } = useJobs(jobId);
     const navigate = useNavigate();
     const [successMessage, setSuccessMessage] = useState('');
     const [isButtonLoading, setIsButtonLoading] = useState(false);
@@ -179,10 +179,9 @@ const JobForm = () => {
 
             <ButtonCancel
                 type="button"
-                disabled={isLoading}
+                disabled={isButtonLoading}
                 onClick={handleBack}
-                className={'mt-3'}
-            >
+                className="mt-2">
                 Go Back
             </ButtonCancel>
         </div>

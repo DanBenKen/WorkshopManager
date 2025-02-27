@@ -1,9 +1,13 @@
 import React from 'react';
 import Button from './Button';
 
-const ButtonCancel = ({ onClick, children, className }) => {
+const ButtonCancel = ({ onClick, children, className, disabled }) => {
     return (
-        <Button onClick={onClick} className={`bg-gray-500 hover:bg-gray-400 ${className}`}>
+        <Button 
+            onClick={disabled ? undefined : onClick}
+            className={`bg-gray-500 hover:bg-gray-400 text-white ${disabled ? 'opacity-90 cursor-not-allowed' : ''} ${className}`} 
+            disabled={disabled}
+        >
             {children}
         </Button>
     );
