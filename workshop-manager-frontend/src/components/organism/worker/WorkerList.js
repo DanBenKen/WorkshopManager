@@ -10,7 +10,7 @@ import Filter from '../../molecules/Filter';
 import { POSITION_OPTIONS } from '../../../constants/workerPosition';
 
 const WorkersList = () => {
-    const { workers, isLoading, error } = useWorkers(null, 'all');
+    const { workers, isLoading, error } = useWorkers('all');
     const [nameFilter, setNameFilter] = useState('');
     const [positionFilter, setPositionFilter] = useState('');
     const navigate = useNavigate();
@@ -31,7 +31,7 @@ const WorkersList = () => {
         { label: 'ID', field: 'id' },
         { label: 'Full Name', field: 'fullName' },
         { label: 'Position', field: 'position' },
-    ];    
+    ];
 
     return (
         <div>
@@ -56,7 +56,7 @@ const WorkersList = () => {
                     type="select"
                     value={positionFilter}
                     onChange={setPositionFilter}
-                    defaultOptionLabel='Position'
+                    defaultOptionLabel="Position"
                     options={POSITION_OPTIONS}
                     className="w-full sm:w-auto"
                 />

@@ -55,18 +55,19 @@ const SupplyList = () => {
                 <Button className="w-full md:w-auto" onClick={() => navigate('/supplies/create')}>
                     Add New Supply
                 </Button>
-                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
                     <Button className="md:w-auto" onClick={() => navigate('/supplies/low-stock')}>
                         Low Stock Supplies
                     </Button>
                 </div>
             </div>
+
             <div className="flex flex-col sm:flex-row gap-4 mb-3">
                 <Filter
                     type="select"
                     value={typeFilter}
                     onChange={setTypeFilter}
-                    defaultOptionLabel='Type'
+                    defaultOptionLabel="Type"
                     options={SUPPLY_OPTIONS}
                     className="w-full md:w-auto sm:w-1/3"
                 />

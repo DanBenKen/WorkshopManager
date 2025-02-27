@@ -62,8 +62,8 @@ const JobList = () => {
                         View Jobs In Progress
                     </Button>
                 </div>
-
             </div>
+
             <div className="flex flex-col sm:flex-row gap-4 mb-3">
                 <Filter
                     type="select"
