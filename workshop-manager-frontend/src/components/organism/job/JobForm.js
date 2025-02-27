@@ -81,7 +81,7 @@ const JobForm = () => {
             jobName: formJobName,
             description: formDescription,
             status: selectedStatus.apiValue,
-            workerId: parseInt(formWorkerId, 10),
+            workerId: formWorkerId ? parseInt(formWorkerId, 10) : null,
             supplyId: formSupplyId ? parseInt(formSupplyId, 10) : null,
             supplyQuantity: parseInt(formQuantity, 10),
         };
@@ -173,7 +173,7 @@ const JobForm = () => {
                 />
 
                 <Button type="submit" disabled={isButtonLoading}>
-                    {isButtonLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Supply' : 'Create Supply'}
+                    {isButtonLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Job' : 'Create Job'}
                 </Button>
             </form>
 
