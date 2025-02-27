@@ -24,11 +24,9 @@ const LoginForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         resetErrors();
-    
+        
         const validationErrors = validateForm();
-        if (Object.keys(validationErrors).length) {
-            return;
-        }
+        if (Object.keys(validationErrors).length) return;
     
         setIsButtonLoading(true);
     
@@ -36,7 +34,7 @@ const LoginForm = () => {
     
         if (isSuccess) {
             setSuccessMessage("Login successful!");
-            setTimeout(() => navigate('/'), 1000);
+            setTimeout(() => navigate('/'), 2000);
         } else {
             setIsButtonLoading(false);
         }
@@ -67,7 +65,7 @@ const LoginForm = () => {
             />
 
             <Button type="submit" disabled={isButtonLoading}>
-                {isButtonLoading ? 'Logging in...' : 'Login'}
+                {isButtonLoading ? 'Logging in...' : 'Log in'}
             </Button>
 
             <div className="mt-4 text-center">
