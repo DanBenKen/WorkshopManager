@@ -44,8 +44,8 @@ const JobList = () => {
     };
 
     const columns = [
+        { label: 'ID', field: 'id' },
         { label: 'Job Name', field: 'jobName' },
-        { label: 'Description', field: 'description' },
         { label: 'Status', field: 'status' },
     ];
 

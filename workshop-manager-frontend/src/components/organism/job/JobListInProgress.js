@@ -52,6 +52,7 @@ const JobListInProgress = () => {
                     renderItem={(job) => ({
                         title: job.jobName,
                         description: `Status: ${job.status}`,
+                        id: `ID: ${job.id}`
                     })}
                 />
             )}

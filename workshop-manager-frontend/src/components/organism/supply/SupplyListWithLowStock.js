@@ -51,6 +51,7 @@ const SupplyListWithLowStock = () => {
                     renderItem={(supply) => ({
                         title: supply.name,
                         description: `Low stock: ${supply.quantity}`,
+                        id: `ID: ${supply.id}`
                     })}
                 />
             )}
