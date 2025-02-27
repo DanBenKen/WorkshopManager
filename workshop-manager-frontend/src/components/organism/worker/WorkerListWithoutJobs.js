@@ -20,7 +20,7 @@ const WorkerListWithoutJobs = () => {
         );
     }, [workers, nameFilter]);
 
-    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 5);
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 3);
     const paginatedData = useMemo(() => getPaginatedData(filteredWorkers), [getPaginatedData, filteredWorkers]);
 
     const handleBack = () => {

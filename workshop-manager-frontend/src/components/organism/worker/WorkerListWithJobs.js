@@ -16,7 +16,7 @@ const WorkerListWithJobs = () => {
         nameFilter ? worker.workerName.toLowerCase().includes(nameFilter.toLowerCase()) : true
     ), [workers, nameFilter]);
 
-    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 5);
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 3);
 
     const handleBack = () => {
         navigate(`/workers`);
