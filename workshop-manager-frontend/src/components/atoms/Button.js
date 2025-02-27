@@ -7,7 +7,7 @@ const Button = ({ type, onClick, className, children, disabled }) => {
             onClick={disabled ? undefined : onClick}
             className={`w-auto p-2 text-white bg-blue-500 rounded-md 
                 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 
-                focus:ring-offset-1 shadow-lg ${disabled ? 'opacity-90 cursor-not-allowed' : ''} ${className}`}
+                focus:ring-offset-1 shadow-lg ${disabled ? 'opacity-90' : ''} ${className}`}
             disabled={disabled}
         >
             {children}
