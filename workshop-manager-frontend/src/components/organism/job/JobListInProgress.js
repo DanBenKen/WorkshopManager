@@ -5,13 +5,14 @@ import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import usePagination from '../../../hooks/usePagination';
 import ButtonCancel from '../../atoms/ButtonCancel';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CardData from '../../molecules/CardData';
 
 const JobListInProgress = () => {
     const { jobs, isLoading, error } = useJobs(null, 'all');
     const [nameFilter, setNameFilter] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
 
     const filteredJobs = useMemo(() => {
         return jobs.filter((job) =>
@@ -24,9 +25,7 @@ const JobListInProgress = () => {
 
     const paginatedData = useMemo(() => getPaginatedData(filteredJobs), [getPaginatedData, filteredJobs]);
 
-    const handleBack = () => {
-        navigate(`/`);
-    };
+    const handleBack = () => { navigate(location.state?.from || "/jobs"); };
 
     if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
     if (error) return <ErrorMessage message={error} />;

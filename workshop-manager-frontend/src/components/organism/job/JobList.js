@@ -57,24 +57,30 @@ const JobList = () => {
                 <Button className="w-full md:w-auto" onClick={() => navigate('/jobs/create')}>
                     Add New Job
                 </Button>
-                <div className="flex flex-col sm:flex-row gap-4 w-full">
-                    <Filter
-                        type="input"
-                        value={nameFilter}
-                        onChange={setNameFilter}
-                        placeholder="Filter by name"
-                        className="w-full sm:w-1/3"
-                    />
-                    <Filter
-                        type="select"
-                        options={STATUS_OPTIONS}
-                        value={statusFilter}
-                        defaultOptionLabel='Status'
-                        onChange={setStatusFilter}
-                        placeholder="Filter by status"
-                        className="w-full sm:w-1/3"
-                    />
+                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                    <Button className="md:w-auto" onClick={() => navigate('/jobs/list-in-progress')}>
+                        View Jobs In Progress
+                    </Button>
                 </div>
+
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 mb-3">
+                <Filter
+                    type="select"
+                    options={STATUS_OPTIONS}
+                    value={statusFilter}
+                    defaultOptionLabel='Status'
+                    onChange={setStatusFilter}
+                    placeholder="Filter by status"
+                    className="w-full md:w-auto sm:w-1/3"
+                />
+                <Filter
+                    type="input"
+                    value={nameFilter}
+                    onChange={setNameFilter}
+                    placeholder="Filter by name"
+                    className="w-full md:w-auto sm:w-1/3"
+                />
             </div>
 
             {isLoading ? (
