@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import CardData from '../../molecules/CardData';
 
 const WorkerListWithoutJobs = () => {
-    const { workers, isLoading, error } = useWorkers(null, 'withoutJobs');
+    const { workers, isLoading, error } = useWorkers('withoutJobs');
     const [nameFilter, setNameFilter] = useState('');
     const navigate = useNavigate();
     const location = useLocation();

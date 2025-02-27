@@ -7,8 +7,8 @@ import StatCard from "../../atoms/StatCard";
 
 const WorkersCountWidget = () => {
     const navigate = useNavigate();
-    const { counts, isLoading: isLoadingTotal, error: totalError } = useWorkers(null, "count");
-    const { counts: unemployedCounts, isLoading: isLoadingUnemployed, error: unemployedError } = useWorkers(null, "unemployedCount");
+    const { counts, isLoading: isLoadingTotal, error: totalError } = useWorkers("count");
+    const { counts: unemployedCounts, isLoading: isLoadingUnemployed, error: unemployedError } = useWorkers("unemployedCount");
 
     return (
         <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center min-w-[300px]">

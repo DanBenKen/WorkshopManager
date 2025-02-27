@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import ButtonCancel from '../../atoms/ButtonCancel';
 
 const WorkerListWithJobs = () => {
-    const { workers, isLoading, error } = useWorkers(null, 'withJobs');
+    const { workers, isLoading, error } = useWorkers('withJobs');
     const [nameFilter, setNameFilter] = useState('');
     const navigate = useNavigate();
 
