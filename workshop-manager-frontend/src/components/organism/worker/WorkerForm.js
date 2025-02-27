@@ -12,7 +12,7 @@ import { validateWorkerForm } from '../../../utils/validators';
 
 const WorkerForm = () => {
     const { workerId } = useParams();
-    const { worker, handleCreateWorker, handleUpdateWorker, error } = useWorkers(workerId);
+    const { worker, handleCreateWorker, handleUpdateWorker, error, fetchWorkerById } = useWorkers('all');
     const navigate = useNavigate();
     const [isButtonLoading, setIsButtonLoading] = useState(false);
 
@@ -33,6 +33,12 @@ const WorkerForm = () => {
         { firstName, lastName, position },
         validateWorkerForm
     );
+
+    useEffect(() => {
+        if (workerId) {
+            fetchWorkerById(workerId);
+        }
+    }, [workerId, fetchWorkerById]);
 
     useEffect(() => {
         if (worker) {
@@ -82,8 +88,8 @@ const WorkerForm = () => {
             <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Worker' : 'Create New Worker'}</h2>
 
             {successMessage && <SuccessMessage message={successMessage} />}
-
             {error && !Object.values(errors).some((e) => e) && <ErrorMessage message={error} />}
+            
             <form onSubmit={handleSubmit}>
                 <FormField
                     label="First Name"
