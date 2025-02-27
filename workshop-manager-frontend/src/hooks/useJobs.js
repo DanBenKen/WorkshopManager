@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { createJob, getJobs, updateJob, getJobById, deleteJob, getTotalCompletedJobs, getJobsInProgressCount } from '../services/jobService';
+import {
+    createJob, getJobs, updateJob, getJobById, deleteJob,
+    getTotalCompletedJobs, getJobsInProgressCount
+} from '../services/jobService';
 import { getSupplyById, updateSupply } from '../services/supplyService';
 import { getWorkerById } from '../services/workerService';
 import { JOB_STATUSES } from '../constants/jobStatus';
@@ -12,16 +15,25 @@ const useJobs = (jobId, fetchType = 'all') => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    /* ==========================
+        Data Fetchers (Memoized)
+    ========================== */
     const dataFetchers = useMemo(() => ({
         'completedCount': async () => setTotalCompleted(await getTotalCompletedJobs()),
         'inProgressCount': async () => setInProgress(await getJobsInProgressCount()),
         'all': async () => setJobs(await getJobs())
     }), []);
 
+    /* ==========================
+        Error Handling
+    ========================== */
     const handleError = useCallback((error) => {
         setError(Array.isArray(error) ? error : [error.message || 'An unknown error occurred.']);
     }, []);
 
+    /* ==========================
+        Async Action Handling
+    ========================== */
     const handleAsyncAction = useCallback(async (actionFunc) => {
         setIsLoading(true);
         setError(null);
@@ -30,30 +42,56 @@ const useJobs = (jobId, fetchType = 'all') => {
             return true;
         } catch (error) {
             handleError(error);
-            return null;
+            return false;
         } finally {
             setIsLoading(false);
         }
     }, [handleError]);
 
+    /* ==========================
+        State Update Functions
+    ========================== */
+
+    // Adds a new Job to the state
+    const addJobToState = (newJob) => {
+        setJobs((prevJobs) => [...prevJobs, newJob]);
+    };
+    
+    // Updates the jobs state with the latest supply data
+    const updateJobInState = (updatedJob) => {
+        setJobs((prevJobs) => prevJobs.map(job => job.id === updatedJob.id ? updatedJob : job));
+    };
+    
+    // Removes a jobs from the state based on its ID
+    const removeJobFromState = (jobId) => {
+        setJobs((prevJobs) => prevJobs.filter(job => job.id !== jobId));
+    };
+
+    /* ==========================
+        Data Fetching
+    ========================== */
+
+    // fetchData retrieves either a single job by ID or a list based on fetchType.
     const fetchData = useCallback(() => handleAsyncAction(async () => {
-        if (jobId) {
-            setJob(await getJobById(jobId));
-        } else {
-            await dataFetchers[fetchType]?.();
-        }
+        if (jobId) setJob(await getJobById(jobId));
+        await dataFetchers[fetchType]?.();
     }), [jobId, fetchType, dataFetchers, handleAsyncAction]);
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    const checkSupplyQuantity = useCallback((supply, requiredQuantity) => {
-        if (supply.quantity < requiredQuantity) {
+    /* ==========================
+        Domain-specific Helper Functions
+    ========================== */
+
+    // isStockSufficient ensures the available supply meets the required quantity.
+    const isStockSufficient = useCallback((supply, requiredQuantity) => {
+        if (supply.quantity < requiredQuantity)
             throw new Error('Entered quantity exceeds available stock.');
-        }
     }, []);
 
+    // validateJobData verifies worker and supply exist and have enough quantity.
     const validateJobData = useCallback(async (jobData) => {
         const errors = [];
 
@@ -66,18 +104,15 @@ const useJobs = (jobId, fetchType = 'all') => {
         };
 
         const validateSupply = async () => {
-            if (!jobData.supplyId) return null;
-
             try {
                 const supply = await getSupplyById(jobData.supplyId);
-                checkSupplyQuantity(supply, jobData.supplyQuantity);
+                isStockSufficient(supply, jobData.supplyQuantity);
                 return supply;
             } catch (error) {
                 const errorMessage = error.message === 'Entered quantity exceeds available stock.'
                     ? error.message : `Supply with ID ${jobData.supplyId} not found.`;
                 errors.push(errorMessage);
             }
-
             return null;
         };
 
@@ -86,55 +121,68 @@ const useJobs = (jobId, fetchType = 'all') => {
         if (errors.length) throw errors;
 
         return jobData.supplyId;
-    }, [checkSupplyQuantity]);
+    }, [isStockSufficient]);
 
+    // adjustSupplyQuantity updates the supply quantity ensuring no negative stock.
     const adjustSupplyQuantity = useCallback(async (supplyId, quantityChange) => {
         const supply = await getSupplyById(supplyId);
-        if (quantityChange < 0) checkSupplyQuantity(supply, Math.abs(quantityChange));
-        await updateSupply(supplyId, { ...supply, quantity: supply.quantity + quantityChange });
-    }, [checkSupplyQuantity]);
+        if (quantityChange < 0)
+            isStockSufficient(supply, Math.abs(quantityChange));
 
+        await updateSupply(supplyId, { ...supply, quantity: supply.quantity + quantityChange });
+    }, [isStockSufficient]);
+
+    // updateSupplyOnJobChange adjusts supply quantities when a job's supply or quantity changes.
     const updateSupplyOnJobChange = useCallback(async (currentJob, jobData) => {
         if (currentJob.supplyId !== jobData.supplyId) {
-            if (currentJob.supplyId) {
+            if (currentJob.supplyId)
                 await adjustSupplyQuantity(currentJob.supplyId, currentJob.supplyQuantity);
-            }
-            if (jobData.supplyId) {
+
+            if (jobData.supplyId)
                 await adjustSupplyQuantity(jobData.supplyId, -jobData.supplyQuantity);
-            }
         } else if (currentJob.supplyQuantity !== jobData.supplyQuantity) {
             const diff = jobData.supplyQuantity - currentJob.supplyQuantity;
-            if (diff !== 0) {
+            if (diff !== 0)
                 await adjustSupplyQuantity(jobData.supplyId, -diff);
-            }
         }
-    }, [adjustSupplyQuantity]);    
+    }, [adjustSupplyQuantity]);
 
+    /* ==========================
+        CRUD Operations
+    ========================== */
+
+    // handleCreateJob validates job data, adjusts supply, and creates a new job.
     const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
         const supplyId = await validateJobData(jobData);
-        if (supplyId) {
+        if (supplyId)
             await adjustSupplyQuantity(supplyId, -jobData.supplyQuantity);
-        }
+
         await createJob(jobData);
+
+        addJobToState(jobData);
     }), [handleAsyncAction, validateJobData, adjustSupplyQuantity]);
 
+    // handleUpdateJob validates updated job data, adjusts supply quantities as needed, and updates the job.
     const handleUpdateJob = useCallback(async (id, jobData) => handleAsyncAction(async () => {
-        await validateJobData(jobData);    
         const currentJob = await getJobById(id);
+
         await updateSupplyOnJobChange(currentJob, jobData);
         await updateJob(id, jobData);
-    }), [handleAsyncAction, updateSupplyOnJobChange, validateJobData]);
-    
+        updateJobInState(jobData);
+    }), [handleAsyncAction, updateSupplyOnJobChange]);
+
+    // handleDeleteJob deletes the job and updates local state.
     const handleDeleteJob = useCallback(async (id) => handleAsyncAction(async () => {
         await deleteJob(id);
-        setJobs((prevJobs) => prevJobs.filter(job => job.id !== id));
+        removeJobFromState(id);
     }), [handleAsyncAction]);
 
+    // handleSetCompleted marks a job as completed by updating its status.
     const handleSetCompleted = useCallback(async (job) => handleAsyncAction(async () => {
         const updatedJob = { ...job, status: JOB_STATUSES.COMPLETED.apiValue };
         await updateJob(job.id, updatedJob);
-        setJobs((prevJobs) => prevJobs.map(j => (j.id === job.id ? updatedJob : j)));
-    }), [handleAsyncAction]);    
+        updateJobInState(updatedJob);
+    }), [handleAsyncAction]);
 
     return {
         jobs, job, isLoading, error, inProgress, totalCompleted,
