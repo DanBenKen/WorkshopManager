@@ -8,14 +8,19 @@ const JobDelete = () => {
     const { jobId } = useParams();
     const navigate = useNavigate();
     const { handleDeleteJob } = useJobs();
+    const [isButtonLoading, setIsButtonLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
 
     const handleConfirm = async () => {
+        setIsButtonLoading(true);
+
         const success = await handleDeleteJob(jobId);
 
         if (success) {
             setSuccessMessage(`Job #${jobId} deleted successfully!`);
             setTimeout(() => navigate('/jobs'), 2000);
+        } else {
+            setIsButtonLoading(false);
         }
     };
 
@@ -31,6 +36,7 @@ const JobDelete = () => {
                 itemName={`Job #${jobId}`}
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}
+                isButtonLoading={isButtonLoading}
             />
         </div>
     );

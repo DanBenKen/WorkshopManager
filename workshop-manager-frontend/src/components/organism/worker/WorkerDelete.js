@@ -8,14 +8,19 @@ const WorkerDelete = () => {
     const { workerId } = useParams();
     const navigate = useNavigate();
     const { handleDeleteWorker } = useWorkers(workerId);
+    const [isButtonLoading, setIsButtonLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
 
     const handleConfirm = async () => {
+        setIsButtonLoading(true);
+
         const success = await handleDeleteWorker(workerId);
 
         if (success) {
             setSuccessMessage(`Worker #${workerId} deleted successfully!`);
             setTimeout(() => navigate('/workers'), 2000);
+        } else {
+            setIsButtonLoading(false);
         }
     };
 
@@ -31,6 +36,7 @@ const WorkerDelete = () => {
                 itemName={`Worker #${workerId}`}
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}
+                isButtonLoading={isButtonLoading}
             />
         </div>
     );
