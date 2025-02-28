@@ -74,7 +74,7 @@ const Sidebar = () => {
                     </button>
                 </div>
 
-                <div>
+                <div className='p-2'>
                     <Outlet />
                 </div>
             </div>
