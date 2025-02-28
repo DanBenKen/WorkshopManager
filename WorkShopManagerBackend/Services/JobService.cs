@@ -79,8 +79,8 @@ namespace WorkshopManager.Services
 
         private async Task ValidateRelatedEntities(Job job)
         {
-            if (!await _unitOfWork.WorkerRepository.ExistsAsync(job.WorkerId))
-                throw new WorkerNotFoundException(job.WorkerId);
+            if (job.WorkerId.HasValue && !await _unitOfWork.WorkerRepository.ExistsAsync(job.WorkerId.Value))
+                throw new WorkerNotFoundException(job.WorkerId.Value);
 
             if (job.SupplyId.HasValue && !await _unitOfWork.SupplyRepository.ExistsAsync(job.SupplyId.Value))
                 throw new SupplyNotFoundException(job.SupplyId.Value);

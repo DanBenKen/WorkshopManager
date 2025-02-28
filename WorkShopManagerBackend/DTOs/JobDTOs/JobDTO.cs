@@ -7,7 +7,7 @@ namespace WorkshopManager.DTOs.JobDTOs
     {
         public int Id { get; set; }
         public required string JobName { get; set; }
-        public int WorkerId { get; set; }
+        public int? WorkerId { get; set; }
         public string? WorkerName { get; set; }
         public int? SupplyId { get; set; }
         public string? SupplyName { get; set; }
