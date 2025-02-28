@@ -12,7 +12,7 @@ namespace WorkshopManager.DTOs.JobDTOs
         public int WorkerId { get; set; }
 
         [Required(ErrorMessage = "Supply ID is required.")]
-        public int SupplyId { get; set; }
+        public int? SupplyId { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "Supply quantity must be at least 1.")]
         public int SupplyQuantity { get; set; }

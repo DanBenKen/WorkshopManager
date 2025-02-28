@@ -39,13 +39,17 @@ namespace WorkshopManager.Services
             var existingJob = await _unitOfWork.JobRepository.GetJobByIdAsync(id)
                 ?? throw new JobNotFoundException(id);
 
-            _mapper.Map(updateJobDTO, existingJob);
+            var originalSupplyId = existingJob.SupplyId;
+            var originalSupplyQuantity = existingJob.SupplyQuantity;
+
             await ValidateRelatedEntities(existingJob);
 
-            await _unitOfWork.ExecuteInTransactionAsync(() =>
+            _mapper.Map(updateJobDTO, existingJob);
+
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
+                await HandleSupplyAdjustmentsAsync(originalSupplyId, originalSupplyQuantity, updateJobDTO);
                 _unitOfWork.JobRepository.UpdateJob(existingJob);
-                return Task.CompletedTask;
             });
 
             return await GetJobWithDetailsAsync(id);
@@ -92,6 +96,45 @@ namespace WorkshopManager.Services
                 ?? throw new JobNotFoundException(id);
 
             return _mapper.Map<JobDTO>(job);
+        }
+
+        private async Task AdjustSupplyQuantity(int supplyId, int quantityChange)
+        {
+            var supply = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(supplyId)
+                ?? throw new SupplyNotFoundException(supplyId);
+
+            if (supply.Quantity + quantityChange < 0)
+                throw new SupplyInsufficientException(supplyId);
+
+            supply.Quantity += quantityChange;
+
+            _unitOfWork.SupplyRepository.UpdateSupply(supply);
+        }
+
+        private async Task HandleSupplyAdjustmentsAsync(int? originalSupplyId, int originalSupplyQuantity, RequestUpdateJobDTO updateJobDTO)
+        {
+            if (originalSupplyId != updateJobDTO.SupplyId)
+                await HandleSupplyIdChangeAsync(originalSupplyId, originalSupplyQuantity, updateJobDTO);
+
+            if (originalSupplyQuantity != updateJobDTO.SupplyQuantity)
+                await HandleQuantityChangeAsync(updateJobDTO.SupplyId, originalSupplyQuantity, updateJobDTO.SupplyQuantity);
+        }
+
+        private async Task HandleSupplyIdChangeAsync(int? originalSupplyId, int originalSupplyQuantity, RequestUpdateJobDTO updateJobDTO)
+        {
+            if (originalSupplyId.HasValue)
+                await AdjustSupplyQuantity(originalSupplyId.Value, originalSupplyQuantity);
+
+            if (updateJobDTO.SupplyId.HasValue)
+                await AdjustSupplyQuantity(updateJobDTO.SupplyId.Value, -updateJobDTO.SupplyQuantity);
+        }
+
+        private async Task HandleQuantityChangeAsync(int? supplyId, int originalQuantity, int newQuantity)
+        {
+            var quantityDifference = newQuantity - originalQuantity;
+
+            if (quantityDifference != 0 && supplyId.HasValue)
+                await AdjustSupplyQuantity(supplyId.Value, -quantityDifference);
         }
     }
 }
