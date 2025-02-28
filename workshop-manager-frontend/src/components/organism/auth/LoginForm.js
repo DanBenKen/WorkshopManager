@@ -25,21 +25,21 @@ const LoginForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         resetErrors();
-        
+
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length) return;
-    
+
         setIsButtonLoading(true);
-    
+
         const isSuccess = await handleLogin({ email, password }, rememberMe);
-    
+
         if (isSuccess) {
             setSuccessMessage("Login successful!");
             setTimeout(() => navigate('/'), 2000);
         } else {
             setIsButtonLoading(false);
         }
-    };    
+    };
 
     return (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
@@ -64,18 +64,15 @@ const LoginForm = () => {
                 errorMessage={errors.password}
                 required
             />
-
-            <div className="flex items-center space-x-2">
-                <input
-                    type="checkbox"
-                    id="rememberMe"
-                    name="rememberMe"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                />
-                <label htmlFor="rememberMe" className="text-sm">Remember Me</label>
-            </div>
+            <FormField
+                type="checkbox"
+                id="rememberMe"
+                name="rememberMe"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                label={"Remember Me"}
+            />
 
             <Button type="submit" disabled={isButtonLoading}>
                 {isButtonLoading ? 'Logging in...' : 'Log in'}

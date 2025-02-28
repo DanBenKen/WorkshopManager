@@ -106,7 +106,6 @@ const Sidebar = () => {
                 <motion.div
                     key={location.pathname}
                     {...pageTransition}
-                    className='p-2'
                 >
                     <Outlet />
                 </motion.div>
