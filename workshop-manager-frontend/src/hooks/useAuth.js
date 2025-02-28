@@ -25,13 +25,11 @@ const useAuth = () => {
     // Attempts to log in the user with provided credentials. On success, it stores the received authentication token.
     const handleLogin = async (loginData, rememberMe) => {
         return await handleAsyncAction(async () => {
+            removeSessionToken();
+            removeLocalToken();
             const response = await loginService(loginData);
 
-            if (rememberMe) {
-                setLocalToken(response.token);
-            } else {
-                setSessionToken(response.token);
-            }
+            rememberMe ? setLocalToken(response.token) : setSessionToken(response.token);
         });
     };
 
