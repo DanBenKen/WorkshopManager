@@ -253,7 +253,7 @@ namespace WorkshopManager.Migrations
 
                     b.HasIndex("WorkerId");
 
-                    b.ToTable("Jobs");
+                    b.ToTable("Jobs", (string)null);
                 });
 
             modelBuilder.Entity("WorkshopManager.Models.Supply", b =>
@@ -277,7 +277,7 @@ namespace WorkshopManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Supplies");
+                    b.ToTable("Supplies", (string)null);
                 });
 
             modelBuilder.Entity("WorkshopManager.Models.Worker", b =>
@@ -301,7 +301,7 @@ namespace WorkshopManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Workers");
+                    b.ToTable("Workers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

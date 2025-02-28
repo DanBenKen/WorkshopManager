@@ -55,7 +55,8 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JobStatusEnumConverter());
-        options.JsonSerializerOptions.Converters.Add(new PositionEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new WorkerPositionEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new SupplyTypeEnumConverter());
     });
 
 builder.Services.AddEndpointsApiExplorer();

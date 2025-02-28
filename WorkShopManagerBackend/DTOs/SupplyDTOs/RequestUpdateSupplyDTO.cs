@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WorkshopManager.Enums;
 
 namespace WorkshopManager.DTOs.SupplyDTOs
 {
@@ -16,7 +17,6 @@ namespace WorkshopManager.DTOs.SupplyDTOs
         public required int Quantity { get; set; }
 
         [Required(ErrorMessage = "Type is required.")]
-        [StringLength(50, ErrorMessage = "Type cannot exceed 50 characters.")]
-        public required string Type { get; set; }
+        public required SupplyType Type { get; set; }
     }
 }

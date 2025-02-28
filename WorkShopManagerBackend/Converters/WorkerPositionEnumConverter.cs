@@ -4,7 +4,7 @@ using WorkshopManager.Enums;
 
 namespace WorkshopManager.Converters
 {
-    public class PositionEnumConverter : JsonConverter<WorkerPosition>
+    public class WorkerPositionEnumConverter : JsonConverter<WorkerPosition>
     {
         public override WorkerPosition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
