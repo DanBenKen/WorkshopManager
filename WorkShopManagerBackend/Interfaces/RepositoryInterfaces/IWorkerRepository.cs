@@ -4,7 +4,7 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
 {
     public interface IWorkerRepository
     {
-        Task<Worker?> GetWorkerByIdAsync(int id);
+        Task<Worker?> GetWorkerByIdAsync(int? id);
         Task<IEnumerable<Worker>> GetAllWorkersAsync();
         Task<IEnumerable<Worker>> GetAllWorkersWithJobsAsync();
         Task<bool> ExistsAsync(int id);

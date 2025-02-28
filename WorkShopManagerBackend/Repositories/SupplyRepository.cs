@@ -18,7 +18,7 @@ namespace WorkshopManager.Repositories
             return await _context.Supplies.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Supply?> GetSupplyByIdAsync(int id)
+        public async Task<Supply?> GetSupplyByIdAsync(int? id)
         {
             return await _context.Supplies.FindAsync(id);
         }

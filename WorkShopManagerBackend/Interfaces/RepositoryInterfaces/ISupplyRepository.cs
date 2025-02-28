@@ -5,7 +5,7 @@ namespace WorkshopManager.Interfaces.RepositoryInterfaces
     public interface ISupplyRepository
     {
         Task<IEnumerable<Supply>> GetAllSuppliesAsync();
-        Task<Supply?> GetSupplyByIdAsync(int id);
+        Task<Supply?> GetSupplyByIdAsync(int? id);
         Task<bool> ExistsAsync(int id);
         Task AddSupplyAsync(Supply supply);
         void UpdateSupply(Supply supply);
