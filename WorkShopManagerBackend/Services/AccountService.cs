@@ -98,9 +98,7 @@ namespace WorkshopManager.Services
 
             var expirationInMinutesString = jwtSettings["TokenExpirationInMinutes"];
             if (string.IsNullOrEmpty(expirationInMinutesString) || !double.TryParse(expirationInMinutesString, out var expirationInMinutes))
-            {
                 expirationInMinutes = 120.0;
-            }
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],
