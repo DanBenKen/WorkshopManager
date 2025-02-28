@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createJob, getJobs, updateJob, getJobById, deleteJob } from '../services/jobService';
-import { getSupplyById, updateSupply } from '../services/supplyService';
-import { getWorkerById } from '../services/workerService';
 import { JOB_STATUSES } from '../constants/jobStatus';
 
 const useJobs = (jobId, fetchType = 'all') => {
@@ -28,8 +26,12 @@ const useJobs = (jobId, fetchType = 'all') => {
         Error Handling
     ========================== */
     const handleError = useCallback((error) => {
-        setError(Array.isArray(error) ? error : [error.message || 'An unknown error occurred.']);
-    }, []);
+        if (error.response && error.response.data && error.response.data.detail) {
+            setError([error.response.data.detail]);
+        } else {
+            setError(Array.isArray(error) ? error : [error.message || 'An unknown error occurred.']);
+        }
+    }, []);    
 
     /* ==========================
         Async Action Handling
@@ -81,94 +83,20 @@ const useJobs = (jobId, fetchType = 'all') => {
     }, [fetchData]);
 
     /* ==========================
-        Domain-specific Helper Functions
-    ========================== */
-
-    // isStockSufficient ensures the available supply meets the required quantity.
-    const isStockSufficient = useCallback((supply, requiredQuantity) => {
-        if (supply.quantity < requiredQuantity)
-            throw new Error('Entered quantity exceeds available stock.');
-    }, []);
-
-    // validateJobData verifies worker and supply exist and have enough quantity.
-    const validateJobData = useCallback(async (jobData) => {
-        const errors = [];
-
-        const validateWorker = async () => {
-            try {
-                await getWorkerById(jobData.workerId);
-            } catch {
-                errors.push(`Worker with ID ${jobData.workerId} not found.`);
-            }
-        };
-
-        const validateSupply = async () => {
-            try {
-                const supply = await getSupplyById(jobData.supplyId);
-                isStockSufficient(supply, jobData.supplyQuantity);
-                return supply;
-            } catch (error) {
-                const errorMessage = error.message === 'Entered quantity exceeds available stock.'
-                    ? error.message : `Supply with ID ${jobData.supplyId} not found.`;
-                errors.push(errorMessage);
-            }
-            return null;
-        };
-
-        await Promise.all([validateWorker(), validateSupply()]);
-
-        if (errors.length) throw errors;
-
-        return jobData.supplyId;
-    }, [isStockSufficient]);
-
-    // adjustSupplyQuantity updates the supply quantity ensuring no negative stock.
-    const adjustSupplyQuantity = useCallback(async (supplyId, quantityChange) => {
-        const supply = await getSupplyById(supplyId);
-        if (quantityChange < 0)
-            isStockSufficient(supply, Math.abs(quantityChange));
-
-        await updateSupply(supplyId, { ...supply, quantity: supply.quantity + quantityChange });
-    }, [isStockSufficient]);
-
-    // updateSupplyOnJobChange adjusts supply quantities when a job's supply or quantity changes.
-    const updateSupplyOnJobChange = useCallback(async (currentJob, jobData) => {
-        if (currentJob.supplyId !== jobData.supplyId) {
-            if (currentJob.supplyId)
-                await adjustSupplyQuantity(currentJob.supplyId, currentJob.supplyQuantity);
-
-            if (jobData.supplyId)
-                await adjustSupplyQuantity(jobData.supplyId, -jobData.supplyQuantity);
-        } else if (currentJob.supplyQuantity !== jobData.supplyQuantity) {
-            const diff = jobData.supplyQuantity - currentJob.supplyQuantity;
-            if (diff !== 0)
-                await adjustSupplyQuantity(jobData.supplyId, -diff);
-        }
-    }, [adjustSupplyQuantity]);
-
-    /* ==========================
         CRUD Operations
     ========================== */
 
     // handleCreateJob validates job data, adjusts supply, and creates a new job.
     const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
-        const supplyId = await validateJobData(jobData);
-        if (supplyId)
-            await adjustSupplyQuantity(supplyId, -jobData.supplyQuantity);
-
         await createJob(jobData);
-
         addJobToState(jobData);
-    }), [handleAsyncAction, validateJobData, adjustSupplyQuantity]);
+    }), [handleAsyncAction]);    
 
     // handleUpdateJob validates updated job data, adjusts supply quantities as needed, and updates the job.
     const handleUpdateJob = useCallback(async (id, jobData) => handleAsyncAction(async () => {
-        const currentJob = await getJobById(id);
-
-        await updateSupplyOnJobChange(currentJob, jobData);
         await updateJob(id, jobData);
         updateJobInState(jobData);
-    }), [handleAsyncAction, updateSupplyOnJobChange]);
+    }), [handleAsyncAction]);
 
     // handleDeleteJob deletes the job and updates local state.
     const handleDeleteJob = useCallback(async (id) => handleAsyncAction(async () => {

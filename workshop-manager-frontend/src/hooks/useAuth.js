@@ -11,21 +11,21 @@ const useAuth = () => {
         setAuthError(null);
 
         try {
-            await actionFunc();  // Execute the provided async function.
+            await actionFunc();
             return true;
         } catch (error) {
-            const { message } = handleAuthError(error);  // Process error using auth-specific handler.
+            const { message } = handleAuthError(error);
             setAuthError(message);
             return false;
         } finally {
-            setIsLoading(false);  // Reset the loading state after the async operation completes.
+            setIsLoading(false);
         }
     };
 
     // Attempts to log in the user with provided credentials. On success, it stores the received authentication token.
     const handleLogin = async (loginData, rememberMe) => {
         return await handleAsyncAction(async () => {
-            const response = await loginService(loginData);  // Call the login service with loginData.
+            const response = await loginService(loginData);
 
             if (rememberMe) {
                 setLocalToken(response.token);
