@@ -16,6 +16,6 @@ namespace WorkshopManager.DTOs.WorkerDTOs
         public required string LastName { get; set; }
 
         [Required(ErrorMessage = "Position is required.")]
-        public Position Position { get; set; }
+        public WorkerPosition Position { get; set; }
     }
 }

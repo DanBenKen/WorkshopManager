@@ -4,27 +4,27 @@ using WorkshopManager.Enums;
 
 namespace WorkshopManager.Converters
 {
-    public class PositionEnumConverter : JsonConverter<Position>
+    public class PositionEnumConverter : JsonConverter<WorkerPosition>
     {
-        public override Position Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override WorkerPosition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var value = reader.GetString();
             return value switch
             {
-                "Mechanic" => Position.Mechanic,
-                "Electrician" => Position.Electrician,
-                "Painter" => Position.Painter,
+                "Mechanic" => WorkerPosition.Mechanic,
+                "Electrician" => WorkerPosition.Electrician,
+                "Painter" => WorkerPosition.Painter,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
 
-        public override void Write(Utf8JsonWriter writer, Position value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, WorkerPosition value, JsonSerializerOptions options)
         {
             var stringValue = value switch
             {
-                Position.Mechanic => "Mechanic",
-                Position.Electrician => "Electrician",
-                Position.Painter => "Painter",
+                WorkerPosition.Mechanic => "Mechanic",
+                WorkerPosition.Electrician => "Electrician",
+                WorkerPosition.Painter => "Painter",
                 _ => throw new ArgumentOutOfRangeException()
             };
 

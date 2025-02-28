@@ -7,7 +7,7 @@ namespace WorkshopManager.Models
         public int Id { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
-        public required Position Position { get; set; }
+        public required WorkerPosition Position { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";
 
