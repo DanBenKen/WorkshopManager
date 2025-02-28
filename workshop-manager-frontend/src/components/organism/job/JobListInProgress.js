@@ -15,10 +15,7 @@ const JobListInProgress = () => {
     const location = useLocation();
 
     const filteredJobs = useMemo(() => {
-        return jobs.filter((job) =>
-            job.status === 'InProgress' &&
-            (nameFilter ? job.jobName.toLowerCase().includes(nameFilter.toLowerCase()) : true)
-        );
+        return jobs.filter((job) => job.status === 'In Progress' && (nameFilter ? job.jobName.toLowerCase().includes(nameFilter.toLowerCase()) : true));
     }, [jobs, nameFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredJobs, 5);

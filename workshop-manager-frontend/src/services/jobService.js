@@ -27,13 +27,3 @@ export const deleteJob = async (id) => {
     const response = await axiosInstance.delete(`${API_URL}/${id}`);
     return response.data;
 };
-
-export const getTotalCompletedJobs = async () => {
-    const allJobs = await getJobs();
-    return allJobs.filter(job => job.status === 'Completed').length;
-};
-
-export const getJobsInProgressCount = async () => {
-    const allJobs = await getJobs();
-    return allJobs.filter(job => job.status === 'InProgress').length;
-};

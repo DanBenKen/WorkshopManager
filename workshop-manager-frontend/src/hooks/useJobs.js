@@ -1,8 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import {
-    createJob, getJobs, updateJob, getJobById, deleteJob,
-    getTotalCompletedJobs, getJobsInProgressCount
-} from '../services/jobService';
+import { createJob, getJobs, updateJob, getJobById, deleteJob } from '../services/jobService';
 import { getSupplyById, updateSupply } from '../services/supplyService';
 import { getWorkerById } from '../services/workerService';
 import { JOB_STATUSES } from '../constants/jobStatus';
@@ -19,9 +16,12 @@ const useJobs = (jobId, fetchType = 'all') => {
         Data Fetchers (Memoized)
     ========================== */
     const dataFetchers = useMemo(() => ({
-        'completedCount': async () => setTotalCompleted(await getTotalCompletedJobs()),
-        'inProgressCount': async () => setInProgress(await getJobsInProgressCount()),
-        'all': async () => setJobs(await getJobs())
+        'all': async () => {
+            const allJobs = await getJobs();
+            setJobs(allJobs);
+            setTotalCompleted(allJobs.filter(job => job.status === 'Completed').length);
+            setInProgress(allJobs.filter(job => job.status === 'In Progress').length);
+        }
     }), []);
 
     /* ==========================
@@ -71,7 +71,6 @@ const useJobs = (jobId, fetchType = 'all') => {
         Data Fetching
     ========================== */
 
-    // fetchData retrieves either a single job by ID or a list based on fetchType.
     const fetchData = useCallback(() => handleAsyncAction(async () => {
         if (jobId) setJob(await getJobById(jobId));
         await dataFetchers[fetchType]?.();

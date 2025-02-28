@@ -10,32 +10,27 @@ const JobsProgressWidget = () => {
 
     const {
         totalCompleted,
-        isLoading: isLoadingCompleted,
-        error: completedError
-    } = useJobs(null, "completedCount");
-
-    const {
         inProgress,
-        isLoading: isLoadingInProgress,
-        error: inProgressError
-    } = useJobs(null, "inProgressCount");
+        isLoading,
+        error
+    } = useJobs();
 
     return (
         <div className="bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col items-center text-center min-w-[300px]">
             <StatCard
                 label="Completed Jobs"
-                value={isLoadingCompleted ? "Loading..." : totalCompleted}
-                isLoading={isLoadingCompleted}
-                error={completedError}
+                value={isLoading ? "Loading..." : totalCompleted}
+                isLoading={isLoading}
+                error={error}
                 icon={FaCheckCircle}
                 colorClass="text-green-400"
             />
 
             <StatCard
                 label="Jobs in Progress"
-                value={isLoadingInProgress ? "Loading..." : inProgress}
-                isLoading={isLoadingInProgress}
-                error={inProgressError}
+                value={isLoading ? "Loading..." : inProgress}
+                isLoading={isLoading}
+                error={error}
                 icon={FaSyncAlt}
                 colorClass="text-yellow-400"
             />
