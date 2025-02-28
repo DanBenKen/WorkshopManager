@@ -23,7 +23,7 @@ const SupplyList = () => {
         });
     }, [supplies, nameFilter, typeFilter]);
 
-    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredSupplies, 5);
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredSupplies, 4);
     const paginatedData = useMemo(() => getPaginatedData(filteredSupplies), [getPaginatedData, filteredSupplies]);
 
     const handleDetails = (supply) => {
@@ -69,14 +69,12 @@ const SupplyList = () => {
                     onChange={setTypeFilter}
                     defaultOptionLabel="Type"
                     options={SUPPLY_OPTIONS}
-                    className="w-full md:w-auto sm:w-1/3"
                 />
                 <Filter
                     type="input"
                     value={nameFilter}
                     onChange={setNameFilter}
                     placeholder="Filter by name"
-                    className="w-full md:w-auto sm:w-1/3"
                 />
             </div>
 

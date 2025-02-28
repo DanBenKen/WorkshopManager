@@ -58,14 +58,12 @@ const WorkersList = () => {
                     onChange={setPositionFilter}
                     defaultOptionLabel="Position"
                     options={POSITION_OPTIONS}
-                    className="w-full sm:w-auto"
                 />
                 <Filter
                     type="input"
                     value={nameFilter}
                     onChange={setNameFilter}
                     placeholder="Filter by name"
-                    className="w-full sm:w-auto"
                 />
             </div>
 

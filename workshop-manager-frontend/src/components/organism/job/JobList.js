@@ -72,14 +72,12 @@ const JobList = () => {
                     defaultOptionLabel='Status'
                     onChange={setStatusFilter}
                     placeholder="Filter by status"
-                    className="w-full md:w-auto sm:w-1/3"
                 />
                 <Filter
                     type="input"
                     value={nameFilter}
                     onChange={setNameFilter}
                     placeholder="Filter by name"
-                    className="w-full md:w-auto sm:w-1/3"
                 />
             </div>
 
