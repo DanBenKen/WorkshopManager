@@ -14,27 +14,41 @@ export const login = async (loginData) => {
 };
 
 export const logout = async () => {
-    removeToken();
     await axiosInstance.post(`${API_ROUTES.ACCOUNT}/logout`);
 };
 
-export const setToken = (token) => {
+export const setLocalToken = (token) => {
     localStorage.setItem(TOKEN_KEY, token);
 };
 
-export const getToken = () => {
-    return localStorage.getItem(TOKEN_KEY);
+export const setSessionToken = (token) => {
+    sessionStorage.setItem(TOKEN_KEY, token);
 };
 
-export const removeToken = () => {
+export const getToken = () => {
+    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    return token;
+};
+
+export const removeLocalToken = () => {
     localStorage.removeItem(TOKEN_KEY);
 };
 
-export const isAuthenticated = () => {
-    const token = getToken();
-    if (!token) return false;
+export const removeSessionToken = () => {
+    sessionStorage.removeItem(TOKEN_KEY);
+};
 
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+export const isAuthenticated = () => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    const sessionToken = sessionStorage.getItem(TOKEN_KEY);
+
+    if (!token) {
+        if (!sessionToken) return false;
+    }
+
+    const tokenToCheck = token || sessionToken;
+
+    const decodedToken = JSON.parse(atob(tokenToCheck.split('.')[1]));
     const expirationDate = decodedToken.exp * 1000;
     const currentDate = new Date().getTime();
 

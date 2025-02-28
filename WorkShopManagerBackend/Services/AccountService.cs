@@ -65,7 +65,7 @@ namespace WorkshopManager.Services
             if (!isPasswordCorrect)
                 throw new UnauthorizedAccessException("Invalid password.");
 
-            return await GenerateJwtTokenAsync(user);
+            return await GenerateJwtTokenAsync(user, loginDTO.RememberMe);
         }
 
         public async Task LogoutAsync()
@@ -73,7 +73,7 @@ namespace WorkshopManager.Services
             await _signInManager.SignOutAsync();
         }
 
-        public async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
+        public async Task<string> GenerateJwtTokenAsync(ApplicationUser user, bool rememberMe)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
 
@@ -97,8 +97,9 @@ namespace WorkshopManager.Services
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var expirationInMinutesString = jwtSettings["TokenExpirationInMinutes"];
-            if (string.IsNullOrEmpty(expirationInMinutesString) || !double.TryParse(expirationInMinutesString, out var expirationInMinutes))
-                expirationInMinutes = 120.0;
+            double expirationInMinutes;
+            if (string.IsNullOrEmpty(expirationInMinutesString) || !double.TryParse(expirationInMinutesString, out expirationInMinutes))
+                expirationInMinutes = rememberMe ? 43200.0 : 30.0;
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],

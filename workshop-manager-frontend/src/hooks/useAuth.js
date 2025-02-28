@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { login as loginService, register as registerService, logout as logoutService, setToken, removeToken, handleAuthError } from '../services/authService';
+import { login as loginService, register as registerService, logout as logoutService, setLocalToken, removeLocalToken, handleAuthError, setSessionToken, removeSessionToken } from '../services/authService';
 
 const useAuth = () => {
     const [authError, setAuthError] = useState(null);
@@ -23,10 +23,15 @@ const useAuth = () => {
     };
 
     // Attempts to log in the user with provided credentials. On success, it stores the received authentication token.
-    const handleLogin = async (loginData) => {
+    const handleLogin = async (loginData, rememberMe) => {
         return await handleAsyncAction(async () => {
             const response = await loginService(loginData);  // Call the login service with loginData.
-            setToken(response.token);  // Store the authentication token.
+
+            if (rememberMe) {
+                setLocalToken(response.token);
+            } else {
+                setSessionToken(response.token);
+            }
         });
     };
 
@@ -39,7 +44,9 @@ const useAuth = () => {
 
     // Logs out the user by removing the token and calling the logout service.
     const handleLogout = async () => {
-        removeToken();
+        removeLocalToken();
+        removeSessionToken();
+
         await handleAsyncAction(async () => {
             await logoutService();
         });
