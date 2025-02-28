@@ -5,7 +5,7 @@ const ButtonDelete = ({ onClick, children, className, isButtonLoading }) => {
     return (
         <Button
             onClick={isButtonLoading ? undefined : onClick}
-            className={`bg-red-500 hover:bg-red-600 text-white ${className} ${isButtonLoading ? 'opacity-90 cursor-not-allowed' : ''}`}
+            className={`bg-red-500 hover:bg-red-600 text-white ${className} ${isButtonLoading ? 'opacity-90' : ''}`}
             disabled={isButtonLoading}
         >
             {isButtonLoading ? "Deleting..." : children}
