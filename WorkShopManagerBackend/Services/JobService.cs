@@ -22,16 +22,17 @@ namespace WorkshopManager.Services
 
         public async Task<JobDTO> CreateJobAsync(RequestCreateJobDTO createJobDTO)
         {
-            var jobEntity = _mapper.Map<Job>(createJobDTO);
+            var newJob = _mapper.Map<Job>(createJobDTO);
 
-            await ValidateRelatedEntities(jobEntity);
+            await ValidateWorkerAndSupplyAsync(newJob);
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.JobRepository.AddJobAsync(jobEntity);
+                await AdjustSupplyQuantity(newJob.SupplyId, -newJob.SupplyQuantity);
+                await _unitOfWork.JobRepository.AddJobAsync(newJob);
             });
 
-            return await GetJobWithDetailsAsync(jobEntity.Id);
+            return await GetJobWithDetailsAsync(newJob.Id);
         }
 
         public async Task<JobDTO> UpdateJobAsync(int id, RequestUpdateJobDTO updateJobDTO)
@@ -42,9 +43,9 @@ namespace WorkshopManager.Services
             var originalSupplyId = existingJob.SupplyId;
             var originalSupplyQuantity = existingJob.SupplyQuantity;
 
-            await ValidateRelatedEntities(existingJob);
-
             _mapper.Map(updateJobDTO, existingJob);
+
+            await ValidateWorkerAndSupplyAsync(existingJob);
 
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
@@ -81,21 +82,21 @@ namespace WorkshopManager.Services
             return _mapper.Map<IEnumerable<JobDTO>>(jobs);
         }
 
-        private async Task ValidateRelatedEntities(Job job)
-        {
-            if (job.WorkerId.HasValue && !await _unitOfWork.WorkerRepository.ExistsAsync(job.WorkerId.Value))
-                throw new WorkerNotFoundException(job.WorkerId.Value);
-
-            if (job.SupplyId.HasValue && !await _unitOfWork.SupplyRepository.ExistsAsync(job.SupplyId.Value))
-                throw new SupplyNotFoundException(job.SupplyId.Value);
-        }
-
         private async Task<JobDTO> GetJobWithDetailsAsync(int id)
         {
             var job = await _unitOfWork.JobRepository.GetJobWithDetailsAsync(id)
                 ?? throw new JobNotFoundException(id);
 
             return _mapper.Map<JobDTO>(job);
+        }
+
+        private async Task ValidateWorkerAndSupplyAsync(Job job)
+        {
+            var isWorkerIdValid = await _unitOfWork.WorkerRepository.GetWorkerByIdAsync(job.WorkerId)
+                ?? throw new WorkerNotFoundException(job.WorkerId);
+
+            var isSupplyIdValid = await _unitOfWork.SupplyRepository.GetSupplyByIdAsync(job.SupplyId)
+                ?? throw new SupplyNotFoundException(job.SupplyId);
         }
 
         private async Task AdjustSupplyQuantity(int supplyId, int quantityChange)
@@ -114,10 +115,16 @@ namespace WorkshopManager.Services
         private async Task HandleSupplyAdjustmentsAsync(int? originalSupplyId, int originalSupplyQuantity, RequestUpdateJobDTO updateJobDTO)
         {
             if (originalSupplyId != updateJobDTO.SupplyId)
+            {
                 await HandleSupplyIdChangeAsync(originalSupplyId, originalSupplyQuantity, updateJobDTO);
-
-            if (originalSupplyQuantity != updateJobDTO.SupplyQuantity)
-                await HandleQuantityChangeAsync(updateJobDTO.SupplyId, originalSupplyQuantity, updateJobDTO.SupplyQuantity);
+            }
+            else
+            {
+                if (originalSupplyQuantity != updateJobDTO.SupplyQuantity)
+                {
+                    await HandleQuantityChangeAsync(updateJobDTO.SupplyId, originalSupplyQuantity, updateJobDTO.SupplyQuantity);
+                }
+            }
         }
 
         private async Task HandleSupplyIdChangeAsync(int? originalSupplyId, int originalSupplyQuantity, RequestUpdateJobDTO updateJobDTO)

@@ -16,11 +16,11 @@ export const validateRegistration = (values) => {
 
     errors.username = isRequired(values.username, "Username");
     errors.email = isRequired(values.email, "Email") || isEmail(values.email);
-    errors.password = isRequired(values.password, "Password") 
-                     || minLength(values.password, 6, "Password")
-                     || hasNumber(values.password)
-                     || hasLowercase(values.password)
-                     || hasUppercase(values.password);
+    errors.password = isRequired(values.password, "Password")
+        || minLength(values.password, 6, "Password")
+        || hasNumber(values.password)
+        || hasLowercase(values.password)
+        || hasUppercase(values.password);
     errors.confirmPassword = isRequired(values.confirmPassword, "Confirm Password") || passwordsMatch(values.password, values.confirmPassword);
 
     Object.keys(errors).forEach(key => errors[key] === undefined && delete errors[key]);
@@ -42,14 +42,18 @@ export const validateLogin = (values) => {
 // Job validation
 export const validateJobForm = (values) => {
     const errors = {};
-    
+
     errors.jobName = isRequired(values.jobName, 'Job Name');
     errors.description = isRequired(values.description, 'Description');
-    errors.workerId = isRequired(values.workerId, 'Worker ID') || isPositiveNumber(values.workerId, 'Worker ID');
-    errors.supplyId = isRequired(values.supplyId, 'Supply ID') || isPositiveNumber(values.supplyId, 'Supply ID');    
-    errors.quantity = values.supplyId && !values.quantity ? 'Quantity is required if Supply ID is provided.' : undefined;
-    errors.quantity = errors.quantity || isNumber(values.quantity, 'Quantity');
-    
+    errors.workerId = isRequired(values.workerId, 'Worker ID')
+        || isPositiveNumber(values.workerId, 'Worker ID');
+    errors.supplyId = isRequired(values.supplyId, 'Supply ID')
+        || isPositiveNumber(values.supplyId, 'Supply ID');
+    errors.quantity = isRequired(values.quantity, "Quantity")
+        || isPositiveNumber(values.quantity, 'Quantity')
+        || isNumber(values.quantity, 'Quantity')
+        || isPositiveNumber(values.quantity, 'Quantity')
+
     return errors;
 };
 
@@ -58,7 +62,7 @@ export const validateSupplyForm = (values) => {
     const errors = {};
 
     errors.name = isRequired(values.name, 'Supply Name') || isAlphanumericWithLetters(values.name, 'Supply Name');
-    errors.quantity = isRequired(values.quantity, 'Quantity') || isPositiveNumber(values.quantity, 'Quantity');
+    errors.quantity = isRequired(values.quantity, 'Quantity') || isPositiveNumber(values.quantity, 'Quantity') || (values.quantity < 0 ? 'Quantity cannot be negative.' : undefined);
     errors.type = isRequired(values.type, 'Supply Type');
 
     Object.keys(errors).forEach(key => errors[key] === undefined && delete errors[key]);
