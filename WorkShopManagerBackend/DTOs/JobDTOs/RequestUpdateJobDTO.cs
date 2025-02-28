@@ -25,7 +25,7 @@ namespace WorkshopManager.DTOs.JobDTOs
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
         public required string Description { get; set; }
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [Required(ErrorMessage = "Status is required.")]
         public JobStatus Status { get; set; }
     }
 }

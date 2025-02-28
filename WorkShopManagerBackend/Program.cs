@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WorkshopManager.Converters;
 using WorkshopManager.Data;
+using WorkshopManager.Extensions;
 using WorkshopManager.Interfaces.RepositoryInterfaces;
 using WorkshopManager.Interfaces.ServiceInterfaces;
 using WorkshopManager.Interfaces;
@@ -8,7 +10,6 @@ using WorkshopManager.Middlewares;
 using WorkshopManager.Models;
 using WorkshopManager.Repositories;
 using WorkshopManager.Services;
-using WorkshopManager.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,7 +50,14 @@ builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IWorkerService, WorkerService>();
 builder.Services.AddScoped<ISupplyService, SupplyService>();
 
-builder.Services.AddControllers();
+// Add controllers with custom JSON converter
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JobStatusEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new PositionEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerWithJwt(builder.Configuration);
 

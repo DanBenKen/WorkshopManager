@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using WorkshopManager.Enums;
+﻿using WorkshopManager.Enums;
 
 namespace WorkshopManager.Models
 {
@@ -10,9 +9,7 @@ namespace WorkshopManager.Models
         public int SupplyQuantity { get; set; }
         public required string JobName { get; set; } = string.Empty;
         public required string Description { get; set; } = string.Empty;
-
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public JobStatus Status { get; set; }
+        public required JobStatus Status { get; set; }
         public int? WorkerId { get; set; }
 
         public Supply Supply { get; set; } = null!;

@@ -2,7 +2,7 @@ export const JOB_STATUSES = {
     IN_PROGRESS: {
       id: 1,
       label: 'In Progress',
-      apiValue: 'InProgress'
+      apiValue: 'In Progress'
     },
     COMPLETED: {
       id: 2,

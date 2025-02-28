@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WorkshopManager.Enums;
 
 namespace WorkshopManager.DTOs.WorkerDTOs
 {
@@ -15,7 +16,6 @@ namespace WorkshopManager.DTOs.WorkerDTOs
         public required string LastName { get; set; }
 
         [Required(ErrorMessage = "Position is required.")]
-        [StringLength(100, ErrorMessage = "Position cannot exceed 100 characters.")]
-        public required string Position { get; set; }
+        public Position Position { get; set; }
     }
 }
