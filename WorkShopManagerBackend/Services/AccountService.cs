@@ -77,7 +77,10 @@ namespace WorkshopManager.Services
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
 
-            var claims = new List<Claim> { new Claim(JwtRegisteredClaimNames.Sub, user.Id) };
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id)
+            };
 
             if (!string.IsNullOrEmpty(user.Email))
                 claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
@@ -93,13 +96,16 @@ namespace WorkshopManager.Services
                 throw new KeyNotFoundException("JWT secret key is missing in the configuration.");
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyValue));
-
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expirationInMinutesString = jwtSettings["TokenExpirationInMinutes"];
-            double expirationInMinutes;
-            if (string.IsNullOrEmpty(expirationInMinutesString) || !double.TryParse(expirationInMinutesString, out expirationInMinutes))
-                expirationInMinutes = rememberMe ? 43200.0 : 30.0;
+            string expirationKey = rememberMe ? "TokenExpirationInMinutesRememberMe" : "TokenExpirationInMinutes";
+            string? expirationString = jwtSettings[expirationKey];
+
+            if (string.IsNullOrEmpty(expirationString))
+                throw new Exception($"Missing or invalid configuration value for '{expirationKey}' in JwtSettings.");
+
+            if (!double.TryParse(expirationString, out double expirationInMinutes))
+                throw new Exception($"Invalid expiration time format for '{expirationKey}' in configuration.");
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],

@@ -25,21 +25,21 @@ const LoginForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         resetErrors();
-
+    
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length) return;
-
+    
         setIsButtonLoading(true);
-
-        const isSuccess = await handleLogin({ email, password }, rememberMe);
-
+    
+        const isSuccess = await handleLogin({ email, password, rememberMe });
+    
         if (isSuccess) {
             setSuccessMessage("Login successful!");
             setTimeout(() => navigate('/'), 2000);
         } else {
             setIsButtonLoading(false);
         }
-    };
+    };    
 
     return (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
