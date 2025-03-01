@@ -88,9 +88,11 @@ const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
                         <Details label="Status:" value={job.status} />
                         <Details label="Supply ID:" value={job.supplyId} />
                         <Details label="Supply Quantity:" value={job.supplyQuantity} />
-                        <Details label="Description:" value={job.description} />
+                        <div className="col-span-2">
+                            <Details label="Description:" value={job.description} />
+                        </div>
                     </div>
-
+                    
                     <div className="mt-6 flex gap-3 justify-end">
                         <ButtonCancel onClick={handleClose}>
                             <FiX className="w-7 h-7" />

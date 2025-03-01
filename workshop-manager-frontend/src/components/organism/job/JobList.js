@@ -93,6 +93,9 @@ const JobList = () => {
                         defaultOptionLabel="All Statuses"
                         options={STATUS_OPTIONS}
                         className="w-full sm:w-48"
+                        id="status-filter"
+                        name="status"
+                        autocomplete="on"
                     />
                     <Filter
                         type="input"
@@ -100,9 +103,11 @@ const JobList = () => {
                         onChange={setNameFilter}
                         placeholder="Search jobs..."
                         icon="search"
+                        id="name-filter"
+                        name="name"
+                        autocomplete="on"
                     />
                 </div>
-
                 {isLoading ? (
                     <div className="flex justify-center items-center h-64">
                         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>

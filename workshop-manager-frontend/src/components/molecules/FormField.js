@@ -6,8 +6,9 @@ import ErrorMessage from '../atoms/ErrorMessage';
 const FormField = ({ label, type, id, name, value, onChange, errorMessage, placeholder, options, checked }) => {
     return (
         <div className={`mb-4 w-full ${type === 'checkbox' ? 'flex items-center space-x-2' : ''}`}>
+            {/* Checkbox field */}
             {type === 'checkbox' ? (
-                <>
+                <div className="flex items-center space-x-2">
                     <input
                         id={id}
                         type="checkbox"
@@ -17,9 +18,10 @@ const FormField = ({ label, type, id, name, value, onChange, errorMessage, place
                         className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                     />
                     <Label htmlFor={id} className="text-sm">{label}</Label>
-                </>
+                </div>
             ) : type === 'select' ? (
                 <>
+                    {/* Select field */}
                     <Label htmlFor={id}>{label}</Label>
                     <select
                         id={id}
@@ -37,6 +39,7 @@ const FormField = ({ label, type, id, name, value, onChange, errorMessage, place
                 </>
             ) : (
                 <>
+                    {/* Text input field */}
                     <Label htmlFor={id}>{label}</Label>
                     <Input
                         id={id}

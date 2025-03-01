@@ -51,11 +51,11 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
         resetErrors();
         const isValidForm = validateForm();
         if (!isValidForm) return;
-    
+
         const selectedStatus = Object.values(JOB_STATUSES).find(
             s => s.id === parseInt(formStatus, 10)
         );
-    
+
         const jobData = {
             jobName: formJobName,
             description: formDescription,
@@ -64,13 +64,13 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
             supplyId: formSupplyId ? parseInt(formSupplyId, 10) : null,
             supplyQuantity: parseInt(formQuantity, 10),
         };
-    
+
         if (isEditMode) {
             jobData.id = parseInt(jobId, 10);
         }
-    
+
         setIsButtonLoading(true);
-    
+
         const success = isEditMode
             ? await handleUpdateJob(jobId, jobData)
             : await handleCreateJob(jobData);
@@ -82,7 +82,7 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
         } else {
             setIsButtonLoading(false);
         }
-    };    
+    };
 
     return (
         <Modal onClose={onClose}>
@@ -94,57 +94,67 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
                     <FormField
                         label="Job Name"
                         type="text"
+                        id="jobName"
                         name="jobName"
                         value={formJobName}
                         onChange={handleChange}
                         placeholder="Enter job name"
                         errorMessage={errors.jobName}
                     />
+
                     <FormField
                         label="Description"
                         type="text"
+                        id="description"
                         name="description"
                         value={formDescription}
                         onChange={handleChange}
                         placeholder="Enter job description"
                         errorMessage={errors.description}
                     />
+
                     <FormField
                         label="Status"
                         type="select"
+                        id="status"
                         name="status"
                         value={formStatus}
                         onChange={handleChange}
                         options={STATUS_OPTIONS}
                     />
+
                     <FormField
                         label="Worker ID"
                         type="number"
+                        id="workerId"
                         name="workerId"
                         value={formWorkerId}
                         onChange={handleChange}
                         placeholder="Enter worker ID"
                         errorMessage={errors.workerId}
                     />
+
                     <FormField
                         label="Supply ID"
                         type="number"
+                        id="supplyId"
                         name="supplyId"
                         value={formSupplyId}
                         onChange={handleChange}
                         placeholder="Enter supply ID"
                         errorMessage={errors.supplyId}
                     />
+
                     <FormField
                         label="Supply Quantity"
                         type="number"
+                        id="quantity"
                         name="quantity"
                         value={formQuantity}
                         onChange={handleChange}
                         placeholder="Enter quantity of supply needed"
                         errorMessage={errors.quantity}
                     />
-
                     <Button type="submit" disabled={isButtonLoading}>
                         {isButtonLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Job' : 'Create Job'}
                     </Button>

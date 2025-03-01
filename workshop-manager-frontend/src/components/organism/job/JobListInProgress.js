@@ -52,6 +52,8 @@ const JobListInProgress = () => {
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <Filter
                             type="input"
+                            id="name-filter"
+                            name="name"
                             value={nameFilter}
                             onChange={setNameFilter}
                             placeholder="Search jobs..."

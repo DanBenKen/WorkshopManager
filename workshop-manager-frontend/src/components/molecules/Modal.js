@@ -3,7 +3,7 @@ import React from 'react';
 const Modal = ({ onClose, children }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10 p-5">
-      <div className="bg-white rounded-lg shadow-xl p-6 relative w-[400px] h-auto overflow-auto"
+      <div className="bg-white rounded-lg shadow-xl p-6 relative max-w-[500px] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button

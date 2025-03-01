@@ -1,11 +1,17 @@
-import Input from '../atoms/Input';
 import React from 'react';
 
-const Filter = ({ type, options, value, onChange, placeholder, className, defaultOptionLabel = "All" }) => {
+const Filter = ({ type, options, value, onChange, placeholder, className, defaultOptionLabel = "All", id, name, autocomplete = "on" }) => {
     if (type === 'select') {
         return (
             <div className={`${className}`}>
-                <select value={value} onChange={(e) => onChange(e.target.value)} className="border p-2">
+                <select
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    className="border p-2"
+                    id={id}
+                    name={name}
+                    autoComplete={autocomplete}
+                >
                     <option value="">{defaultOptionLabel}</option>
                     {options.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -20,12 +26,15 @@ const Filter = ({ type, options, value, onChange, placeholder, className, defaul
     if (type === 'input') {
         return (
             <div className={`${className}`}>
-                <Input
+                <input
                     type="text"
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}
-                    className={`border p-2 ${className}`}
+                    className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm ${className}`}
+                    id={id}
+                    name={name}
+                    autoComplete={autocomplete}
                 />
             </div>
         );
