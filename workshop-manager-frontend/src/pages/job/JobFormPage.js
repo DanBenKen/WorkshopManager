@@ -1,11 +1,11 @@
 import React from 'react';
 import FormPageLayout from '../../layouts/FormPageLayout';
-import JobForm from '../../components/organism/job/JobForm';
+import JobFormModal from '../../components/organism/job/JobFormModal';
 
 const JobFormPage = () => {
     return (
         <FormPageLayout>
-            <JobForm></JobForm>
+            <JobFormModal></JobFormModal>
         </FormPageLayout>
     );
 };

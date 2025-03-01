@@ -20,7 +20,7 @@ const StatCard = ({
                         <Icon className="w-6 h-6" />
                     </div>
                     <div className="text-left">
-                        <p className="text-sm text-gray-300">{label}</p>
+                        <p className="text-sm text-gray-800">{label}</p>
                         <p className={`text-3xl font-bold ${colorClass}`}>
                             {isLoading ? (
                                 <span className="inline-block h-8 w-16 bg-gray-600 animate-pulse rounded"></span>

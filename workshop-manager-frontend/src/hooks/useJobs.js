@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createJob, getJobs, updateJob, getJobById, deleteJob } from '../services/jobService';
 import { JOB_STATUSES } from '../constants/jobStatus';
 
-const useJobs = (jobId, fetchType = 'all') => {
+const useJobs = (jobId) => {
     const [jobs, setJobs] = useState([]);
     const [job, setJob] = useState(null);
     const [isLoading, setIsLoading] = useState(false);

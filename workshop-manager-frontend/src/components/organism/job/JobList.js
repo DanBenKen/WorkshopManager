@@ -11,6 +11,7 @@ import { STATUS_OPTIONS, JOB_STATUSES } from '../../../constants/jobStatus';
 import CardData from '../../molecules/CardData';
 import JobDetailsModal from './JobDetailsModal';
 import { toast } from 'react-toastify';
+import JobFormModal from './JobFormModal';
 
 const JobList = () => {
     const { jobs, isLoading, error, handleSetCompleted, fetchData } = useJobs();
@@ -18,6 +19,10 @@ const JobList = () => {
     const [statusFilter, setStatusFilter] = useState('');
     const [selectedJobId, setSelectedJobId] = useState(null);
     const navigate = useNavigate();
+    const [showJobForm, setShowJobForm] = useState(false);
+
+    const openJobForm = () => setShowJobForm(true);
+    const closeJobForm = () => setShowJobForm(false);
 
     const filteredJobs = useMemo(() => {
         return jobs.filter((job) => {
@@ -60,10 +65,8 @@ const JobList = () => {
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Job Management</h1>
                 </div>
 
-                <Button
-                    onClick={() => navigate('/jobs/create')}
+                <Button onClick={openJobForm}
                     className="flex items-center justify-center gap-2 sm:w-auto"
-                    variant="primary"
                 >
                     <FiPlus className="w-4 h-4" />
                     <span>Add New Job</span>
@@ -163,6 +166,13 @@ const JobList = () => {
                             />
                         )}
 
+                        {showJobForm && (
+                            <JobFormModal
+                                jobId={undefined}
+                                onClose={closeJobForm}
+                                refreshJobs={fetchData}
+                            />
+                        )}
                         <div className="mt-6 sm:mt-8">
                             <Pagination
                                 currentPage={currentPage}

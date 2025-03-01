@@ -11,9 +11,11 @@ const WorkersCountWidget = () => {
     const { counts: unemployedCounts, isLoading: isLoadingUnemployed, error: unemployedError } = useWorkers("unemployedCount");
 
     return (
-        <div className="bg-gray-800 rounded-2xl shadow-xl p-8 flex flex-col items-center text-center min-w-[320px] transform transition-all duration-300 hover:shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                <FaUsers className="text-blue-400 animate-pulse" />
+        <div className="rounded-2xl shadow-xl p-8 flex flex-col items-center text-center min-w-[320px] transform transition-all duration-300 hover:shadow-2xl 
+            bg-white text-gray-800 border border-gray-200">
+            
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                <FaUsers className="text-blue-500 animate-pulse" />
                 <span>Workers Overview</span>
             </h3>
 
@@ -24,9 +26,9 @@ const WorkersCountWidget = () => {
                     isLoading={isLoadingTotal}
                     error={totalError}
                     icon={FaUsers}
-                    colorClass="text-blue-400"
-                    className="bg-gray-700/50 hover:bg-gray-700/70 transition-colors"
-                    iconBackground="bg-blue-400/20"
+                    colorClass="text-blue-500"
+                    className="bg-gray-100 hover:bg-gray-200 transition-colors"
+                    iconBackground="bg-blue-100"
                 />
 
                 <StatCard
@@ -35,9 +37,9 @@ const WorkersCountWidget = () => {
                     isLoading={isLoadingUnemployed}
                     error={unemployedError}
                     icon={FaUserSlash}
-                    colorClass={unemployedCounts.unemployed === 0 ? "text-green-400" : "text-red-400"}
-                    className="bg-gray-700/50 hover:bg-gray-700/70 transition-colors"
-                    iconBackground={unemployedCounts.unemployed === 0 ? "bg-green-400/20" : "bg-red-400/20"}
+                    colorClass={unemployedCounts.unemployed === 0 ? "text-green-500" : "text-red-500"}
+                    className="bg-gray-100 hover:bg-gray-200 transition-colors"
+                    iconBackground={unemployedCounts.unemployed === 0 ? "bg-green-100" : "bg-red-100"}
                 />
             </div>
 

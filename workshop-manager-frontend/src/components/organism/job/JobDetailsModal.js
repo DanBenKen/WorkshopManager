@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { FiActivity, FiEdit, FiTrash2, FiX } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Details from '../../molecules/Details';
 import ButtonEdit from '../../atoms/ButtonEdit';
@@ -8,23 +7,36 @@ import ButtonCancel from '../../atoms/ButtonCancel';
 import ButtonDelete from '../../atoms/ButtonDelete';
 import useJobs from '../../../hooks/useJobs';
 import ConfirmModal from '../../molecules/ConfirmModal';
+import Modal from '../../molecules/Modal';
 import { toast } from 'react-toastify';
+import JobFormModal from './JobFormModal';
+import { JOB_STATUSES } from '../../../constants/jobStatus';
 
 const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
     const { job, error, handleDeleteJob } = useJobs(jobId);
-    const navigate = useNavigate();
     const [showConfirm, setShowConfirm] = useState(false);
+    const [showJobForm, setShowJobForm] = useState(false);
+
+    const openJobForm = () => setShowJobForm(true);
+    const closeJobForm = () => setShowJobForm(false);
+
+    const getIconColor = (status) => {
+        if (status === JOB_STATUSES.COMPLETED.apiValue) {
+            return 'text-green-500';
+        }
+        if (status === JOB_STATUSES.IN_PROGRESS.apiValue) {
+            return 'text-yellow-500';
+        }
+        return 'text-gray-400';
+    };
 
     if (error) {
         return (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={onClose}>
-                <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl relative" onClick={(e) => e.stopPropagation()}>
+            <Modal onClose={onClose}>
+                <div className="relative">
                     <ErrorMessage message={error} />
-                    <button className="absolute top-4 right-4" onClick={onClose}>
-                        <FiX className="w-6 h-6 text-gray-500" />
-                    </button>
                 </div>
-            </div>
+            </Modal>
         );
     }
 
@@ -33,7 +45,7 @@ const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
     }
 
     const handleEdit = () => {
-        navigate(`/jobs/edit/${job.id}`);
+        openJobForm();
     };
 
     const handleDelete = () => {
@@ -44,7 +56,7 @@ const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
         setShowConfirm(false);
         try {
             await handleDeleteJob(job.id);
-            await refreshJobs();
+            refreshJobs();
             toast.success(`Job: #${job.id} successfully deleted!`);
             onClose();
         } catch (error) {
@@ -62,15 +74,11 @@ const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
 
     return (
         <>
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={onClose}>
-                <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-2xl relative" onClick={(e) => e.stopPropagation()}>
-                    <button className="absolute top-4 right-4" onClick={handleClose}>
-                        <FiX className="w-6 h-6 text-gray-500" />
-                    </button>
-
+            <Modal onClose={handleClose}>
+                <div>
                     <div className="mb-6">
                         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                            <FiActivity className="w-8 h-8 text-yellow-500" />
+                            <FiActivity className={`${getIconColor(job.status)}`} />
                             {job.jobName}
                         </h2>
                     </div>
@@ -78,13 +86,13 @@ const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Details label="Job ID:" value={job.id} />
                         <Details label="Status:" value={job.status} />
-                        <div className="md:col-span-2">
-                            <Details label="Description:" value={job.description} />
-                        </div>
+                        <Details label="Supply ID:" value={job.supplyId} />
+                        <Details label="Supply Quantity:" value={job.supplyQuantity} />
+                        <Details label="Description:" value={job.description} />
                     </div>
 
                     <div className="mt-6 flex gap-3 justify-end">
-                        <ButtonCancel onClick={onClose}>
+                        <ButtonCancel onClick={handleClose}>
                             <FiX className="w-7 h-7" />
                         </ButtonCancel>
                         <ButtonEdit onClick={handleEdit}>
@@ -95,7 +103,9 @@ const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
                         </ButtonDelete>
                     </div>
                 </div>
-            </div>
+            </Modal>
+
+            {showJobForm && <JobFormModal jobId={jobId} onClose={closeJobForm} refreshJobs={refreshJobs} />}
 
             {showConfirm && (
                 <ConfirmModal
