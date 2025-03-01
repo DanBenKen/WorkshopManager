@@ -1,4 +1,5 @@
 import React from 'react';
+import { X } from 'react-feather';
 
 const Modal = ({ onClose, children }) => {
   return (
@@ -10,8 +11,8 @@ const Modal = ({ onClose, children }) => {
           className="absolute top-5 right-5 text-gray-600"
           onClick={onClose}
         >
-          X
-        </button>
+          <X className="h-6 w-6" />
+          </button>
         {children}
       </div>
     </div>
