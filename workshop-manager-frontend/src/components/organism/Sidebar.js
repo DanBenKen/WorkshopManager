@@ -29,6 +29,8 @@ const Sidebar = () => {
         navigate('/account/login');
     };
 
+    const sidebarButtonsStyle = "block py-2 px-4 bg-gray-800 hover:bg-gray-700 w-full text-left rounded-none bg-transparent hover:bg-transparent";
+
     const navItems = [
         { label: 'Admin Dashboard', path: '/' },
         { label: 'Workers', path: '/workers' },
@@ -63,7 +65,7 @@ const Sidebar = () => {
                     <Button
                         onClick={() => handleNavigation('/')}
                         className="text-2xl font-bold bg-transparent hover:bg-transparent"
-                        variants={{ hover: { scale: 1.05 }, tap: { scale: 0.95 }}}
+                        variants={{ hover: { scale: 1.05 }, tap: { scale: 0.95 } }}
                     >
                         Workshop Manager
                     </Button>
@@ -73,8 +75,7 @@ const Sidebar = () => {
                         <li key={index}>
                             <Button
                                 onClick={() => handleNavigation(item.path)}
-                                className="block py-2 px-4 bg-gray-800 hover:bg-gray-700 w-full text-left rounded-none"
-                                variants={{ hover: { scale: 1.02 }, tap: { scale: 0.98 }}}
+                                className={sidebarButtonsStyle}
                             >
                                 {item.label}
                             </Button>
@@ -83,8 +84,7 @@ const Sidebar = () => {
                     <li>
                         <Button
                             onClick={handleLogoutClick}
-                            className="mt-4 block py-2 px-4 bg-gray-800 hover:bg-gray-700 w-full text-left rounded-none"
-                            variants={{ hover: { scale: 1.02 }, tap: { scale: 0.98 }}}
+                            className={`mt-4 ${sidebarButtonsStyle}`}
                         >
                             Logout
                         </Button>
@@ -96,8 +96,7 @@ const Sidebar = () => {
                 <div className="bg-gray-100 p-4 shadow lg:hidden">
                     <Button
                         onClick={toggleSidebar}
-                        className="bg-gray-800 text-white px-4 py-2 rounded-md"
-                        variants={{ hover: { scale: 1.05 }, tap: { scale: 0.95 }}}
+                        className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-md"
                     >
                         {isSidebarOpen ? 'Close Menu' : 'Open Menu'}
                     </Button>
