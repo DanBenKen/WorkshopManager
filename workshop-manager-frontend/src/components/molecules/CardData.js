@@ -1,18 +1,63 @@
 import React from 'react';
-import Text from '../atoms/Text'
+import PropTypes from 'prop-types';
 
-const CardData = ({ data, renderItem }) => {
+const CardData = ({
+    data,
+    renderItem,
+    onItemClick,
+    gridClasses = "grid-cols-[repeat(auto-fit,minmax(250px,1fr))] sm:grid-cols-2 lg:grid-cols-3",
+    keyProp = "id",
+    actionIcon: ActionIcon,
+    actionTitle = "View details",
+    additionalActionIcon: AdditionalActionIcon,
+    additionalActionTitle = "Add Quantity",
+    onAdditionalAction
+}) => {
     return (
-        <div className="divide-y divide-gray-200">
+        <div className={`grid ${gridClasses} gap-4 sm:gap-6 justify-items-center`}>
             {data.map((item) => (
-                <div key={item.id} className="py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors mb-4 shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-800">{renderItem(item).title}</h3>
-                    <Text className="text-sm mt-2" content={renderItem(item).description}></Text>
-                    <Text className="text-sm mt-2" content={renderItem(item).id}></Text>
+                <div
+                    key={item[keyProp]}
+                    className="border rounded-lg p-4 sm:p-6 hover:shadow-lg transition-shadow relative group w-full h-auto"
+                >
+                    {renderItem(item)}
+
+                    {onItemClick && ActionIcon && (
+                        <button
+                            onClick={() => onItemClick(item)}
+                            className="absolute bottom-2 right-2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                            title={actionTitle}
+                        >
+                            <ActionIcon className="w-5 h-5 text-gray-500" />
+                        </button>
+                    )}
+
+                    {onAdditionalAction && AdditionalActionIcon && (
+                        <button
+                            onClick={() => onAdditionalAction(item, 1)}
+                            className="absolute bottom-2 right-10 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                            title={additionalActionTitle}
+                        >
+                            <AdditionalActionIcon className="w-5 h-5 text-blue-500" />
+                        </button>
+                    )}
                 </div>
             ))}
         </div>
     );
+};
+
+CardData.propTypes = {
+    data: PropTypes.array.isRequired,
+    renderItem: PropTypes.func.isRequired,
+    onItemClick: PropTypes.func,
+    gridClasses: PropTypes.string,
+    keyProp: PropTypes.string,
+    actionIcon: PropTypes.elementType,
+    actionTitle: PropTypes.string,
+    additionalActionIcon: PropTypes.elementType,
+    additionalActionTitle: PropTypes.string,
+    onAdditionalAction: PropTypes.func,
 };
 
 export default CardData;

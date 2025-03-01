@@ -1,12 +1,12 @@
 import React from 'react';
-import TablePageLayout from '../../layouts/TablePageLayout';
 import WorkerList from '../../components/organism/worker/WorkerList';
+import ListPageLayout from '../../layouts/ListPageLayout';
 
 const WorkersPage = () => {
     return (
-        <TablePageLayout>
+        <ListPageLayout>
             <WorkerList></WorkerList>
-        </TablePageLayout>
+        </ListPageLayout>
     );
 };
 

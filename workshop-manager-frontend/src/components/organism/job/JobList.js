@@ -1,18 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiActivity, FiPlus, FiMoreHorizontal, FiCheckCircle } from 'react-icons/fi';
+import useJobs from '../../../hooks/useJobs';
+import usePagination from '../../../hooks/usePagination';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
-import useJobs from '../../../hooks/useJobs';
-import List from '../../molecules/List';
-import usePagination from '../../../hooks/usePagination';
 import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import { STATUS_OPTIONS, JOB_STATUSES } from '../../../constants/jobStatus';
+import CardData from '../../molecules/CardData';
 
 const JobList = () => {
     const { jobs, isLoading, error, handleSetCompleted } = useJobs();
     const [nameFilter, setNameFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
+    const navigate = useNavigate();
 
     const filteredJobs = useMemo(() => {
         return jobs.filter((job) => {
@@ -23,10 +25,8 @@ const JobList = () => {
         });
     }, [jobs, nameFilter, statusFilter]);
 
-    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredJobs, 5);
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredJobs, 6);
     const paginatedData = useMemo(() => getPaginatedData(filteredJobs), [getPaginatedData, filteredJobs]);
-
-    const navigate = useNavigate();
 
     const handleDetails = (job) => {
         navigate(`/jobs/details/${job.id}`);
@@ -34,74 +34,137 @@ const JobList = () => {
 
     const handleComplete = (job) => {
         if (job.status === JOB_STATUSES.IN_PROGRESS.apiValue) {
-            return {
-                label: 'Complete Job',
-                onClick: () => handleSetCompleted(job),
-                requiresInput: false,
-            };
+            handleSetCompleted(job);
         }
-        return null;
     };
 
-    const columns = [
-        { label: 'ID', field: 'id' },
-        { label: 'Job Name', field: 'jobName' },
-        { label: 'Status', field: 'status' },
-    ];
+    const getIconColor = (status) => {
+        if (status === JOB_STATUSES.COMPLETED.apiValue) {
+            return 'text-green-500';
+        }
+        if (status === JOB_STATUSES.IN_PROGRESS.apiValue) {
+            return 'text-yellow-500';
+        }
+        return 'text-gray-400';
+    };
 
     return (
         <div>
-            <h2 className="text-3xl font-bold mb-4">Jobs</h2>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                    <FiActivity className="text-blue-500 w-8 h-8 sm:w-10 sm:h-10" />
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Job Management</h1>
+                </div>
 
-            <div className="flex flex-col sm:flex-row md:items-center justify-between gap-4 mb-4">
-                <Button className="w-full md:w-auto" onClick={() => navigate('/jobs/create')}>
-                    Add New Job
+                <Button
+                    onClick={() => navigate('/jobs/create')}
+                    className="flex items-center justify-center gap-2 sm:w-auto"
+                    variant="primary"
+                >
+                    <FiPlus className="w-4 h-4" />
+                    <span>Add New Job</span>
                 </Button>
-                <div className='flex flex-col sm:flex-row gap-4 w-full'>
-                    <Button className="md:w-auto" onClick={() => navigate('/jobs/list-in-progress')}>
-                        View Jobs In Progress
-                    </Button>
-                </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-3">
-                <Filter
-                    type="select"
-                    options={STATUS_OPTIONS}
-                    value={statusFilter}
-                    defaultOptionLabel='Status'
-                    onChange={setStatusFilter}
-                    placeholder="Filter by status"
-                />
-                <Filter
-                    type="input"
-                    value={nameFilter}
-                    onChange={setNameFilter}
-                    placeholder="Filter by name"
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <Button
+                    onClick={() => navigate('/jobs/list-in-progress')}
+                    className="flex items-center gap-2 justify-center"
+                    variant="secondary"
+                >
+                    <FiActivity className="w-4 h-4" />
+                    <span>Jobs In Progress</span>
+                </Button>
             </div>
 
-            {isLoading ? (
-                <p className="text-gray-600">Loading...</p>
-            ) : error ? (
-                <ErrorMessage message={error} />
-            ) : filteredJobs.length === 0 ? (
-                <p className="mt-3 text-gray-600 text-center">No results found</p>
-            ) : (
-                <div className="overflow-x-auto">
-                    <List
-                        data={paginatedData}
-                        columns={columns}
-                        getCustomAction={handleComplete}
-                        onDetails={handleDetails}
+            <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
+                <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                    <Filter
+                        type="select"
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        defaultOptionLabel="All Statuses"
+                        options={STATUS_OPTIONS}
+                        className="w-full sm:w-48"
                     />
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        goToPage={goToPage}
+                    <Filter
+                        type="input"
+                        value={nameFilter}
+                        onChange={setNameFilter}
+                        placeholder="Search jobs..."
+                        icon="search"
                     />
                 </div>
-            )}
+
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    </div>
+                ) : error ? (
+                    <ErrorMessage message={error} className="mx-auto" />
+                ) : filteredJobs.length === 0 ? (
+                    <div className="text-center py-8 sm:py-12">
+                        <div className="text-gray-400 mb-4 text-4xl sm:text-6xl">⚙️</div>
+                        <p className="text-gray-500 text-sm sm:text-base">No jobs found matching your criteria</p>
+                    </div>
+                ) : (
+                    <>
+                        <CardData
+
+                            data={paginatedData}
+                            keyProp="id"
+                            actionIcon={FiMoreHorizontal}
+                            actionTitle="View details"
+                            onItemClick={handleDetails}
+                            renderItem={(job) => (
+                                <div>
+                                    <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <FiActivity className={`w-5 h-5 sm:w-6 sm:h-6 ${getIconColor(job.status)}`} />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                                                {job.jobName}
+                                            </h3>
+                                            <p className="text-xs sm:text-sm text-gray-500 truncate">
+                                                ID: {job.id}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t py-2">
+                                        <div className="flex items-center gap-2">
+                                            <FiActivity className={`text-gray-400 w-4 h-4 ${getIconColor(job.status)}`} />
+                                            <span className={`text-gray-700 ${getIconColor(job.status)}`}>{job.status}</span>
+                                        </div>
+                                    </div>
+
+                                    {job.status === JOB_STATUSES.IN_PROGRESS.apiValue && (
+                                        <button
+                                            onClick={() => handleComplete(job)}
+                                            className="absolute bottom-2 right-10 p-1 hover:bg-green-100 rounded-full transition-colors"
+                                            title="Complete Job"
+                                        >
+                                            <FiCheckCircle className="w-5 h-5 text-green-500" />
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        />
+
+                        <div className="mt-6 sm:mt-8">
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                goToPage={goToPage}
+                                variant="numbered"
+                                className="justify-center"
+                                mobileBreakpoint="xs"
+                            />
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 };

@@ -105,6 +105,7 @@ const Sidebar = () => {
                 <motion.div
                     key={location.pathname}
                     {...pageTransition}
+                    className="flex items-center justify-center"
                 >
                     <Outlet />
                 </motion.div>

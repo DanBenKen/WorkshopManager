@@ -108,6 +108,13 @@ const useWorkers = (fetchType = 'all') => {
     });
   }, [handleAsyncAction]);
 
+  // Get job status counts for each worker (completed and in progress)
+  const getWorkerJobCounts = (worker) => {
+    const completedJobs = worker.jobs.filter((job) => job.status === 'Completed').length;
+    const inProgressJobs = worker.jobs.filter((job) => job.status === 'In Progress').length;
+    return { completedJobs, inProgressJobs };
+  };
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -145,7 +152,7 @@ const useWorkers = (fetchType = 'all') => {
 
   return {
     workers, isLoading, error, counts, worker,
-    handleCreateWorker, handleUpdateWorker, handleDeleteWorker, fetchWorkerById,
+    handleCreateWorker, getWorkerJobCounts, handleUpdateWorker, handleDeleteWorker, fetchWorkerById,
   };
 };
 

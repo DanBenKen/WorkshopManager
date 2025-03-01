@@ -6,6 +6,7 @@ import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import ButtonCancel from '../../atoms/ButtonCancel';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { FiArrowLeft, FiPackage, FiMoreHorizontal, FiBox } from 'react-icons/fi';
 import CardData from '../../molecules/CardData';
 
 const SupplyListWithLowStock = () => {
@@ -20,59 +21,111 @@ const SupplyListWithLowStock = () => {
         );
     }, [lowStockSupplies, nameFilter]);
 
-    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredSupplies, 5);
-
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredSupplies, 6);
     const paginatedData = useMemo(() => getPaginatedData(filteredSupplies), [getPaginatedData, filteredSupplies]);
 
-    const handleBack = () => { navigate(location.state?.from || "/supplies"); };
+    const handleBack = () => {
+        navigate(location.state?.from || "/supplies");
+    };
 
-    if (isLoading) return <p className="text-gray-600 text-center">Loading...</p>;
-    if (error) return <ErrorMessage message={error} />;
+    const handleDetailsClick = (supply) => {
+        navigate(`/supplies/details/${supply.id}`);
+    };
+
+    if (isLoading) return <div className="flex justify-center items-center h-64"></div>;
+    if (error) return <ErrorMessage message={error} className="mx-auto max-w-screen-xl" />;
 
     return (
-        <div className="mx-auto mt-5 px-4 py-8 bg-white shadow-md rounded-lg max-w-screen-xl">
-            <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">Supplies with Low Stock</h2>
+        <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8 min-h-screen">
+            <div className="max-w-screen-xl mx-auto">
+                <div className="flex flex-row items-center justify-start gap-4 mb-6">
+                    <FiPackage className="text-yellow-500 w-8 h-8 sm:w-10 sm:h-10" />
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                        Supplies with Low Stock
+                    </h1>
+                </div>
 
-            <div className="mb-4">
-                <Filter
-                    type="input"
-                    value={nameFilter}
-                    onChange={setNameFilter}
-                    placeholder="Filter by supply name"
-                    className={"mb-4 w-2/4"}
-                />
-            </div>
+                <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                        <Filter
+                            type="input"
+                            value={nameFilter}
+                            onChange={setNameFilter}
+                            placeholder="Search supplies..."
+                            icon="search"
+                            className="w-full sm:w-80"
+                        />
+                        <span className="text-sm text-gray-500 self-end sm:self-auto">
+                            Showing {filteredSupplies.length} low stock items
+                        </span>
+                    </div>
 
-            {filteredSupplies.length === 0 ? (
-                <p className="mt-3 text-center text-gray-600">No results found</p>
-            ) : (
-                <CardData
-                    data={paginatedData}
-                    renderItem={(supply) => ({
-                        title: supply.name,
-                        description: `Low stock: ${supply.quantity}`,
-                        id: `ID: ${supply.id}`
-                    })}
-                />
-            )}
+                    {filteredSupplies.length === 0 ? (
+                        <div className="text-center py-8 sm:py-12">
+                            <div className="text-gray-400 mb-4 text-4xl sm:text-6xl">📦</div>
+                            <p className="text-gray-500 text-sm sm:text-base">
+                                All supplies are well stocked
+                            </p>
+                        </div>
+                    ) : (
+                        <>
+                            <CardData
+                                data={paginatedData}
+                                keyProp="id"
+                                actionIcon={FiMoreHorizontal}
+                                actionTitle="View supply details"
+                                onItemClick={handleDetailsClick}
+                                renderItem={(supply) => (
+                                    <div>
+                                        <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                                <FiBox className="text-yellow-600 w-5 h-5 sm:w-6 sm:h-6" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                                                    {supply.name}
+                                                </h3>
+                                                <p className="text-xs sm:text-sm text-gray-500 truncate">
+                                                    ID: {supply.id}
+                                                </p>
+                                            </div>
+                                        </div>
 
-            <div>
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    goToPage={goToPage}
-                />
-            </div>
+                                        <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
+                                            <div className="flex items-center gap-2">
+                                                <FiPackage className="text-gray-400 w-4 h-4" />
+                                                <span className="text-gray-700">
+                                                    Quantity: {supply.quantity}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            />
 
-            <div>
-                <ButtonCancel
-                    type="button"
-                    disabled={isLoading}
-                    onClick={handleBack}
-                    className={'mt-5'}
-                >
-                    Go Back
-                </ButtonCancel>
+                            <div className="mt-6 sm:mt-8">
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    goToPage={goToPage}
+                                    variant="numbered"
+                                    className="justify-center"
+                                    mobileBreakpoint="xs"
+                                />
+                            </div>
+
+                            <div className="mt-5">
+                                <ButtonCancel
+                                    onClick={handleBack}
+                                    className="flex items-center gap-2 text-sm sm:text-base"
+                                >
+                                    <FiArrowLeft className="w-4 h-4" />
+                                    <span>Go Back</span>
+                                </ButtonCancel>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );

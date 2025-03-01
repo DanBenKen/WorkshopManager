@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiUser, FiPlus, FiBriefcase, FiUserPlus, FiMoreHorizontal } from 'react-icons/fi';
+import useWorkers from '../../../hooks/useWorkers';
+import usePagination from '../../../hooks/usePagination';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
-import useWorkers from '../../../hooks/useWorkers';
-import List from '../../molecules/List';
-import usePagination from '../../../hooks/usePagination';
 import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
+import CardData from '../../molecules/CardData';
 import { POSITION_OPTIONS } from '../../../constants/workerPosition';
 
 const WorkersList = () => {
@@ -21,72 +22,137 @@ const WorkersList = () => {
         return matchesName && matchesPosition;
     }), [workers, nameFilter, positionFilter]);
 
-    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 5);
+    const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredWorkers, 6);
+    const paginatedData = useMemo(() => getPaginatedData(filteredWorkers), [getPaginatedData, filteredWorkers]);
 
     const handleDetails = (worker) => {
         navigate(`/workers/details/${worker.id}`);
     };
 
-    const columns = [
-        { label: 'ID', field: 'id' },
-        { label: 'Full Name', field: 'fullName' },
-        { label: 'Position', field: 'position' },
-    ];
-
     return (
         <div>
-            <h2 className="text-3xl font-bold mb-4">Workers</h2>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                    <FiUser className="text-blue-500 w-8 h-8 sm:w-10 sm:h-10" />
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Worker Management</h1>
+                </div>
 
-            <div className="flex flex-col sm:flex-row md:items-center justify-between gap-4 mb-4">
-                <Button className="w-full md:w-auto" onClick={() => navigate('/workers/create')}>
-                    Add New Worker
+                <Button
+                    onClick={() => navigate('/workers/create')}
+                    className="flex items-center justify-center gap-2 sm:w-auto"
+                    variant="primary"
+                >
+                    <FiPlus className="w-4 h-4" />
+                    <span>Add New Worker</span>
                 </Button>
-                <div className="flex flex-col sm:flex-row gap-4 w-full">
-                    <Button className="w-full md:w-auto" onClick={() => navigate('/workers/with-jobs')}>
-                        Workers With Jobs
-                    </Button>
-                    <Button className="w-full md:w-auto" onClick={() => navigate('/workers/without-jobs')}>
-                        Workers Without Jobs
-                    </Button>
-                </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-3">
-                <Filter
-                    type="select"
-                    value={positionFilter}
-                    onChange={setPositionFilter}
-                    defaultOptionLabel="Position"
-                    options={POSITION_OPTIONS}
-                />
-                <Filter
-                    type="input"
-                    value={nameFilter}
-                    onChange={setNameFilter}
-                    placeholder="Filter by name"
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <Button
+                    onClick={() => navigate('/workers/with-jobs')}
+                    className="flex items-center gap-2 justify-center"
+                    variant="secondary"
+                >
+                    <FiBriefcase className="w-4 h-4" />
+                    <span>With Assignments</span>
+                </Button>
+                <Button
+                    onClick={() => navigate('/workers/without-jobs')}
+                    className="flex items-center gap-2 justify-center"
+                    variant="secondary"
+                >
+                    <FiUserPlus className="w-4 h-4" />
+                    <span>Available Workers</span>
+                </Button>
             </div>
 
-            {isLoading ? (
-                <p className="text-gray-600">Loading...</p>
-            ) : error ? (
-                <ErrorMessage message={error} />
-            ) : filteredWorkers.length === 0 ? (
-                <p className="mt-3 text-gray-600 text-center">No results found</p>
-            ) : (
-                <div className="overflow-x-auto">
-                    <List
-                        data={getPaginatedData(filteredWorkers)}
-                        columns={columns}
-                        onDetails={handleDetails}
+            <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
+                <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                    <Filter
+                        type="select"
+                        value={positionFilter}
+                        onChange={setPositionFilter}
+                        defaultOptionLabel="All Positions"
+                        options={POSITION_OPTIONS}
+                        className="w-full sm:w-48"
                     />
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        goToPage={goToPage}
+                    <Filter
+                        type="input"
+                        value={nameFilter}
+                        onChange={setNameFilter}
+                        placeholder="Search workers..."
+                        icon="search"
                     />
                 </div>
-            )}
+
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    </div>
+                ) : error ? (
+                    <ErrorMessage message={error} className="mx-auto" />
+                ) : filteredWorkers.length === 0 ? (
+                    <div className="text-center py-8 sm:py-12">
+                        <div className="text-gray-400 mb-4 text-4xl sm:text-6xl">👤</div>
+                        <p className="text-gray-500 text-sm sm:text-base">
+                            No workers found matching your criteria
+                        </p>
+                    </div>
+                ) : (
+                    <>
+                        <CardData
+                            data={paginatedData}
+                            keyProp="id"
+                            actionIcon={FiMoreHorizontal}
+                            actionTitle="View details"
+                            onItemClick={handleDetails}
+                            renderItem={(worker) => (
+                                <div>
+                                    <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <FiUser className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                                                {worker.fullName}
+                                            </h3>
+                                            <p className="text-xs sm:text-sm text-gray-500 truncate">
+                                                ID: {worker.id}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
+                                        <div className="flex items-center gap-2">
+                                            <FiBriefcase className="text-gray-400 w-4 h-4" />
+                                            <span className="text-gray-700">{worker.position}</span>
+                                        </div>
+                                        {worker.email && (
+                                            <div className="flex items-center gap-2">
+                                                <FiBriefcase className="text-gray-400 w-4 h-4" />
+                                                <span className="text-gray-700 truncate">
+                                                    {worker.email}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        />
+
+                        <div className="mt-6 sm:mt-8">
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                goToPage={goToPage}
+                                variant="numbered"
+                                className="justify-center"
+                                mobileBreakpoint="xs"
+                            />
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 };

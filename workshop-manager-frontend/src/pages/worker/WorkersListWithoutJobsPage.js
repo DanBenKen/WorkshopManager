@@ -1,12 +1,12 @@
 import React from 'react';
-import TablePageLayout from '../../layouts/TablePageLayout';
+import ListPageLayout from '../../layouts/ListPageLayout';
 import WorkerListWithoutJobs from '../../components/organism/worker/WorkerListWithoutJobs';
 
 const WorkersListWithoutJobsPage = () => {
     return (
-        <TablePageLayout>
+        <ListPageLayout>
             <WorkerListWithoutJobs></WorkerListWithoutJobs>
-        </TablePageLayout>
+        </ListPageLayout>
     );
 };
 

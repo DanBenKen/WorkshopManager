@@ -1,12 +1,12 @@
 import React from 'react';
-import TablePageLayout from '../../layouts/TablePageLayout';
+import ListPageLayout from '../../layouts/ListPageLayout';
 import SupplyListWithLowStock from '../../components/organism/supply/SupplyListWithLowStock';
 
 const SupplyListWithLowStockPage = () => {
     return (
-        <TablePageLayout>
+        <ListPageLayout>
             <SupplyListWithLowStock></SupplyListWithLowStock>
-        </TablePageLayout>
+        </ListPageLayout>
     );
 };
 
