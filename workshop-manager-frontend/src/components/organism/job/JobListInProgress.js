@@ -8,29 +8,31 @@ import ButtonCancel from '../../atoms/ButtonCancel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FiActivity, FiArrowLeft, FiMoreHorizontal, FiClock } from 'react-icons/fi';
 import CardData from '../../molecules/CardData';
+import JobDetailsModal from './JobDetailsModal';
 
 const JobListInProgress = () => {
     const { jobs, isLoading, error } = useJobs(null, 'all');
     const [nameFilter, setNameFilter] = useState('');
+    const [selectedJobId, setSelectedJobId] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
 
     const filteredJobs = useMemo(() => {
-        return jobs.filter((job) => 
-            job.status === 'In Progress' && 
+        return jobs.filter((job) =>
+            job.status === 'In Progress' &&
             (nameFilter ? job.jobName.toLowerCase().includes(nameFilter.toLowerCase()) : true)
         );
-    }, [jobs, nameFilter]);    
+    }, [jobs, nameFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredJobs, 6);
     const paginatedData = useMemo(() => getPaginatedData(filteredJobs), [getPaginatedData, filteredJobs]);
 
-    const handleBack = () => { 
-        navigate(location.state?.from || "/jobs"); 
+    const handleBack = () => {
+        navigate(location.state?.from || "/jobs");
     };
 
     const handleDetailsClick = (job) => {
-        navigate(`/jobs/details/${job.id}`);
+        setSelectedJobId(job.id);
     };
 
     if (isLoading) return <div className="flex justify-center items-center h-64"></div>;
@@ -111,6 +113,13 @@ const JobListInProgress = () => {
                                     </div>
                                 )}
                             />
+
+                            {selectedJobId && (
+                                <JobDetailsModal
+                                    jobId={selectedJobId}
+                                    onClose={() => setSelectedJobId(null)}
+                                />
+                            )}
 
                             <div className="mt-6 sm:mt-8">
                                 <Pagination

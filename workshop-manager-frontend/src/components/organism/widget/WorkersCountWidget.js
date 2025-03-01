@@ -11,7 +11,7 @@ const WorkersCountWidget = () => {
     const { counts: unemployedCounts, isLoading: isLoadingUnemployed, error: unemployedError } = useWorkers("unemployedCount");
 
     return (
-        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-xl p-8 flex flex-col items-center text-center min-w-[320px] transform transition-all duration-300 hover:shadow-2xl">
+        <div className="bg-gray-800 rounded-2xl shadow-xl p-8 flex flex-col items-center text-center min-w-[320px] transform transition-all duration-300 hover:shadow-2xl">
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                 <FaUsers className="text-blue-400 animate-pulse" />
                 <span>Workers Overview</span>

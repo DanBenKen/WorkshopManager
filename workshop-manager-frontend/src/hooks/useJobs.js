@@ -5,22 +5,20 @@ import { JOB_STATUSES } from '../constants/jobStatus';
 const useJobs = (jobId, fetchType = 'all') => {
     const [jobs, setJobs] = useState([]);
     const [job, setJob] = useState(null);
-    const [totalCompleted, setTotalCompleted] = useState(0);
-    const [inProgress, setInProgress] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
     /* ==========================
-        Data Fetchers (Memoized)
+        Status memoized
     ========================== */
-    const dataFetchers = useMemo(() => ({
-        'all': async () => {
-            const allJobs = await getJobs();
-            setJobs(allJobs);
-            setTotalCompleted(allJobs.filter(job => job.status === 'Completed').length);
-            setInProgress(allJobs.filter(job => job.status === 'In Progress').length);
-        }
-    }), []);
+    const totalCompleted = useMemo(() =>
+        jobs.filter(job => job.status === JOB_STATUSES.COMPLETED.apiValue).length,
+        [jobs]
+    );
+    const inProgress = useMemo(() =>
+        jobs.filter(job => job.status === JOB_STATUSES.IN_PROGRESS.apiValue).length,
+        [jobs]
+    );
 
     /* ==========================
         Error Handling
@@ -31,7 +29,7 @@ const useJobs = (jobId, fetchType = 'all') => {
         } else {
             setError(Array.isArray(error) ? error : [error.message || 'An unknown error occurred.']);
         }
-    }, []);    
+    }, []);
 
     /* ==========================
         Async Action Handling
@@ -53,30 +51,43 @@ const useJobs = (jobId, fetchType = 'all') => {
     /* ==========================
         State Update Functions
     ========================== */
-
     // Adds a new Job to the state
     const addJobToState = (newJob) => {
-        setJobs((prevJobs) => [...prevJobs, newJob]);
+        setJobs((prevJobs) => {
+            const jobsMap = new Map(prevJobs.map(job => [job.id, job]));
+            if (jobsMap.has(newJob.id)) return prevJobs;
+            return [...prevJobs, newJob];
+        });
     };
-    
+
     // Updates the jobs state with the latest supply data
     const updateJobInState = (updatedJob) => {
-        setJobs((prevJobs) => prevJobs.map(job => job.id === updatedJob.id ? updatedJob : job));
+        setJobs(prevJobs => prevJobs.map(job => job.id === updatedJob.id ? updatedJob : job));
     };
-    
+
     // Removes a jobs from the state based on its ID
     const removeJobFromState = (jobId) => {
-        setJobs((prevJobs) => prevJobs.filter(job => job.id !== jobId));
+        setJobs(prevJobs => prevJobs.filter(job => job.id !== jobId));
     };
 
     /* ==========================
         Data Fetching
     ========================== */
-
     const fetchData = useCallback(() => handleAsyncAction(async () => {
-        if (jobId) setJob(await getJobById(jobId));
-        await dataFetchers[fetchType]?.();
-    }), [jobId, fetchType, dataFetchers, handleAsyncAction]);
+        if (jobId) {
+            try {
+                const singleJob = await getJobById(jobId);
+                setJob(singleJob);
+            } catch (error) {
+                if (error.response?.status === 404) {
+                    setJob(null);
+                }
+            }
+        } else {
+            const allJobs = await getJobs();
+            setJobs(allJobs);
+        }
+    }), [jobId, handleAsyncAction]);
 
     useEffect(() => {
         fetchData();
@@ -85,35 +96,30 @@ const useJobs = (jobId, fetchType = 'all') => {
     /* ==========================
         CRUD Operations
     ========================== */
-
-    // handleCreateJob validates job data, adjusts supply, and creates a new job.
     const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
-        await createJob(jobData);
-        addJobToState(jobData);
-    }), [handleAsyncAction]);    
+        const createdJob = await createJob(jobData);
+        addJobToState(createdJob);
+    }), [handleAsyncAction]);
 
-    // handleUpdateJob validates updated job data, adjusts supply quantities as needed, and updates the job.
     const handleUpdateJob = useCallback(async (id, jobData) => handleAsyncAction(async () => {
-        await updateJob(id, jobData);
-        updateJobInState(jobData);
-    }), [handleAsyncAction]);
-
-    // handleDeleteJob deletes the job and updates local state.
-    const handleDeleteJob = useCallback(async (id) => handleAsyncAction(async () => {
-        await deleteJob(id);
-        removeJobFromState(id);
-    }), [handleAsyncAction]);
-
-    // handleSetCompleted marks a job as completed by updating its status.
-    const handleSetCompleted = useCallback(async (job) => handleAsyncAction(async () => {
-        const updatedJob = { ...job, status: JOB_STATUSES.COMPLETED.apiValue };
-        await updateJob(job.id, updatedJob);
+        const updatedJob = await updateJob(id, jobData);
         updateJobInState(updatedJob);
+    }), [handleAsyncAction]);
+
+    const handleDeleteJob = useCallback(async (id) => handleAsyncAction(async () => {
+        const deletedJob = await deleteJob(id);
+        removeJobFromState(deletedJob);
+    }), [handleAsyncAction]);
+
+    const handleSetCompleted = useCallback(async (job) => handleAsyncAction(async () => {
+        const setCompleted = { ...job, status: JOB_STATUSES.COMPLETED.apiValue };
+        updateJobInState(setCompleted);
+        await updateJob(job.id, setCompleted);
     }), [handleAsyncAction]);
 
     return {
         jobs, job, isLoading, error, inProgress, totalCompleted,
-        handleCreateJob, handleUpdateJob, handleDeleteJob, handleSetCompleted
+        handleCreateJob, handleUpdateJob, handleDeleteJob, handleSetCompleted, fetchData
     };
 };
 

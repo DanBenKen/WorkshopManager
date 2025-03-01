@@ -9,11 +9,14 @@ import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import { STATUS_OPTIONS, JOB_STATUSES } from '../../../constants/jobStatus';
 import CardData from '../../molecules/CardData';
+import JobDetailsModal from './JobDetailsModal';
+import { toast } from 'react-toastify';
 
 const JobList = () => {
-    const { jobs, isLoading, error, handleSetCompleted } = useJobs();
+    const { jobs, isLoading, error, handleSetCompleted, fetchData } = useJobs();
     const [nameFilter, setNameFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
+    const [selectedJobId, setSelectedJobId] = useState(null);
     const navigate = useNavigate();
 
     const filteredJobs = useMemo(() => {
@@ -26,15 +29,16 @@ const JobList = () => {
     }, [jobs, nameFilter, statusFilter]);
 
     const { currentPage, totalPages, goToPage, getPaginatedData } = usePagination(filteredJobs, 6);
-    const paginatedData = useMemo(() => getPaginatedData(filteredJobs), [getPaginatedData, filteredJobs]);
+    const paginatedData = getPaginatedData(filteredJobs);
 
     const handleDetails = (job) => {
-        navigate(`/jobs/details/${job.id}`);
+        setSelectedJobId(job.id);
     };
 
     const handleComplete = (job) => {
         if (job.status === JOB_STATUSES.IN_PROGRESS.apiValue) {
             handleSetCompleted(job);
+            toast.success(`Job: ${job.jobName} successfully completed!`);
         }
     };
 
@@ -151,6 +155,13 @@ const JobList = () => {
                                 </div>
                             )}
                         />
+                        {selectedJobId && (
+                            <JobDetailsModal
+                                jobId={selectedJobId}
+                                onClose={() => setSelectedJobId(null)}
+                                refreshJobs={fetchData}
+                            />
+                        )}
 
                         <div className="mt-6 sm:mt-8">
                             <Pagination
