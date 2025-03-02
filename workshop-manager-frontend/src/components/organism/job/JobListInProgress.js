@@ -39,7 +39,7 @@ const JobListInProgress = () => {
     if (error) return <ErrorMessage message={error} className="mx-auto max-w-screen-xl" />;
 
     return (
-        <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8 min-h-screen">
+        <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8">
             <div className="max-w-screen-xl mx-auto">
                 <div className="flex flex-row items-center justify-start gap-4 mb-6">
                     <FiActivity className="text-blue-500 w-8 h-8 sm:w-10 sm:h-10" />

@@ -8,10 +8,12 @@ import ButtonCancel from '../../atoms/ButtonCancel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FiUser, FiBriefcase, FiArrowLeft, FiMoreHorizontal } from 'react-icons/fi';
 import CardData from '../../molecules/CardData';
+import WorkerDetailsModal from './WorkerDetails';
 
 const WorkerListWithoutJobs = () => {
-    const { workers, isLoading, error } = useWorkers('withoutJobs');
+    const { workers, isLoading, error, fetchData } = useWorkers('withoutJobs');
     const [nameFilter, setNameFilter] = useState('');
+    const [selectedWorkerId, setSelectedWorkerId] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -28,11 +30,15 @@ const WorkerListWithoutJobs = () => {
         navigate(location.state?.from || "/workers");
     };
 
+    const handleDetails = (worker) => {
+        setSelectedWorkerId(worker.id);
+    };
+
     if (isLoading) return <div className="flex justify-center items-center h-64"></div>;
     if (error) return <ErrorMessage message={error} className="mx-auto max-w-screen-xl" />;
 
     return (
-        <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8 min-h-screen">
+        <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8">
             <div className="max-w-screen-xl mx-auto">
                 <div className="flex flex-row items-center justify-start gap-4 mb-6">
                     <FiUser className="text-red-500 w-5 h-5" />
@@ -41,7 +47,7 @@ const WorkerListWithoutJobs = () => {
                     </h1>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
+                <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <Filter
                             type="input"
@@ -70,7 +76,7 @@ const WorkerListWithoutJobs = () => {
                                 keyProp="id"
                                 actionIcon={FiMoreHorizontal}
                                 actionTitle="View worker details"
-                                onItemClick={(worker) => navigate(`/workers/details/${worker.id}`)}
+                                onItemClick={handleDetails}
                                 renderItem={(worker) => (
                                     <div>
                                         <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
@@ -106,6 +112,7 @@ const WorkerListWithoutJobs = () => {
                                     <span>Go Back</span>
                                 </ButtonCancel>
                             </div>
+
                             <div className="mt-6 sm:mt-8">
                                 <Pagination
                                     currentPage={currentPage}
@@ -120,6 +127,14 @@ const WorkerListWithoutJobs = () => {
                     )}
                 </div>
             </div>
+
+            {selectedWorkerId && (
+                <WorkerDetailsModal
+                    workerId={selectedWorkerId}
+                    onClose={() => setSelectedWorkerId(null)}
+                    refreshWorkers={fetchData}
+                />
+            )}
         </div>
     );
 };

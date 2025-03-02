@@ -9,12 +9,20 @@ import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import { SUPPLY_OPTIONS } from '../../../constants/supplyType';
 import CardData from '../../molecules/CardData';
+import SupplyFormModal from './SupplyFormModal';
+import SupplyDetailsModal from './SupplyDetailsModal';
 
 const SupplyList = () => {
-    const { supplies, isLoading, error, handleAddMoreQuantity } = useSupplies();
+    const { supplies, isLoading, error, handleAddMoreQuantity, fetchData } = useSupplies();
     const [nameFilter, setNameFilter] = useState('');
     const [typeFilter, setTypeFilter] = useState('');
+    const [selectedSupplyId, setSelectedSupplyId] = useState(null);
+    const [showSupplyForm, setShowSupplyForm] = useState(false);
+    const [quantityInputs, setQuantityInputs] = useState({});
     const navigate = useNavigate();
+
+    const openSupplyForm = () => setShowSupplyForm(true);
+    const closeSupplyForm = () => setShowSupplyForm(false);
 
     const filteredSupplies = useMemo(() => {
         return supplies.filter((supply) => {
@@ -28,11 +36,18 @@ const SupplyList = () => {
     const paginatedData = useMemo(() => getPaginatedData(filteredSupplies), [getPaginatedData, filteredSupplies]);
 
     const handleDetails = (supply) => {
-        navigate(`/supplies/details/${supply.id}`);
+        setSelectedSupplyId(supply.id);
     };
 
-    const handleAddMore = (supply, quantity) => {
-        handleAddMoreQuantity(supply, quantity);
+    const handleAddMore = (supply) => {
+        const input = quantityInputs[supply.id];
+        const quantity = parseInt(input, 10);
+        if (!isNaN(quantity) && quantity > 0) {
+            handleAddMoreQuantity(supply, quantity);
+            setQuantityInputs(prev => ({ ...prev, [supply.id]: '' }));
+        } else {
+            console.warn('Unesite validnu količinu veću od nule.');
+        }
     };
 
     const renderSupplyItem = (supply) => {
@@ -43,8 +58,12 @@ const SupplyList = () => {
                         <FiPackage className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">{supply.name}</h3>
-                        <p className="text-xs sm:text-sm text-gray-500 truncate">ID: {supply.id}</p>
+                        <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                            {supply.name}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-gray-500 truncate">
+                            ID: {supply.id}
+                        </p>
                     </div>
                 </div>
 
@@ -57,10 +76,33 @@ const SupplyList = () => {
                         <FiPackage className="text-gray-400 w-4 h-4" />
                         <span className="text-gray-700">Quantity: {supply.quantity}</span>
                     </div>
+
+                    <div className="mt-2 flex items-center">
+                        <input
+                            type="number"
+                            min="1"
+                            value={quantityInputs[supply.id] || ''}
+                            onChange={(e) =>
+                                setQuantityInputs(prev => ({
+                                    ...prev,
+                                    [supply.id]: e.target.value,
+                                }))
+                            }
+                            placeholder="Enter quantity to add"
+                            className="border rounded px-2 py-1 me-2 text-sm w-2/3"
+                        />
+                        <button
+                            onClick={() => handleAddMore(supply)}
+                            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                        >
+                            <FiPlus className="w-5 h-5 text-blue-600" />
+                        </button>
+                    </div>
                 </div>
             </>
         );
     };
+
 
     return (
         <div>
@@ -71,7 +113,7 @@ const SupplyList = () => {
                 </div>
 
                 <Button
-                    onClick={() => navigate('/supplies/create')}
+                    onClick={openSupplyForm}
                     className="flex items-center justify-center gap-2 sm:w-auto"
                     variant="primary"
                 >
@@ -80,18 +122,17 @@ const SupplyList = () => {
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <Button
                     onClick={() => navigate('/supplies/low-stock')}
                     className="flex items-center gap-2 justify-center"
-                    variant="secondary"
                 >
                     <FiBox className="w-4 h-4" />
                     <span>Low Stock Supplies</span>
                 </Button>
             </div>
 
-            <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
+            <div className="bg-white rounded-xl mb-8">
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
                     <Filter
                         type="select"
@@ -131,11 +172,22 @@ const SupplyList = () => {
                             onItemClick={handleDetails}
                             actionIcon={FiMoreHorizontal}
                             actionTitle="View details"
-                            additionalActionIcon={FiPlus}
-                            additionalActionTitle="Add Quantity"
-                            onAdditionalAction={handleAddMore}
                         />
+                        {selectedSupplyId && (
+                            <SupplyDetailsModal
+                                supplyId={selectedSupplyId}
+                                onClose={() => setSelectedSupplyId(null)}
+                                refreshSupplies={fetchData}
+                            />
+                        )}
 
+                        {showSupplyForm && (
+                            <SupplyFormModal
+                                supplyId={undefined}
+                                onClose={closeSupplyForm}
+                                refreshSupplies={fetchData}
+                            />
+                        )}
                         <div className="mt-6 sm:mt-8">
                             <Pagination
                                 currentPage={currentPage}

@@ -1,6 +1,6 @@
 import React from 'react';
 import FormPageLayout from '../../layouts/FormPageLayout';
-import SupplyDetails from '../../components/organism/supply/SupplyDetails';
+import SupplyDetails from '../../components/organism/supply/SupplyDetailsModal';
 
 const SupplyDetailsPage = () => {
     return (

@@ -2,31 +2,21 @@ import { useState, useEffect, useCallback } from 'react';
 import { createWorker, getWorkers, updateWorker, deleteWorker, getWorkersWithJobs, getWorkersCount, getUnemployedWorkersCount, getWorkersWithoutJobs, getWorkerById } from '../services/workerService';
 
 const useWorkers = (fetchType = 'all') => {
-  // State variables
-  const [workers, setWorkers] = useState([]); // List of workers
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [counts, setCounts] = useState({ total: 0, unemployed: 0 }); // Worker counts
-  const [worker, setWorker] = useState(null); // Single worker data
+  const [workers, setWorkers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [counts, setCounts] = useState({ total: 0, unemployed: 0 });
+  const [worker, setWorker] = useState(null);
 
-  // Function to get full name for a worker
   const getWorkersFullName = (workerData) => ({
     ...workerData,
     fullName: `${workerData.firstName} ${workerData.lastName}`,
   });
 
-  /* ==========================
-      Error Handling
-  ========================== */
   const handleError = useCallback((error) => {
     setError(error.message || 'An error occurred. Please try again later.');
   }, []);
 
-  /* ==========================
-      Async Action Handling
-  ========================== */
-
-  // Wrapper to handle async actions with loading and error states
   const handleAsyncAction = useCallback(async (actionFunc) => {
     setIsLoading(true);
     setError(null);
@@ -41,32 +31,20 @@ const useWorkers = (fetchType = 'all') => {
     }
   }, [handleError]);
 
-  /* ==========================
-      State Update Functions
-  ========================== */
-
-  // Add new worker to the state
   const addWorkerToState = useCallback((newWorker) => {
     setWorkers((prevWorkers) => [...prevWorkers, newWorker]);
   }, []);
 
-  // Update a worker's data in the state
   const updateWorkerInState = useCallback((updatedWorker) => {
     setWorkers((prevWorkers) =>
       prevWorkers.map((worker) => (worker.id === updatedWorker.id ? updatedWorker : worker))
     );
   }, []);
 
-  // Remove a worker from the state based on ID
   const removeWorkerFromState = useCallback((id) => {
     setWorkers((prevWorkers) => prevWorkers.filter((worker) => worker.id !== id));
   }, []);
 
-  /* ==========================
-      Data Fetching Functions
-  ========================== */
-
-  // Fetch workers based on the specified type (with jobs, without jobs, or all workers)
   const fetchWorkersData = async (fetchType) => {
     switch (fetchType) {
       case 'withJobs':
@@ -80,14 +58,12 @@ const useWorkers = (fetchType = 'all') => {
     }
   };
 
-  // Fetch worker counts (total and unemployed)
   const fetchCountsData = async () => {
     const totalCount = await getWorkersCount();
     const unemployedCount = await getUnemployedWorkersCount();
     return { total: totalCount, unemployed: unemployedCount };
   };
 
-  // Fetches all necessary data
   const fetchData = useCallback(async () => {
     await handleAsyncAction(async () => {
       if (fetchType === 'count' || fetchType === 'unemployedCount') {
@@ -100,15 +76,13 @@ const useWorkers = (fetchType = 'all') => {
     });
   }, [fetchType, handleAsyncAction]);
 
-  // Fetch a single worker by ID
   const fetchWorkerById = useCallback(async (id) => {
     await handleAsyncAction(async () => {
       const worker = await getWorkerById(id);
-      setWorker(worker);
+      setWorker(getWorkersFullName(worker));
     });
   }, [handleAsyncAction]);
 
-  // Get job status counts for each worker (completed and in progress)
   const getWorkerJobCounts = (worker) => {
     const completedJobs = worker.jobs.filter((job) => job.status === 'Completed').length;
     const inProgressJobs = worker.jobs.filter((job) => job.status === 'In Progress').length;
@@ -119,11 +93,6 @@ const useWorkers = (fetchType = 'all') => {
     fetchData();
   }, [fetchData]);
 
-  /* ==========================
-      CRUD Operations
-  ========================== */
-
-  // Create a new worker and add it to the state
   const handleCreateWorker = useCallback(async (workerData) => {
     const result = await handleAsyncAction(async () => {
       const createdWorker = await createWorker(workerData);
@@ -132,7 +101,6 @@ const useWorkers = (fetchType = 'all') => {
     return result;
   }, [handleAsyncAction, addWorkerToState]);
 
-  // Update an existing worker and reflect changes in the state
   const handleUpdateWorker = useCallback(async (id, workerData) => {
     const result = await handleAsyncAction(async () => {
       const updatedWorker = await updateWorker(id, workerData);
@@ -141,7 +109,6 @@ const useWorkers = (fetchType = 'all') => {
     return result;
   }, [handleAsyncAction, updateWorkerInState]);
 
-  // Delete a worker and remove from the state
   const handleDeleteWorker = useCallback(async (id) => {
     const result = handleAsyncAction(async () => {
       await deleteWorker(id);
@@ -151,8 +118,8 @@ const useWorkers = (fetchType = 'all') => {
   }, [handleAsyncAction, removeWorkerFromState]);
 
   return {
-    workers, isLoading, error, counts, worker,
-    handleCreateWorker, getWorkerJobCounts, handleUpdateWorker, handleDeleteWorker, fetchWorkerById,
+    workers, isLoading, error, counts, worker, fetchData,
+    handleCreateWorker, getWorkerJobCounts, handleUpdateWorker, handleDeleteWorker, fetchWorkerById, getWorkersFullName
   };
 };
 

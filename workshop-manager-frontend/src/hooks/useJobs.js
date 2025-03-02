@@ -8,9 +8,6 @@ const useJobs = (jobId) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    /* ==========================
-        Status memoized
-    ========================== */
     const totalCompleted = useMemo(() =>
         jobs.filter(job => job.status === JOB_STATUSES.COMPLETED.apiValue).length,
         [jobs]
@@ -20,16 +17,13 @@ const useJobs = (jobId) => {
         [jobs]
     );
 
-    /* ==========================
-        Error Handling
-    ========================== */
     const handleError = useCallback((error) => {
         if (error.response) {
             const { status, data } = error.response;
             if (status === 400) {
                 return;
             }
-    
+
             if (data && data.detail) {
                 setError([data.detail]);
             } else {
@@ -38,11 +32,8 @@ const useJobs = (jobId) => {
         } else {
             setError([error.message || 'An unknown error occurred.']);
         }
-    }, []);    
+    }, []);
 
-    /* ==========================
-        Async Action Handling
-    ========================== */
     const handleAsyncAction = useCallback(async (actionFunc) => {
         setIsLoading(true);
         setError(null);
@@ -57,10 +48,6 @@ const useJobs = (jobId) => {
         }
     }, [handleError]);
 
-    /* ==========================
-        State Update Functions
-    ========================== */
-    // Adds a new Job to the state
     const addJobToState = (newJob) => {
         setJobs((prevJobs) => {
             const jobsMap = new Map(prevJobs.map(job => [job.id, job]));
@@ -69,19 +56,14 @@ const useJobs = (jobId) => {
         });
     };
 
-    // Updates the jobs state with the latest supply data
     const updateJobInState = (updatedJob) => {
         setJobs(prevJobs => prevJobs.map(job => job.id === updatedJob.id ? updatedJob : job));
     };
 
-    // Removes a jobs from the state based on its ID
     const removeJobFromState = (jobId) => {
         setJobs(prevJobs => prevJobs.filter(job => job.id !== jobId));
     };
 
-    /* ==========================
-        Data Fetching
-    ========================== */
     const fetchData = useCallback(() => handleAsyncAction(async () => {
         if (jobId) {
             try {
@@ -102,9 +84,6 @@ const useJobs = (jobId) => {
         fetchData();
     }, [fetchData]);
 
-    /* ==========================
-        CRUD Operations
-    ========================== */
     const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
         const createdJob = await createJob(jobData);
         addJobToState(createdJob);
@@ -120,11 +99,19 @@ const useJobs = (jobId) => {
         removeJobFromState(deletedJob);
     }), [handleAsyncAction]);
 
-    const handleSetCompleted = useCallback(async (job) => handleAsyncAction(async () => {
-        const setCompleted = { ...job, status: JOB_STATUSES.COMPLETED.apiValue };
-        updateJobInState(setCompleted);
-        await updateJob(job.id, setCompleted);
-    }), [handleAsyncAction]);
+    const handleSetCompleted = useCallback(async (job) => {
+        await handleAsyncAction(async () => {
+            const previousJob = { ...job };
+            const setCompleted = { ...job, status: JOB_STATUSES.COMPLETED.apiValue };
+            updateJobInState(setCompleted);
+            try {
+                await updateJob(job.id, setCompleted);
+            } catch (error) {
+                updateJobInState(previousJob);
+                throw error;
+            }
+        });
+    }, [handleAsyncAction]);
 
     return {
         jobs, job, isLoading, error, inProgress, totalCompleted,

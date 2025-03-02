@@ -9,12 +9,19 @@ import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import CardData from '../../molecules/CardData';
 import { POSITION_OPTIONS } from '../../../constants/workerPosition';
+import WorkerDetailsModal from './WorkerDetails';
+import WorkerFormModal from './WorkerForm';
 
 const WorkersList = () => {
-    const { workers, isLoading, error } = useWorkers('all');
+    const { workers, isLoading, error, fetchData } = useWorkers('all');
     const [nameFilter, setNameFilter] = useState('');
     const [positionFilter, setPositionFilter] = useState('');
+    const [selectedWorkerId, setSelectedWorkerId] = useState(null);
+    const [showWorkerForm, setshowWorkerForm] = useState(false);
     const navigate = useNavigate();
+
+    const openWorkerForm = () => setshowWorkerForm(true);
+    const closeWorkerForm = () => setshowWorkerForm(false);
 
     const filteredWorkers = useMemo(() => workers.filter((worker) => {
         const matchesName = nameFilter ? worker.fullName.toLowerCase().includes(nameFilter.toLowerCase()) : true;
@@ -26,7 +33,7 @@ const WorkersList = () => {
     const paginatedData = useMemo(() => getPaginatedData(filteredWorkers), [getPaginatedData, filteredWorkers]);
 
     const handleDetails = (worker) => {
-        navigate(`/workers/details/${worker.id}`);
+        setSelectedWorkerId(worker.id);
     };
 
     return (
@@ -38,7 +45,7 @@ const WorkersList = () => {
                 </div>
 
                 <Button
-                    onClick={() => navigate('/workers/create')}
+                    onClick={openWorkerForm}
                     className="flex items-center justify-center gap-2 sm:w-auto"
                     variant="primary"
                 >
@@ -66,7 +73,7 @@ const WorkersList = () => {
                 </Button>
             </div>
 
-            <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
+            <div className="bg-white rounded-xl mb-8">
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
                     <Filter
                         type="select"
@@ -126,19 +133,27 @@ const WorkersList = () => {
                                         <div className="flex items-center gap-2">
                                             <FiBriefcase className="text-gray-400 w-4 h-4" />
                                             <span className="text-gray-700">{worker.position}</span>
-                                        </div>
-                                        {worker.email && (
-                                            <div className="flex items-center gap-2">
-                                                <FiBriefcase className="text-gray-400 w-4 h-4" />
-                                                <span className="text-gray-700 truncate">
-                                                    {worker.email}
-                                                </span>
-                                            </div>
-                                        )}
+                                        </div>                                        
                                     </div>
                                 </div>
                             )}
                         />
+
+                        {selectedWorkerId && (
+                            <WorkerDetailsModal
+                                workerId={selectedWorkerId}
+                                onClose={() => setSelectedWorkerId(null)}
+                                refreshWorkers={fetchData}
+                            />
+                        )}
+
+                        {showWorkerForm && (
+                            <WorkerFormModal
+                                workerId={undefined}
+                                onClose={closeWorkerForm}
+                                refreshWorkers={fetchData}
+                            />
+                        )}
 
                         <div className="mt-6 sm:mt-8">
                             <Pagination

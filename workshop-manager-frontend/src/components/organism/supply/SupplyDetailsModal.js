@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { FiUser, FiEdit, FiTrash2, FiX } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiArchive, FiEdit, FiTrash2, FiX } from 'react-icons/fi';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Details from '../../molecules/Details';
 import ButtonEdit from '../../atoms/ButtonEdit';
 import ButtonCancel from '../../atoms/ButtonCancel';
 import ButtonDelete from '../../atoms/ButtonDelete';
-import useWorkers from '../../../hooks/useWorkers';
+import useSupplies from '../../../hooks/useSupplies';
 import ConfirmModal from '../../molecules/ConfirmModal';
 import Modal from '../../molecules/Modal';
 import { toast } from 'react-toastify';
-import WorkerFormModal from './WorkerForm';
+import SupplyFormModal from './SupplyFormModal';
 
-const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
-    const { worker, error, handleDeleteWorker, fetchWorkerById } = useWorkers();
+const SupplyDetailsModal = ({ supplyId, onClose, refreshSupplies }) => {
+    const { supply, error, fetchSupplyById, handleDeleteSupply } = useSupplies();
     const [showConfirm, setShowConfirm] = useState(false);
-    const [showWorkerForm, setShowWorkerForm] = useState(false);
-
-    const openWorkerForm = () => setShowWorkerForm(true);
-    const closeWorkerForm = () => setShowWorkerForm(false);
+    const [showSupplyForm, setShowSupplyForm] = useState(false);
 
     useEffect(() => {
-        if (workerId && !worker) {
-            fetchWorkerById(workerId);
+        if (supplyId && !supply) {
+            fetchSupplyById(supplyId);
         }
-    }, [fetchWorkerById, worker, workerId]);
+    }, [supplyId, supply, fetchSupplyById]);
+
+    const openSupplyForm = () => setShowSupplyForm(true);
+    const closeSupplyForm = () => setShowSupplyForm(false);
 
     if (error) {
         return (
@@ -35,18 +35,18 @@ const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
         );
     }
 
-    if (!worker) {
+    if (!supply) {
         return (
             <Modal onClose={onClose}>
-                <div className="relative">
-                    <ErrorMessage message="Worker data not found." />
+                <div className="flex justify-center items-center p-4">
+                    Loading...
                 </div>
             </Modal>
         );
     }
 
     const handleEdit = () => {
-        openWorkerForm();
+        openSupplyForm();
     };
 
     const handleDelete = () => {
@@ -56,12 +56,12 @@ const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
     const onConfirmDelete = async () => {
         setShowConfirm(false);
         try {
-            await handleDeleteWorker(worker.id);
-            refreshWorkers();
-            toast.success(`Worker: ${worker.fullName} successfully deleted!`);
+            await handleDeleteSupply(supply.id);
+            refreshSupplies();
+            toast.success(`Supply: #${supply.id} successfully deleted!`);
             onClose();
-        } catch (error) {
-            toast.error("Error deleting worker.");
+        } catch (err) {
+            toast.error("Error deleting supply.");
         }
     };
 
@@ -75,14 +75,16 @@ const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
                 <div>
                     <div className="mb-6">
                         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                            <FiUser className="text-blue-500" />
-                            {worker.fullName}
+                            <FiArchive className="text-blue-500" />
+                            {supply.name}
                         </h2>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Details label="Worker ID:" value={worker.id} />
-                        <Details label="Position:" value={worker.position} />
+                        <Details label="Supply ID:" value={supply.id} />
+                        <Details label="Name:" value={supply.name} />
+                        <Details label="Quantity:" value={supply.quantity} />
+                        <Details label="Type:" value={supply.type} />
                     </div>
 
                     <div className="mt-6 flex gap-3 justify-end">
@@ -92,18 +94,24 @@ const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
                         <ButtonEdit onClick={handleEdit}>
                             <FiEdit className="w-7 h-7" />
                         </ButtonEdit>
-                        <ButtonDelete onClick={handleDelete} variant="danger">
+                        <ButtonDelete onClick={handleDelete}>
                             <FiTrash2 className="w-7 h-7" />
                         </ButtonDelete>
                     </div>
                 </div>
             </Modal>
 
-            {showWorkerForm && <WorkerFormModal workerId={workerId} onClose={closeWorkerForm} refreshWorkers={refreshWorkers} />}
+            {showSupplyForm && (
+                <SupplyFormModal
+                    supplyId={supplyId}
+                    onClose={closeSupplyForm}
+                    refreshSupplies={refreshSupplies}
+                />
+            )}
 
             {showConfirm && (
                 <ConfirmModal
-                    message={`🗑️ Permanently delete worker ${worker.fullName}? This action can't be undone.`}
+                    message={`🗑️ Permanently delete supply ${supply.id}? This action can't be undone.`}
                     onConfirm={onConfirmDelete}
                     onCancel={onCancelDelete}
                 />
@@ -112,4 +120,4 @@ const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
     );
 };
 
-export default WorkerDetailsModal;
+export default SupplyDetailsModal;

@@ -8,10 +8,12 @@ import ButtonCancel from '../../atoms/ButtonCancel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiPackage, FiMoreHorizontal, FiBox } from 'react-icons/fi';
 import CardData from '../../molecules/CardData';
+import SupplyDetailsModal from './SupplyDetailsModal';
 
 const SupplyListWithLowStock = () => {
-    const { lowStockSupplies = [], isLoading, error } = useSupplies();
+    const { lowStockSupplies = [], isLoading, error, fetchData } = useSupplies();
     const [nameFilter, setNameFilter] = useState('');
+    const [selectedSupplyId, setSelectedSupplyId] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -29,14 +31,16 @@ const SupplyListWithLowStock = () => {
     };
 
     const handleDetailsClick = (supply) => {
-        navigate(`/supplies/details/${supply.id}`);
+        setSelectedSupplyId(supply.id);
     };
 
-    if (isLoading) return <div className="flex justify-center items-center h-64"></div>;
-    if (error) return <ErrorMessage message={error} className="mx-auto max-w-screen-xl" />;
+    if (isLoading) 
+        return <div className="flex justify-center items-center h-64"></div>;
+    if (error) 
+        return <ErrorMessage message={error} className="mx-auto max-w-screen-xl" />;
 
     return (
-        <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8 min-h-screen">
+        <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8">
             <div className="max-w-screen-xl mx-auto">
                 <div className="flex flex-row items-center justify-start gap-4 mb-6">
                     <FiPackage className="text-yellow-500 w-8 h-8 sm:w-10 sm:h-10" />
@@ -127,6 +131,14 @@ const SupplyListWithLowStock = () => {
                     )}
                 </div>
             </div>
+
+            {selectedSupplyId && (
+                <SupplyDetailsModal
+                    supplyId={selectedSupplyId}
+                    onClose={() => setSelectedSupplyId(null)}
+                    refreshSupplies={fetchData}
+                />
+            )}
         </div>
     );
 };

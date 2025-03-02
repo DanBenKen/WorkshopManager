@@ -77,14 +77,13 @@ const JobList = () => {
                 <Button
                     onClick={() => navigate('/jobs/list-in-progress')}
                     className="flex items-center gap-2 justify-center"
-                    variant="secondary"
                 >
                     <FiActivity className="w-4 h-4" />
                     <span>Jobs In Progress</span>
                 </Button>
             </div>
 
-            <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
+            <div className="bg-white rounded-xl mb-8">
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
                     <Filter
                         type="select"
