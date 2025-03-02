@@ -14,7 +14,7 @@ const isAlphanumericWithLetters = (value, fieldName) => /^[A-Za-z0-9-/ ]+$/.test
 export const validateRegistration = (values) => {
     const errors = {};
 
-    errors.username = isRequired(values.username, "Username");
+    errors.username = isRequired(values.username, "Username") || isAlphanumericWithLetters(values.username, 'Username');
     errors.email = isRequired(values.email, "Email") || isEmail(values.email);
     errors.password = isRequired(values.password, "Password")
         || minLength(values.password, 6, "Password")
