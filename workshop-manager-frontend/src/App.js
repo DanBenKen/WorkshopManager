@@ -18,6 +18,7 @@ import PrivateRoute from './components/organism/auth/PrivateRoute';
 import Sidebar from './components/organism/Sidebar';
 import AdminDashboardPage from './pages/auth/AdminDashboardPage';
 import { ToastContainer } from 'react-toastify';
+import FallbackErrorPage from './pages/auth/FallbackErrorPage';
 
 const App = () => {
     return (
@@ -46,6 +47,8 @@ const App = () => {
                         <Route path="/workers/edit/:workerId" element={<WorkersFormPage />} />
                     </Route>
                 </Route>
+
+                <Route path="*" element={<FallbackErrorPage />} />
             </Routes>
             <ToastContainer />
         </Router>
