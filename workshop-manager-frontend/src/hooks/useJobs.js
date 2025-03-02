@@ -24,12 +24,21 @@ const useJobs = (jobId) => {
         Error Handling
     ========================== */
     const handleError = useCallback((error) => {
-        if (error.response && error.response.data && error.response.data.detail) {
-            setError([error.response.data.detail]);
+        if (error.response) {
+            const { status, data } = error.response;
+            if (status === 400) {
+                return;
+            }
+    
+            if (data && data.detail) {
+                setError([data.detail]);
+            } else {
+                setError(Array.isArray(error) ? error : [error.message || 'An unknown error occurred.']);
+            }
         } else {
-            setError(Array.isArray(error) ? error : [error.message || 'An unknown error occurred.']);
+            setError([error.message || 'An unknown error occurred.']);
         }
-    }, []);
+    }, []);    
 
     /* ==========================
         Async Action Handling

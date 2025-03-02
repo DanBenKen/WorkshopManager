@@ -52,7 +52,7 @@ const FormField = ({ label, type, id, name, value, onChange, errorMessage, place
                     />
                 </>
             )}
-            {errorMessage && <ErrorMessage message={errorMessage} />}
+            {<ErrorMessage message={errorMessage} />}
         </div>
     );
 };

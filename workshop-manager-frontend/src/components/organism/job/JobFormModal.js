@@ -87,9 +87,10 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
     return (
         <Modal onClose={onClose}>
             <div>
-                <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Job' : 'Create New Job'}</h2>
+                <h2 className="text-2xl font-bold mb-2">{isEditMode ? 'Edit Job' : 'Create New Job'}</h2>
 
-                {error && !Object.values(errors).some((e) => e) && <ErrorMessage message={error} />}
+                {<ErrorMessage message={error} />}
+
                 <form onSubmit={handleSubmit}>
                     <FormField
                         label="Job Name"

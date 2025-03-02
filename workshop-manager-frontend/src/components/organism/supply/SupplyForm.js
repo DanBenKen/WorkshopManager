@@ -8,12 +8,10 @@ import ButtonCancel from '../../atoms/ButtonCancel';
 import useValidation from '../../../hooks/useValidation';
 import { validateSupplyForm } from '../../../utils/validators';
 import { SUPPLY_OPTIONS, SUPPLY_TYPE } from '../../../constants/supplyType';
-import SuccessMessage from '../../atoms/SuccessMessage';
 
 const SupplyForm = () => {
     const { supplyId } = useParams();
     const navigate = useNavigate();
-    const [successMessage, setSuccessMessage] = useState('');
     const [isButtonLoading, setIsButtonLoading] = useState(false);
 
     const isEditMode = !!supplyId;
@@ -43,7 +41,7 @@ const SupplyForm = () => {
         setIsButtonLoading(true);
 
         if (success) {
-            setSuccessMessage(isEditMode ? 'Supply updated successfully!' : 'Supply created successfully!');
+            //setSuccessMessage(isEditMode ? 'Supply updated successfully!' : 'Supply created successfully!');
     
             setTimeout(() => { navigate('/supplies'); }, 2000);
         } else {
@@ -62,8 +60,6 @@ const SupplyForm = () => {
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Supply' : 'Create New Supply'}</h2>
-
-            <SuccessMessage message={successMessage} />
 
             {error && !Object.values(errors).some((e) => e) && <ErrorMessage message={error} />}
 

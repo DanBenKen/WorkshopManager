@@ -49,7 +49,7 @@ const RegisterForm = () => {
         <div className="flex justify-center items-center mt-10 p-5">
             <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-2xl">
                 <h2 className="text-2xl font-semibold text-center text-gray-800">Register to Your Workshop</h2>
-                <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
+                <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded">
                     {authError && <ErrorMessage message={authError} />}
                     {successMessage && <p className="text-center text-green-500">{successMessage}</p>}
 

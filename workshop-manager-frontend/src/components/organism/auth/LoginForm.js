@@ -6,10 +6,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import useValidation from '../../../hooks/useValidation';
 import { validateLogin } from '../../../utils/validators';
+import { toast } from 'react-toastify';
+import { FaSpinner } from 'react-icons/fa';
 
 const LoginForm = () => {
     const { handleLogin, authError } = useAuth();
-    const [successMessage, setSuccessMessage] = useState('');
     const [isButtonLoading, setIsButtonLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const navigate = useNavigate();
@@ -25,30 +26,29 @@ const LoginForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         resetErrors();
-    
+
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length) return;
-    
+
         setIsButtonLoading(true);
-    
+
         const isSuccess = await handleLogin({ email, password, rememberMe }, rememberMe);
-    
+
         if (isSuccess) {
-            setSuccessMessage("Login successful!");
+            toast.success('Login successful!', { autoClose: 1500 });
             setTimeout(() => navigate('/'), 2000);
         } else {
             setIsButtonLoading(false);
         }
-    };    
+    };
 
     return (
         <div className="flex justify-center items-center mt-10 p-5">
             <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-2xl">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <h2 className="text-2xl font-semibold text-center text-gray-800">Log in to Your Workshop</h2>
-                    
-                    {authError && <ErrorMessage message={authError} />}
-                    {successMessage && <p className="text-center text-green-500">{successMessage}</p>}
+                <form onSubmit={handleSubmit}>
+                    <h2 className="text-2xl font-semibold text-center text-gray-800 m-2">Log in to Your Workshop</h2>
+
+                    {<ErrorMessage className='text-center' message={authError} />}
 
                     <FormField
                         label="Email"
@@ -74,12 +74,15 @@ const LoginForm = () => {
                         name="rememberMe"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                         label={"Remember Me"}
                     />
 
-                    <Button type="submit" disabled={isButtonLoading} className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-300 ease-in-out">
-                        {isButtonLoading ? 'Logging in...' : 'Log in'}
+                    <Button type="submit" disabled={isButtonLoading} className="w-full flex items-center justify-center">
+                        {isButtonLoading ? (
+                            <FaSpinner className="animate-spin mr-2" />
+                        ) : (
+                            'Log in'
+                        )}
                     </Button>
 
                     <div className="mt-4 text-center">

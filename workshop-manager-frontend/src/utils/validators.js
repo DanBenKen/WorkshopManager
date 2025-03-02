@@ -8,7 +8,7 @@ const hasUppercase = (value) => /[A-Z]/.test(value) ? undefined : "Password must
 const passwordsMatch = (password, confirmPassword) => password === confirmPassword ? undefined : "Passwords do not match.";
 const isPositiveNumber = (value, fieldName) => value > 0 ? undefined : `${fieldName} must be a positive number.`;
 const isAlphabetic = (value, fieldName) => /^[A-Za-z- ]+$/.test(value) ? undefined : `${fieldName} must contain only letters, spaces, or hyphens.`;
-const isAlphanumericWithLetters = (value, fieldName) => /^[A-Za-z0-9-/ ]+$/.test(value) && /[A-Za-z]/.test(value) ? undefined : `${fieldName} must contain at least one letter and can include numbers, spaces, hyphens, or slashes.`;
+const isAlphanumericWithLetters = (value, fieldName) => /^[A-Za-z0-9-/ ]+$/.test(value) && /[A-Za-z]/.test(value) ? undefined : `${fieldName} must contain at least one letter`;
 
 // Account validation
 export const validateRegistration = (values) => {
@@ -43,7 +43,8 @@ export const validateLogin = (values) => {
 export const validateJobForm = (values) => {
     const errors = {};
 
-    errors.jobName = isRequired(values.jobName, 'Job Name');
+    errors.jobName = isRequired(values.jobName, 'Job Name')
+        || isAlphanumericWithLetters(values.jobName, 'Job Name');
     errors.description = isRequired(values.description, 'Description');
     errors.workerId = isRequired(values.workerId, 'Worker ID')
         || isPositiveNumber(values.workerId, 'Worker ID');
