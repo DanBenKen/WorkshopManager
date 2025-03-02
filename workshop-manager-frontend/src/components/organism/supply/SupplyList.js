@@ -11,6 +11,7 @@ import { SUPPLY_OPTIONS } from '../../../constants/supplyType';
 import CardData from '../../molecules/CardData';
 import SupplyFormModal from './SupplyFormModal';
 import SupplyDetailsModal from './SupplyDetailsModal';
+import { toast } from 'react-toastify';
 
 const SupplyList = () => {
     const { supplies, isLoading, error, handleAddMoreQuantity, fetchData } = useSupplies();
@@ -46,7 +47,11 @@ const SupplyList = () => {
             handleAddMoreQuantity(supply, quantity);
             setQuantityInputs(prev => ({ ...prev, [supply.id]: '' }));
         } else {
-            console.warn('Unesite validnu količinu veću od nule.');
+            if(quantity < 0){
+                toast.warn('Enter quantity greater then 0');
+            } else {
+                toast.warn('Quantity must be a number.')
+            }
         }
     };
 
@@ -66,7 +71,7 @@ const SupplyList = () => {
                         </p>
                     </div>
                 </div>
-
+    
                 <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
                     <div className="flex items-center gap-2">
                         <FiBox className="text-gray-400 w-4 h-4" />
@@ -76,7 +81,8 @@ const SupplyList = () => {
                         <FiPackage className="text-gray-400 w-4 h-4" />
                         <span className="text-gray-700">Quantity: {supply.quantity}</span>
                     </div>
-
+    
+                    {/* Flex kontejner koji drži input i dugme */}
                     <div className="mt-2 flex items-center">
                         <input
                             type="number"
@@ -102,7 +108,7 @@ const SupplyList = () => {
             </>
         );
     };
-
+    
 
     return (
         <div>

@@ -9,6 +9,7 @@ const passwordsMatch = (password, confirmPassword) => password === confirmPasswo
 const isPositiveNumber = (value, fieldName) => value > 0 ? undefined : `${fieldName} must be a positive number.`;
 const isAlphabetic = (value, fieldName) => /^[A-Za-z- ]+$/.test(value) ? undefined : `${fieldName} must contain only letters, spaces, or hyphens.`;
 const isAlphanumericWithLetters = (value, fieldName) => /^[A-Za-z0-9-/ ]+$/.test(value) && /[A-Za-z]/.test(value) ? undefined : `${fieldName} must contain at least one letter`;
+const isInteger = (value, fieldName) => Number.isInteger(Number(value)) ? undefined : `${fieldName} must be whole number`;
 
 // Account validation
 export const validateRegistration = (values) => {
@@ -47,13 +48,15 @@ export const validateJobForm = (values) => {
         || isAlphanumericWithLetters(values.jobName, 'Job Name');
     errors.description = isRequired(values.description, 'Description');
     errors.workerId = isRequired(values.workerId, 'Worker ID')
-        || isPositiveNumber(values.workerId, 'Worker ID');
+        || isPositiveNumber(values.workerId, 'Worker ID')
+        || isInteger(values.workerId, 'Worker ID');
     errors.supplyId = isRequired(values.supplyId, 'Supply ID')
+        || isInteger(values.supplyId, 'Supply ID')
         || isPositiveNumber(values.supplyId, 'Supply ID');
     errors.quantity = isRequired(values.quantity, "Quantity")
-        || isPositiveNumber(values.quantity, 'Quantity')
+        || isInteger(values.quantity, 'Quantity')
         || isNumber(values.quantity, 'Quantity')
-        || isPositiveNumber(values.quantity, 'Quantity')
+        || isPositiveNumber(values.quantity, 'Quantity');
 
     return errors;
 };
@@ -62,8 +65,12 @@ export const validateJobForm = (values) => {
 export const validateSupplyForm = (values) => {
     const errors = {};
 
-    errors.name = isRequired(values.name, 'Supply Name') || isAlphanumericWithLetters(values.name, 'Supply Name');
-    errors.quantity = isRequired(values.quantity, 'Quantity') || isPositiveNumber(values.quantity, 'Quantity') || (values.quantity < 0 ? 'Quantity cannot be negative.' : undefined);
+    errors.name = isRequired(values.name, 'Supply Name')
+        || isAlphanumericWithLetters(values.name, 'Supply Name');
+    errors.quantity = isRequired(values.quantity, 'Quantity')
+        || isInteger(values.quantity, 'Quantity')
+        || isNumber(values.quantity, 'Quantity')
+        || isPositiveNumber(values.quantity, 'Quantity');
     errors.type = isRequired(values.type, 'Supply Type');
 
     Object.keys(errors).forEach(key => errors[key] === undefined && delete errors[key]);
@@ -75,8 +82,10 @@ export const validateSupplyForm = (values) => {
 export const validateWorkerForm = (values) => {
     const errors = {};
 
-    errors.firstName = isRequired(values.firstName, 'First Name') || isAlphabetic(values.firstName, 'First Name');
-    errors.lastName = isRequired(values.lastName, 'Last Name') || isAlphabetic(values.lastName, 'Last Name');
+    errors.firstName = isRequired(values.firstName, 'First Name')
+        || isAlphabetic(values.firstName, 'First Name');
+    errors.lastName = isRequired(values.lastName, 'Last Name')
+        || isAlphabetic(values.lastName, 'Last Name');
     errors.position = isRequired(values.position, 'Position');
 
     Object.keys(errors).forEach((key) => errors[key] === undefined && delete errors[key]);
