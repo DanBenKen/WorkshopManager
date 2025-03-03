@@ -17,7 +17,10 @@ const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
     const [showWorkerForm, setShowWorkerForm] = useState(false);
 
     const openWorkerForm = () => setShowWorkerForm(true);
-    const closeWorkerForm = () => setShowWorkerForm(false);
+    const closeWorkerForm = () => {
+        setShowWorkerForm(false);
+        fetchWorkerById(workerId);
+    }
 
     useEffect(() => {
         if (workerId && !worker) {

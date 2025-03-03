@@ -76,16 +76,26 @@ const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Details label="Job ID:" value={job.id} />
-                        <Details label="Status:" value={job.status} />
-                        <Details label="Supply ID:" value={job.supplyId} />
-                        <Details label="Supply Quantity:" value={job.supplyQuantity} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="flex gap-x-10 col-span-2">
+                            <Details label="Job ID:" value={job.id} />
+                            <Details label="Status:" value={job.status} />
+                        </div>
+
+                        <div className="flex gap-x-10 col-span-2">
+                            <Details label="Supply ID:" value={job.supplyId} />
+                            <Details label="Supply Quantity:" value={job.supplyQuantity} />
+                        </div>
+
+                        <div className="col-span-2">
+                            <Details label="Supply Name:" value={job.supplyName} />
+                        </div>
+
                         <div className="col-span-2">
                             <Details label="Description:" value={job.description} />
                         </div>
                     </div>
-                    
+
                     <div className="mt-6 flex gap-3 justify-end">
                         <ButtonCancel onClick={handleClose}>
                             <FiX className="w-7 h-7" />

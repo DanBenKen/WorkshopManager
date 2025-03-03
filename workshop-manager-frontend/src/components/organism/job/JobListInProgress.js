@@ -38,6 +38,33 @@ const JobListInProgress = () => {
     if (isLoading) return <div className="flex justify-center items-center h-64"></div>;
     if (error) return <ErrorMessage message={error} className="mx-auto max-w-screen-xl" />;
 
+    const renderJobItem = (job) => (
+        <div>
+            <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <FiClock className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                        {job.jobName}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-500 truncate">
+                        ID: {job.id}
+                    </p>
+                </div>
+            </div>
+    
+            <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
+                <div className="flex items-center gap-2">
+                    <FiActivity className="text-gray-400 w-4 h-4" />
+                    <span className="text-gray-700">
+                        Status: {job.status}
+                    </span>
+                </div>
+            </div>
+        </div>
+    );    
+
     return (
         <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8">
             <div className="max-w-screen-xl mx-auto">
@@ -74,47 +101,14 @@ const JobListInProgress = () => {
                         </div>
                     ) : (
                         <>
-                            <CardData
+                                <CardData
                                 data={paginatedData}
                                 keyProp="id"
                                 actionIcon={FiMoreHorizontal}
                                 actionTitle="View job details"
                                 onItemClick={handleDetailsClick}
-                                renderItem={(job) => (
-                                    <div>
-                                        <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                                <FiClock className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
-                                                    {job.jobName}
-                                                </h3>
-                                                <p className="text-xs sm:text-sm text-gray-500 truncate">
-                                                    ID: {job.id}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
-                                            <div className="flex items-center gap-2">
-                                                <FiActivity className="text-gray-400 w-4 h-4" />
-                                                <span className="text-gray-700">
-                                                    Status: {job.status}
-                                                </span>
-                                            </div>
-                                            {job.deadline && (
-                                                <div className="flex items-center gap-2">
-                                                    <FiClock className="text-gray-400 w-4 h-4" />
-                                                    <span className="text-gray-700">
-                                                        Deadline: {new Date(job.deadline).toLocaleDateString()}
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-                            />
+                                renderItem={renderJobItem}
+                            />                            
 
                             {selectedJobId && (
                                 <JobDetailsModal
