@@ -25,20 +25,20 @@ const LoginForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         resetErrors();
-    
+
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length) return;
-    
+
         setIsButtonLoading(true);
-        
+
         const { success, errors } = await handleLogin({ email, password, rememberMe }, rememberMe);
-    
+
         if (success) {
             toast.success('Login successful!', { autoClose: 1500 });
             setTimeout(() => navigate('/'), 2000);
         } else {
             setIsButtonLoading(false);
-            
+
             if (errors?.general) {
                 errors.general.forEach((message) => {
                     toast.error(message, {
@@ -56,21 +56,25 @@ const LoginForm = () => {
                 <form onSubmit={handleSubmit}>
                     <h2 className="text-2xl font-semibold text-center text-gray-800 m-2">Log in to Your Workshop</h2>
                     <FormField
+                        id="email"
                         label="Email"
                         type="email"
                         name="email"
                         value={email}
                         onChange={handleChange}
                         errorMessage={errors.email || authError?.email}
+                        autoComplete="username"
                         required
                     />
                     <FormField
+                        id="password"
                         label="Password"
                         type="password"
                         name="password"
                         value={password}
                         onChange={handleChange}
                         errorMessage={errors.password || authError?.password}
+                        autoComplete="current-password"
                         required
                     />
                     <FormField

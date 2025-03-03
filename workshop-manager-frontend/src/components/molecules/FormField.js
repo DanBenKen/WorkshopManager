@@ -1,9 +1,8 @@
 import React from 'react';
 import Label from '../atoms/Label';
-import Input from '../atoms/Input';
 import ErrorMessage from '../atoms/ErrorMessage';
 
-const FormField = ({ label, type, id, name, value, onChange, errorMessage, placeholder, options, checked }) => {
+const FormField = ({ label, type, id, name, value, onChange, errorMessage, placeholder, options, checked, autoComplete }) => {
     return (
         <div className={`w-full ${type === 'checkbox' ? 'flex items-center space-x-2' : ''}`}>
             {type === 'checkbox' ? (
@@ -38,7 +37,7 @@ const FormField = ({ label, type, id, name, value, onChange, errorMessage, place
             ) : (
                 <>
                     <Label htmlFor={id}>{label}</Label>
-                    <Input
+                    <input
                         id={id}
                         type={type}
                         name={name}
@@ -46,6 +45,7 @@ const FormField = ({ label, type, id, name, value, onChange, errorMessage, place
                         onChange={onChange}
                         placeholder={placeholder}
                         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                        autoComplete={autoComplete}
                     />
                 </>
             )}

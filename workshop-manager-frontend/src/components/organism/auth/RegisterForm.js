@@ -62,6 +62,7 @@ const RegisterForm = () => {
                         label="Username"
                         type="text"
                         name="username"
+                        id="id"
                         value={username}
                         onChange={handleChange}
                         errorMessage={errors.username || authError?.username}
@@ -71,6 +72,7 @@ const RegisterForm = () => {
                         label="Email"
                         type="email"
                         name="email"
+                        id="id"
                         value={email}
                         onChange={handleChange}
                         errorMessage={errors.email || authError?.email}
@@ -80,6 +82,7 @@ const RegisterForm = () => {
                         label="Password"
                         type="password"
                         name="password"
+                        id="password"
                         value={password}
                         onChange={handleChange}
                         errorMessage={errors.password || authError?.password}
@@ -89,6 +92,7 @@ const RegisterForm = () => {
                         label="Confirm Password"
                         type="password"
                         name="confirmPassword"
+                        id="confirmPassword"
                         value={confirmPassword}
                         onChange={handleChange}
                         errorMessage={errors.confirmPassword || authError?.confirmPassword}
