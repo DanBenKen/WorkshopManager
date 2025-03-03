@@ -54,32 +54,3 @@ export const isAuthenticated = () => {
 
     return currentDate < expirationDate;
 };
-
-export const handleAuthError = (error) => {
-    if (!error.response) {
-        return { message: ["Network error. Please check your internet connection."], code: 503 };
-    }
-
-    const { status, data } = error.response;
-
-    const getErrorMessage = (status, data) => {
-        switch (status) {
-            case 400:
-                if (data?.errors) {
-                    return { message: Object.values(data.errors), code: status };
-                }
-                return { message: [data?.message || "Invalid input. Please check your details."], code: status };
-
-            case 401:
-                return { message: ["Invalid login attempt. Please check your credentials."], code: status };
-
-            case 500:
-                return { message: ["Server error. Please try again later."], code: status };
-
-            default:
-                return { message: ["An unknown error occurred. Please try again."], code: status };
-        }
-    };
-
-    return getErrorMessage(status, data);
-};

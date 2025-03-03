@@ -3,13 +3,13 @@ import useAuth from '../../../hooks/useAuth';
 import Button from '../../atoms/Button';
 import FormField from '../../molecules/FormField';
 import { useNavigate, Link } from 'react-router-dom';
-import ErrorMessage from '../../atoms/ErrorMessage';
 import useValidation from '../../../hooks/useValidation';
 import { validateRegistration } from '../../../utils/validators';
+import { toast } from 'react-toastify';
+import { FaSpinner } from 'react-icons/fa';
 
 const RegisterForm = () => {
-    const { handleRegister, authError } = useAuth();
-    const [successMessage, setSuccessMessage] = useState('');
+    const { handleRegister, authError, setAuthError } = useAuth();
     const [isButtonLoading, setIsButtonLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -24,24 +24,32 @@ const RegisterForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         resetErrors();
-
+        setAuthError(null);
+    
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length) return;
-
+    
         setIsButtonLoading(true);
-
-        const success = await handleRegister({
-            username,
-            email,
-            password,
-            confirmPassword
-        });
-
+        const success = await handleRegister({ username, email, password, confirmPassword });
+    
         if (success) {
-            setSuccessMessage("Registration successful!");
-            setTimeout(() => navigate('/account/login'), 1000);
+            toast.success("Registration successful!", { 
+                autoClose: 1500,
+                position: 'top-center'
+            });
+            setTimeout(() => navigate('/account/login'), 2000);
         } else {
             setIsButtonLoading(false);
+            
+            if (authError?.general) {
+                authError.general.forEach((message) => {
+                    toast.error(message, {
+                        autoClose: 2000,
+                        position: 'top-center',
+                        className: 'border-2 border-red-500'
+                    });
+                });
+            }
         }
     };
 
@@ -50,16 +58,13 @@ const RegisterForm = () => {
             <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-2xl">
                 <h2 className="text-2xl font-semibold text-center text-gray-800">Register to Your Workshop</h2>
                 <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded">
-                    {authError && <ErrorMessage message={authError} />}
-                    {successMessage && <p className="text-center text-green-500">{successMessage}</p>}
-
                     <FormField
                         label="Username"
                         type="text"
                         name="username"
                         value={username}
                         onChange={handleChange}
-                        errorMessage={errors.username}
+                        errorMessage={errors.username || authError?.username}
                         required
                     />
                     <FormField
@@ -68,7 +73,7 @@ const RegisterForm = () => {
                         name="email"
                         value={email}
                         onChange={handleChange}
-                        errorMessage={errors.email}
+                        errorMessage={errors.email || authError?.email}
                         required
                     />
                     <FormField
@@ -77,7 +82,7 @@ const RegisterForm = () => {
                         name="password"
                         value={password}
                         onChange={handleChange}
-                        errorMessage={errors.password}
+                        errorMessage={errors.password || authError?.password}
                         required
                     />
                     <FormField
@@ -86,12 +91,16 @@ const RegisterForm = () => {
                         name="confirmPassword"
                         value={confirmPassword}
                         onChange={handleChange}
-                        errorMessage={errors.confirmPassword}
+                        errorMessage={errors.confirmPassword || authError?.confirmPassword}
                         required
                     />
 
-                    <Button type="submit" disabled={isButtonLoading}>
-                        {isButtonLoading ? 'Registering...' : 'Register'}
+                    <Button type="submit" disabled={isButtonLoading} className="w-full flex items-center justify-center mt-5">
+                        {isButtonLoading ? (
+                            <FaSpinner className="animate-spin mr-2" />
+                        ) : (
+                            'Register'
+                        )}
                     </Button>
 
                     <div className="mt-4 text-center">

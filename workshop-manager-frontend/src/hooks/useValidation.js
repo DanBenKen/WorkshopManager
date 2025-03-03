@@ -14,7 +14,8 @@ const useValidation = (initialValues, validate) => {
   }, [initialValues]);
 
   const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
   };
 
   const resetErrors = () => setErrors({});

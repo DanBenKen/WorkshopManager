@@ -21,7 +21,7 @@ const initialFormState = {
 };
 
 const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
-    const { job, handleCreateJob, handleUpdateJob, error } = useJobs(jobId);
+    const { job, handleCreateJob, handleUpdateJob, error, supplies, workers } = useJobs(jobId);
     const [isButtonLoading, setIsButtonLoading] = useState(false);
     const [formData, setFormData] = useState(initialFormState);
     const isEditMode = !!jobId;
@@ -160,25 +160,39 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
                     />
 
                     <FormField
-                        label="Worker ID"
-                        type="number"
+                        label="Worker"
+                        type="select"
                         id="workerId"
                         name="workerId"
                         value={values.workerId}
                         onChange={handleFieldChange}
-                        placeholder="Enter worker ID"
+                        placeholder="Select worker"
                         errorMessage={errors.workerId}
+                        options={[
+                            { value: '', label: 'Select Worker' },
+                            ...workers.map(worker => ({
+                                value: worker.id,
+                                label: `ID:${worker.id} - ${worker.firstName} ${worker.lastName}`
+                            }))
+                        ]}
                     />
 
                     <FormField
-                        label="Supply ID"
-                        type="number"
+                        label="Supply"
+                        type="select"
                         id="supplyId"
                         name="supplyId"
                         value={values.supplyId}
                         onChange={handleFieldChange}
-                        placeholder="Enter supply ID"
+                        placeholder="Select supply"
                         errorMessage={errors.supplyId}
+                        options={[
+                            { value: '', label: 'Select Supply' },
+                            ...supplies.map(supply => ({
+                                value: supply.id,
+                                label: `ID:${supply.id} - ${supply.name} `
+                            }))
+                        ]}
                     />
 
                     <FormField

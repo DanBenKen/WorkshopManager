@@ -1,6 +1,6 @@
 import React from 'react';
 import FormPageLayout from '../../layouts/FormPageLayout';
-import WorkerDetails from '../../components/organism/worker/WorkerDetails';
+import WorkerDetails from '../../components/organism/worker/WorkerDetailsModal';
 
 const WorkerDetailsPage = () => {
     return (

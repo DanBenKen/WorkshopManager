@@ -8,7 +8,7 @@ import ButtonCancel from '../../atoms/ButtonCancel';
 import { useNavigate } from 'react-router-dom';
 import { FiUser, FiBriefcase, FiArrowLeft, FiActivity, FiMoreHorizontal } from 'react-icons/fi';
 import CardData from '../../molecules/CardData';
-import WorkerDetailsModal from './WorkerDetails';
+import WorkerDetailsModal from './WorkerDetailsModal';
 
 const WorkerListWithJobs = () => {
     const { workers, isLoading, error, getWorkerJobCounts, fetchData } = useWorkers('withJobs');

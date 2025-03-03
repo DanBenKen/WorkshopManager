@@ -9,8 +9,9 @@ import Pagination from '../../molecules/Pagination';
 import Filter from '../../molecules/Filter';
 import CardData from '../../molecules/CardData';
 import { POSITION_OPTIONS } from '../../../constants/workerPosition';
-import WorkerDetailsModal from './WorkerDetails';
-import WorkerFormModal from './WorkerForm';
+import WorkerDetailsModal from './WorkerDetailsModal';
+import WorkerFormModal from './WorkerFormModal';
+import { GetPositionColor } from '../../../utils/colorChangers';
 
 const WorkersList = () => {
     const { workers, isLoading, error, fetchData } = useWorkers('all');
@@ -35,6 +36,31 @@ const WorkersList = () => {
     const handleDetails = (worker) => {
         setSelectedWorkerId(worker.id);
     };
+
+    const renderWorkerItem = (worker) => (
+        <div>
+          <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+              <FiUser className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                {worker.fullName}
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-500 truncate">
+                ID: {worker.id}
+              </p>
+            </div>
+          </div>
+      
+          <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
+            <div className="flex items-center gap-2">
+              <FiBriefcase className={`w-4 h-4 ${GetPositionColor(worker.position)}`} />
+              <span className="text-gray-700">{worker.position}</span>
+            </div>
+          </div>
+        </div>
+      );
 
     return (
         <div>
@@ -113,47 +139,8 @@ const WorkersList = () => {
                             actionIcon={FiMoreHorizontal}
                             actionTitle="View details"
                             onItemClick={handleDetails}
-                            renderItem={(worker) => (
-                                <div>
-                                    <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                            <FiUser className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
-                                                {worker.fullName}
-                                            </h3>
-                                            <p className="text-xs sm:text-sm text-gray-500 truncate">
-                                                ID: {worker.id}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
-                                        <div className="flex items-center gap-2">
-                                            <FiBriefcase className="text-gray-400 w-4 h-4" />
-                                            <span className="text-gray-700">{worker.position}</span>
-                                        </div>                                        
-                                    </div>
-                                </div>
-                            )}
+                            renderItem={renderWorkerItem}
                         />
-
-                        {selectedWorkerId && (
-                            <WorkerDetailsModal
-                                workerId={selectedWorkerId}
-                                onClose={() => setSelectedWorkerId(null)}
-                                refreshWorkers={fetchData}
-                            />
-                        )}
-
-                        {showWorkerForm && (
-                            <WorkerFormModal
-                                workerId={undefined}
-                                onClose={closeWorkerForm}
-                                refreshWorkers={fetchData}
-                            />
-                        )}
 
                         <div className="mt-6 sm:mt-8">
                             <Pagination
@@ -168,6 +155,21 @@ const WorkersList = () => {
                     </>
                 )}
             </div>
+            {selectedWorkerId && (
+                <WorkerDetailsModal
+                    workerId={selectedWorkerId}
+                    onClose={() => setSelectedWorkerId(null)}
+                    refreshWorkers={fetchData}
+                />
+            )}
+
+            {showWorkerForm && (
+                <WorkerFormModal
+                    workerId={undefined}
+                    onClose={closeWorkerForm}
+                    refreshWorkers={fetchData}
+                />
+            )}
         </div>
     );
 };

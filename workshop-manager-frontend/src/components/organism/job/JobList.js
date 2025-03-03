@@ -12,6 +12,7 @@ import CardData from '../../molecules/CardData';
 import JobDetailsModal from './JobDetailsModal';
 import { toast } from 'react-toastify';
 import JobFormModal from './JobFormModal';
+import { GetJobStatusColor } from '../../../utils/colorChangers';
 
 const JobList = () => {
     const { jobs, isLoading, error, handleSetCompleted, fetchData } = useJobs();
@@ -47,15 +48,40 @@ const JobList = () => {
         }
     };
 
-    const getIconColor = (status) => {
-        if (status === JOB_STATUSES.COMPLETED.apiValue) {
-            return 'text-green-500';
-        }
-        if (status === JOB_STATUSES.IN_PROGRESS.apiValue) {
-            return 'text-yellow-500';
-        }
-        return 'text-gray-400';
-    };
+    const renderJobItem = (job) => (
+        <div>
+            <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <FiActivity className={`w-5 h-5 sm:w-6 sm:h-6 ${GetJobStatusColor(job.status)}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                        {job.jobName}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-500 truncate">
+                        ID: {job.id}
+                    </p>
+                </div>
+            </div>
+
+            <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t py-2">
+                <div className="flex items-center gap-2">
+                    <FiActivity className={`text-gray-400 w-4 h-4 ${GetJobStatusColor(job.status)}`} />
+                    <span className={`text-gray-700`}>{job.status}</span>
+                </div>
+            </div>
+
+            {job.status === JOB_STATUSES.IN_PROGRESS.apiValue && (
+                <button
+                    onClick={() => handleComplete(job)}
+                    className="absolute bottom-2 right-10 p-1 hover:bg-green-100 rounded-full transition-colors"
+                    title="Complete Job"
+                >
+                    <FiCheckCircle className="w-5 h-5 text-green-500" />
+                </button>
+            )}
+        </div>
+    );
 
     return (
         <div>
@@ -119,7 +145,7 @@ const JobList = () => {
                         <p className="text-gray-500 text-sm sm:text-base">No jobs found matching your criteria</p>
                     </div>
                 ) : (
-                    <>
+                    <div>
                         <CardData
 
                             data={paginatedData}
@@ -127,56 +153,9 @@ const JobList = () => {
                             actionIcon={FiMoreHorizontal}
                             actionTitle="View details"
                             onItemClick={handleDetails}
-                            renderItem={(job) => (
-                                <div>
-                                    <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                            <FiActivity className={`w-5 h-5 sm:w-6 sm:h-6 ${getIconColor(job.status)}`} />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
-                                                {job.jobName}
-                                            </h3>
-                                            <p className="text-xs sm:text-sm text-gray-500 truncate">
-                                                ID: {job.id}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t py-2">
-                                        <div className="flex items-center gap-2">
-                                            <FiActivity className={`text-gray-400 w-4 h-4 ${getIconColor(job.status)}`} />
-                                            <span className={`text-gray-700 ${getIconColor(job.status)}`}>{job.status}</span>
-                                        </div>
-                                    </div>
-
-                                    {job.status === JOB_STATUSES.IN_PROGRESS.apiValue && (
-                                        <button
-                                            onClick={() => handleComplete(job)}
-                                            className="absolute bottom-2 right-10 p-1 hover:bg-green-100 rounded-full transition-colors"
-                                            title="Complete Job"
-                                        >
-                                            <FiCheckCircle className="w-5 h-5 text-green-500" />
-                                        </button>
-                                    )}
-                                </div>
-                            )}
+                            renderItem={renderJobItem}
                         />
-                        {selectedJobId && (
-                            <JobDetailsModal
-                                jobId={selectedJobId}
-                                onClose={() => setSelectedJobId(null)}
-                                refreshJobs={fetchData}
-                            />
-                        )}
 
-                        {showJobForm && (
-                            <JobFormModal
-                                jobId={undefined}
-                                onClose={closeJobForm}
-                                refreshJobs={fetchData}
-                            />
-                        )}
                         <div className="mt-6 sm:mt-8">
                             <Pagination
                                 currentPage={currentPage}
@@ -187,9 +166,24 @@ const JobList = () => {
                                 mobileBreakpoint="xs"
                             />
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
+            {selectedJobId && (
+                <JobDetailsModal
+                    jobId={selectedJobId}
+                    onClose={() => setSelectedJobId(null)}
+                    refreshJobs={fetchData}
+                />
+            )}
+
+            {showJobForm && (
+                <JobFormModal
+                    jobId={undefined}
+                    onClose={closeJobForm}
+                    refreshJobs={fetchData}
+                />
+            )}
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { validateWorkerForm } from '../../../utils/validators';
 import FormField from '../../molecules/FormField';
 import useWorkers from '../../../hooks/useWorkers';
@@ -9,24 +9,48 @@ import Modal from '../../molecules/Modal';
 import { POSITION_OPTIONS, WORKER_POSITIONS } from '../../../constants/workerPosition';
 import { toast } from 'react-toastify';
 import ButtonCancel from '../../atoms/ButtonCancel';
-import { FiX } from 'react-icons/fi';
+import { FiX, FiRefreshCcw } from 'react-icons/fi';
+
+const initialFormState = {
+    firstName: '',
+    lastName: '',
+    position: WORKER_POSITIONS.MECHANIC.apiValue
+};
 
 const WorkerFormModal = ({ workerId, onClose, refreshWorkers }) => {
-    const { worker, fetchWorkerById, handleCreateWorker, handleUpdateWorker, error } = useWorkers();
+    const { worker, fetchWorkerById, handleCreateWorker, handleUpdateWorker, error, clearError } = useWorkers();
     const [isButtonLoading, setIsButtonLoading] = useState(false);
-
     const isEditMode = !!workerId;
 
-    const [formData, setFormData] = useState({ firstName: '', lastName: '', position: WORKER_POSITIONS.MECHANIC.apiValue });
-    const { values, errors, handleChange, resetErrors, validateForm } = useValidation(formData, validateWorkerForm);
+    const [formData, setFormData] = useState(initialFormState);
+    const { values, errors, handleChange, resetErrors, validateForm, resetValues } = useValidation(formData, validateWorkerForm);
 
     useEffect(() => {
         if (isEditMode && !worker) {
             fetchWorkerById(workerId);
         } else if (worker) {
-            setFormData({ firstName: worker.firstName, lastName: worker.lastName, position: worker.position });
+            setFormData({
+                firstName: worker.firstName,
+                lastName: worker.lastName,
+                position: worker.position
+            });
         }
     }, [workerId, isEditMode, worker, fetchWorkerById]);
+
+    const resetForm = useCallback(() => {
+        if (isEditMode && worker) {
+            resetValues({
+                firstName: worker.firstName,
+                lastName: worker.lastName,
+                position: worker.position
+            });
+        } else {
+            resetValues({ ...initialFormState });
+        }
+        resetErrors();
+        clearError();
+    }, [isEditMode, worker, resetErrors, clearError, resetValues]);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -40,7 +64,11 @@ const WorkerFormModal = ({ workerId, onClose, refreshWorkers }) => {
             : await handleCreateWorker(values);
 
         if (success) {
-            toast.success(isEditMode ? `Worker: ${values.firstName} updated successfully!` : 'Worker created successfully!');
+            toast.success(
+                isEditMode
+                    ? `Worker: ${values.firstName} updated successfully!`
+                    : 'Worker created successfully!'
+            );
             await refreshWorkers();
             onClose();
         } else {
@@ -51,9 +79,13 @@ const WorkerFormModal = ({ workerId, onClose, refreshWorkers }) => {
     return (
         <Modal onClose={onClose}>
             <div>
-                <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Worker' : 'Create New Worker'}</h2>
+                <h2 className="text-2xl font-bold mb-4">
+                    {isEditMode ? 'Edit Worker' : 'Create New Worker'}
+                </h2>
 
-                {error && !Object.values(errors).some(e => e) && <ErrorMessage message={error} />}
+                {error && !Object.values(errors).some(e => e) && (
+                    <ErrorMessage message={error} />
+                )}
 
                 <form onSubmit={handleSubmit}>
                     <FormField
@@ -85,10 +117,15 @@ const WorkerFormModal = ({ workerId, onClose, refreshWorkers }) => {
                     />
                     <div className="mt-6 flex gap-3">
                         <ButtonCancel type="button" onClick={onClose}>
-                            <FiX className="w-7 h-7" />
+                            <FiX className="w-6 h-6" />
                         </ButtonCancel>
+                        <Button type="button" onClick={resetForm}>
+                            <FiRefreshCcw className="w-6 h-6" />
+                        </Button>
                         <Button type="submit" disabled={isButtonLoading}>
-                            {isButtonLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Worker' : 'Create Worker'}
+                            {isButtonLoading
+                                ? (isEditMode ? 'Updating...' : 'Creating...')
+                                : (isEditMode ? 'Update Worker' : 'Create Worker')}
                         </Button>
                     </div>
                 </form>

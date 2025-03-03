@@ -10,39 +10,18 @@ import ConfirmModal from '../../molecules/ConfirmModal';
 import Modal from '../../molecules/Modal';
 import { toast } from 'react-toastify';
 import JobFormModal from './JobFormModal';
-import { JOB_STATUSES } from '../../../constants/jobStatus';
+import { GetJobStatusColor } from '../../../utils/colorChangers';
 
 const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
-    const { job, error, handleDeleteJob } = useJobs(jobId);
+    const { job, error, handleDeleteJob, fetchData } = useJobs(jobId);
     const [showConfirm, setShowConfirm] = useState(false);
     const [showJobForm, setShowJobForm] = useState(false);
 
     const openJobForm = () => setShowJobForm(true);
-    const closeJobForm = () => setShowJobForm(false);
-
-    const getIconColor = (status) => {
-        if (status === JOB_STATUSES.COMPLETED.apiValue) {
-            return 'text-green-500';
-        }
-        if (status === JOB_STATUSES.IN_PROGRESS.apiValue) {
-            return 'text-yellow-500';
-        }
-        return 'text-gray-400';
+    const closeJobForm = () => {
+        setShowJobForm(false);
+        fetchData();
     };
-
-    if (error) {
-        return (
-            <Modal onClose={onClose}>
-                <div className="relative">
-                    <ErrorMessage message={error} />
-                </div>
-            </Modal>
-        );
-    }
-
-    if (!job) {
-        return null;
-    }
 
     const handleEdit = () => {
         openJobForm();
@@ -72,13 +51,27 @@ const JobDetailsModal = ({ jobId, onClose, refreshJobs }) => {
         onClose();
     };
 
+    if (error) {
+        return (
+            <Modal onClose={onClose}>
+                <div className="relative">
+                    <ErrorMessage message={error} />
+                </div>
+            </Modal>
+        );
+    }
+
+    if (!job) {
+        return null;
+    }
+
     return (
         <>
             <Modal onClose={handleClose}>
                 <div>
                     <div className="mb-6">
                         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                            <FiActivity className={`${getIconColor(job.status)}`} />
+                            <FiActivity className={`${GetJobStatusColor(job.status)}`} />
                             {job.jobName}
                         </h2>
                     </div>

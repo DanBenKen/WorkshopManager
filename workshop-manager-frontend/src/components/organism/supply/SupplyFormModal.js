@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { validateSupplyForm } from '../../../utils/validators';
 import FormField from '../../molecules/FormField';
 import useSupplies from '../../../hooks/useSupplies';
@@ -9,24 +9,47 @@ import Modal from '../../molecules/Modal';
 import { SUPPLY_OPTIONS, SUPPLY_TYPE } from '../../../constants/supplyType';
 import { toast } from 'react-toastify';
 import ButtonCancel from '../../atoms/ButtonCancel';
-import { FiX } from 'react-icons/fi';
+import { FiX, FiRefreshCcw } from 'react-icons/fi';
+
+const initialFormState = {
+    name: '',
+    quantity: 0,
+    type: SUPPLY_TYPE.MOTOROIL.apiValue
+};
 
 const SupplyFormModal = ({ supplyId, onClose, refreshSupplies }) => {
-    const { supply, fetchSupplyById, handleCreateSupply, handleUpdateSupply, error } = useSupplies();
+    const { supply, fetchSupplyById, handleCreateSupply, handleUpdateSupply, error, clearError } = useSupplies();
     const [isButtonLoading, setIsButtonLoading] = useState(false);
-
+    const [formData, setFormData] = useState(initialFormState);
     const isEditMode = !!supplyId;
 
-    const [formData, setFormData] = useState({ name: '', quantity: 0, type: SUPPLY_TYPE.MOTOROIL.apiValue });
-    const { values, errors, handleChange, resetErrors, validateForm } = useValidation(formData, validateSupplyForm);
+    const { values, errors, handleChange, resetErrors, validateForm, resetValues } = useValidation(formData, validateSupplyForm);
 
     useEffect(() => {
         if (isEditMode && !supply) {
             fetchSupplyById(supplyId);
         } else if (supply) {
-            setFormData({ name: supply.name, quantity: Number(supply.quantity), type: supply.type });
+            setFormData({
+                name: supply.name,
+                quantity: Number(supply.quantity),
+                type: supply.type
+            });
         }
-    }, [supplyId, isEditMode, supply, fetchSupplyById]);
+    }, [supplyId, isEditMode, supply, fetchSupplyById, setFormData]);
+
+    const resetForm = useCallback(() => {
+        if (isEditMode && supply) {
+            resetValues({
+                name: supply.name,
+                quantity: Number(supply.quantity),
+                type: supply.type
+            });
+        } else {
+            resetValues({ ...initialFormState });
+        }
+        resetErrors();
+        clearError();
+    }, [isEditMode, supply, resetValues, resetErrors, clearError]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -87,8 +110,13 @@ const SupplyFormModal = ({ supplyId, onClose, refreshSupplies }) => {
                         <ButtonCancel type="button" onClick={onClose}>
                             <FiX className="w-7 h-7" />
                         </ButtonCancel>
+                        <Button type="button" onClick={resetForm}>
+                            <FiRefreshCcw className="w-6 h-6" />
+                        </Button>
                         <Button type="submit" disabled={isButtonLoading}>
-                            {isButtonLoading ? (isEditMode ? 'Updating...' : 'Creating...') : isEditMode ? 'Update Supply' : 'Create Supply'}
+                            {isButtonLoading
+                                ? (isEditMode ? 'Updating...' : 'Creating...')
+                                : (isEditMode ? 'Update Supply' : 'Create Supply')}
                         </Button>
                     </div>
                 </form>

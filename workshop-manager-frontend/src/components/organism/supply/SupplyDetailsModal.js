@@ -23,7 +23,10 @@ const SupplyDetailsModal = ({ supplyId, onClose, refreshSupplies }) => {
     }, [supplyId, supply, fetchSupplyById]);
 
     const openSupplyForm = () => setShowSupplyForm(true);
-    const closeSupplyForm = () => setShowSupplyForm(false);
+    const closeSupplyForm = () => {
+        setShowSupplyForm(false);
+        fetchSupplyById(supplyId);
+    }
 
     if (error) {
         return (

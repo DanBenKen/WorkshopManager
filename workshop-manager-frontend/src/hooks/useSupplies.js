@@ -14,6 +14,10 @@ const useSupplies = () => {
         setError(error.message || 'An error occurred. Please try again later.');
     }, []);
 
+    const clearError = useCallback(() => {
+        setError(null);
+    }, []);
+
     const handleAsyncAction = useCallback(async (actionFunc) => {
         setIsLoading(true);
         setError(null);
@@ -125,7 +129,7 @@ const useSupplies = () => {
 
     return {
         supply, supplies, isLoading, error, totalSupplies, lowStockSuppliesCount, lowStockSupplies, fetchData,
-        fetchSupplyById, handleCreateSupply, handleUpdateSupply, handleUpdateQuantity, handleDeleteSupply, handleAddMoreQuantity,
+        fetchSupplyById, handleCreateSupply, handleUpdateSupply, handleUpdateQuantity, handleDeleteSupply, handleAddMoreQuantity, clearError,
     };
 };
 

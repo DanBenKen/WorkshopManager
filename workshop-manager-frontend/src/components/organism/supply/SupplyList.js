@@ -12,6 +12,7 @@ import CardData from '../../molecules/CardData';
 import SupplyFormModal from './SupplyFormModal';
 import SupplyDetailsModal from './SupplyDetailsModal';
 import { toast } from 'react-toastify';
+import { GetQuantityColor, GetSupplyTypeColor } from '../../../utils/colorChangers';
 
 const SupplyList = () => {
     const { supplies, isLoading, error, handleAddMoreQuantity, fetchData } = useSupplies();
@@ -46,9 +47,12 @@ const SupplyList = () => {
         if (!isNaN(quantity) && quantity > 0) {
             handleAddMoreQuantity(supply, quantity);
             setQuantityInputs(prev => ({ ...prev, [supply.id]: '' }));
+            toast.success(`Added ${quantity} quantity to ${supply.name}}`)
         } else {
-            if(quantity < 0){
-                toast.warn('Enter quantity greater then 0');
+            if (quantity < 0) {
+                toast.warn('Quantity must be a positive number.');
+            } else if (!input || quantity === 0) {
+                toast.warn('Please enter a quantity.')
             } else {
                 toast.warn('Quantity must be a number.')
             }
@@ -60,7 +64,7 @@ const SupplyList = () => {
             <>
                 <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                        <FiPackage className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
+                        <FiPackage className={`text-blue-600 w-5 h-5 sm:w-6 sm:h-6 ${GetSupplyTypeColor(supply.type)}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
@@ -71,18 +75,17 @@ const SupplyList = () => {
                         </p>
                     </div>
                 </div>
-    
+
                 <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
                     <div className="flex items-center gap-2">
-                        <FiBox className="text-gray-400 w-4 h-4" />
+                        <FiBox className={`text-gray-400 w-4 h-4 ${GetSupplyTypeColor(supply.type)}`} />
                         <span className="text-gray-700">Type: {supply.type}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <FiPackage className="text-gray-400 w-4 h-4" />
+                        <FiPackage className={`text-gray-400 w-4 h-4 ${GetQuantityColor(supply.quantity)}`} />
                         <span className="text-gray-700">Quantity: {supply.quantity}</span>
                     </div>
-    
-                    {/* Flex kontejner koji drži input i dugme */}
+
                     <div className="mt-2 flex items-center">
                         <input
                             type="number"
@@ -96,6 +99,7 @@ const SupplyList = () => {
                             }
                             placeholder="Enter quantity to add"
                             className="border rounded px-2 py-1 me-2 text-sm w-2/3"
+                            required
                         />
                         <button
                             onClick={() => handleAddMore(supply)}
@@ -108,7 +112,7 @@ const SupplyList = () => {
             </>
         );
     };
-    
+
 
     return (
         <div>
@@ -179,21 +183,6 @@ const SupplyList = () => {
                             actionIcon={FiMoreHorizontal}
                             actionTitle="View details"
                         />
-                        {selectedSupplyId && (
-                            <SupplyDetailsModal
-                                supplyId={selectedSupplyId}
-                                onClose={() => setSelectedSupplyId(null)}
-                                refreshSupplies={fetchData}
-                            />
-                        )}
-
-                        {showSupplyForm && (
-                            <SupplyFormModal
-                                supplyId={undefined}
-                                onClose={closeSupplyForm}
-                                refreshSupplies={fetchData}
-                            />
-                        )}
                         <div className="mt-6 sm:mt-8">
                             <Pagination
                                 currentPage={currentPage}
@@ -207,6 +196,21 @@ const SupplyList = () => {
                     </>
                 )}
             </div>
+            {selectedSupplyId && (
+                <SupplyDetailsModal
+                    supplyId={selectedSupplyId}
+                    onClose={() => setSelectedSupplyId(null)}
+                    refreshSupplies={fetchData}
+                />
+            )}
+
+            {showSupplyForm && (
+                <SupplyFormModal
+                    supplyId={undefined}
+                    onClose={closeSupplyForm}
+                    refreshSupplies={fetchData}
+                />
+            )}
         </div>
     );
 };

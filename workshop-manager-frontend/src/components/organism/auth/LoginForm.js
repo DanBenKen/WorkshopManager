@@ -3,7 +3,6 @@ import useAuth from '../../../hooks/useAuth';
 import Button from '../../atoms/Button';
 import FormField from '../../molecules/FormField';
 import { useNavigate, Link } from 'react-router-dom';
-import ErrorMessage from '../../atoms/ErrorMessage';
 import useValidation from '../../../hooks/useValidation';
 import { validateLogin } from '../../../utils/validators';
 import { toast } from 'react-toastify';
@@ -26,19 +25,28 @@ const LoginForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         resetErrors();
-
+    
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length) return;
-
+    
         setIsButtonLoading(true);
-
-        const isSuccess = await handleLogin({ email, password, rememberMe }, rememberMe);
-
-        if (isSuccess) {
+        
+        const { success, errors } = await handleLogin({ email, password, rememberMe }, rememberMe);
+    
+        if (success) {
             toast.success('Login successful!', { autoClose: 1500 });
             setTimeout(() => navigate('/'), 2000);
         } else {
             setIsButtonLoading(false);
+            
+            if (errors?.general) {
+                errors.general.forEach((message) => {
+                    toast.error(message, {
+                        autoClose: 1000,
+                        position: 'top-center',
+                    });
+                });
+            }
         }
     };
 
@@ -47,16 +55,13 @@ const LoginForm = () => {
             <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-2xl">
                 <form onSubmit={handleSubmit}>
                     <h2 className="text-2xl font-semibold text-center text-gray-800 m-2">Log in to Your Workshop</h2>
-
-                    {<ErrorMessage className='text-center' message={authError} />}
-
                     <FormField
                         label="Email"
                         type="email"
                         name="email"
                         value={email}
                         onChange={handleChange}
-                        errorMessage={errors.email}
+                        errorMessage={errors.email || authError?.email}
                         required
                     />
                     <FormField
@@ -65,7 +70,7 @@ const LoginForm = () => {
                         name="password"
                         value={password}
                         onChange={handleChange}
-                        errorMessage={errors.password}
+                        errorMessage={errors.password || authError?.password}
                         required
                     />
                     <FormField
@@ -77,7 +82,7 @@ const LoginForm = () => {
                         label={"Remember Me"}
                     />
 
-                    <Button type="submit" disabled={isButtonLoading} className="w-full flex items-center justify-center">
+                    <Button type="submit" disabled={isButtonLoading} className="w-full flex items-center justify-center mt-5">
                         {isButtonLoading ? (
                             <FaSpinner className="animate-spin mr-2" />
                         ) : (

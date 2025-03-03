@@ -18,7 +18,7 @@ const CardData = ({
             {data.map((item) => (
                 <div
                     key={item[keyProp]}
-                    className="border rounded-lg p-4 sm:p-6 hover:shadow-lg transition-shadow relative group w-full h-auto"
+                    className="border rounded-lg p-4 sm:p-6 shadow-md hover:shadow-2xl transition-shadow relative group w-full h-auto"
                 >
                     {renderItem(item)}
 

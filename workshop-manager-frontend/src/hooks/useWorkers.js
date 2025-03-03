@@ -17,6 +17,10 @@ const useWorkers = (fetchType = 'all') => {
     setError(error.message || 'An error occurred. Please try again later.');
   }, []);
 
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
   const handleAsyncAction = useCallback(async (actionFunc) => {
     setIsLoading(true);
     setError(null);
@@ -119,7 +123,7 @@ const useWorkers = (fetchType = 'all') => {
 
   return {
     workers, isLoading, error, counts, worker, fetchData,
-    handleCreateWorker, getWorkerJobCounts, handleUpdateWorker, handleDeleteWorker, fetchWorkerById, getWorkersFullName
+    handleCreateWorker, getWorkerJobCounts, handleUpdateWorker, handleDeleteWorker, fetchWorkerById, getWorkersFullName, clearError,
   };
 };
 

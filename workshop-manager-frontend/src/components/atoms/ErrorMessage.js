@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ErrorMessage = ({ message, className }) => {    
+const ErrorMessage = ({ message, className }) => {
     return (
         <div className={`text-sm text-red-500 h-4 mb-2 transition-all duration-300 ${className}`}>
             {message ? (

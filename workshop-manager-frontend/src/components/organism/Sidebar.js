@@ -16,11 +16,7 @@ const Sidebar = () => {
     const closeSidebar = () => setSidebarOpen(false);
 
     const handleNavigation = (path) => {
-        if (window.location.pathname === path) {
-            window.location.reload();
-        } else {
-            navigate(path);
-        }
+        navigate(path);
         closeSidebar();
     };
 

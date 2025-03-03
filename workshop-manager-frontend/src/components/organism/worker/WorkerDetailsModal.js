@@ -9,7 +9,7 @@ import useWorkers from '../../../hooks/useWorkers';
 import ConfirmModal from '../../molecules/ConfirmModal';
 import Modal from '../../molecules/Modal';
 import { toast } from 'react-toastify';
-import WorkerFormModal from './WorkerForm';
+import WorkerFormModal from './WorkerFormModal';
 
 const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
     const { worker, error, handleDeleteWorker, fetchWorkerById } = useWorkers();

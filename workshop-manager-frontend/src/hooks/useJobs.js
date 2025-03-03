@@ -1,10 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createJob, getJobs, updateJob, getJobById, deleteJob } from '../services/jobService';
 import { JOB_STATUSES } from '../constants/jobStatus';
+import { getWorkers } from '../services/workerService';
+import { getSupplies } from '../services/supplyService';
 
 const useJobs = (jobId) => {
     const [jobs, setJobs] = useState([]);
     const [job, setJob] = useState(null);
+    const [workers, setWorkers] = useState([]);
+    const [supplies, setSupplies] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -32,6 +36,10 @@ const useJobs = (jobId) => {
         } else {
             setError([error.message || 'An unknown error occurred.']);
         }
+    }, []);
+
+    const clearError = useCallback(() => {
+        setError(null);
     }, []);
 
     const handleAsyncAction = useCallback(async (actionFunc) => {
@@ -65,24 +73,26 @@ const useJobs = (jobId) => {
     };
 
     const fetchData = useCallback(() => handleAsyncAction(async () => {
+        const jobPromise = jobId ? getJobById(jobId) : getJobs();
+        const [jobData, workersData, suppliesData] = await Promise.all([
+            jobPromise,
+            getWorkers(),
+            getSupplies()
+        ]);
+        
         if (jobId) {
-            try {
-                const singleJob = await getJobById(jobId);
-                setJob(singleJob);
-            } catch (error) {
-                if (error.response?.status === 404) {
-                    setJob(null);
-                }
-            }
+            setJob(jobData);
         } else {
-            const allJobs = await getJobs();
-            setJobs(allJobs);
+            setJobs(jobData);
         }
+        
+        setWorkers(workersData);
+        setSupplies(suppliesData);
     }), [jobId, handleAsyncAction]);
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
+      }, [fetchData]);
 
     const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
         const createdJob = await createJob(jobData);
@@ -114,8 +124,8 @@ const useJobs = (jobId) => {
     }, [handleAsyncAction]);
 
     return {
-        jobs, job, isLoading, error, inProgress, totalCompleted,
-        handleCreateJob, handleUpdateJob, handleDeleteJob, handleSetCompleted, fetchData
+        jobs, job, isLoading, error, inProgress, totalCompleted, workers, supplies,
+        handleCreateJob, handleUpdateJob, handleDeleteJob, handleSetCompleted, fetchData, clearError
     };
 };
 

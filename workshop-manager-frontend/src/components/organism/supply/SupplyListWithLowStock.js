@@ -8,6 +8,7 @@ import ButtonCancel from '../../atoms/ButtonCancel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiPackage, FiMoreHorizontal, FiBox } from 'react-icons/fi';
 import CardData from '../../molecules/CardData';
+import { GetQuantityColor, GetSupplyTypeColor } from '../../../utils/colorChangers';
 import SupplyDetailsModal from './SupplyDetailsModal';
 
 const SupplyListWithLowStock = () => {
@@ -49,7 +50,7 @@ const SupplyListWithLowStock = () => {
                     </h1>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
+                <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <Filter
                             type="input"
@@ -97,10 +98,12 @@ const SupplyListWithLowStock = () => {
 
                                         <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
                                             <div className="flex items-center gap-2">
-                                                <FiPackage className="text-gray-400 w-4 h-4" />
-                                                <span className="text-gray-700">
-                                                    Quantity: {supply.quantity}
-                                                </span>
+                                                <FiBox className={`text-gray-400 w-4 h-4 ${GetSupplyTypeColor(supply.type)}`} />
+                                                <span className="text-gray-700">Type: {supply.type}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <FiPackage className={`text-gray-400 w-4 h-4 ${GetQuantityColor(supply.quantity)}`} />
+                                                <span className="text-gray-700">Quantity: {supply.quantity}</span>
                                             </div>
                                         </div>
                                     </div>

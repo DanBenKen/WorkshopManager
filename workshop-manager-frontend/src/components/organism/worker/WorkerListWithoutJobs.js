@@ -8,7 +8,8 @@ import ButtonCancel from '../../atoms/ButtonCancel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FiUser, FiBriefcase, FiArrowLeft, FiMoreHorizontal } from 'react-icons/fi';
 import CardData from '../../molecules/CardData';
-import WorkerDetailsModal from './WorkerDetails';
+import WorkerDetailsModal from './WorkerDetailsModal';
+import { GetPositionColor as GetWorkerPositionColor } from '../../../utils/colorChangers';
 
 const WorkerListWithoutJobs = () => {
     const { workers, isLoading, error, fetchData } = useWorkers('withoutJobs');
@@ -95,7 +96,7 @@ const WorkerListWithoutJobs = () => {
 
                                         <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
                                             <div className="flex items-center gap-2">
-                                                <FiBriefcase className="text-gray-400 w-4 h-4" />
+                                                <FiBriefcase className={`text-gray-400 w-4 h-4 ${GetWorkerPositionColor(worker.position)}`} />
                                                 <span className="text-gray-700">{worker.position}</span>
                                             </div>
                                         </div>

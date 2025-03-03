@@ -47,12 +47,8 @@ export const validateJobForm = (values) => {
     errors.jobName = isRequired(values.jobName, 'Job Name')
         || isAlphanumericWithLetters(values.jobName, 'Job Name');
     errors.description = isRequired(values.description, 'Description');
-    errors.workerId = isRequired(values.workerId, 'Worker ID')
-        || isPositiveNumber(values.workerId, 'Worker ID')
-        || isInteger(values.workerId, 'Worker ID');
-    errors.supplyId = isRequired(values.supplyId, 'Supply ID')
-        || isInteger(values.supplyId, 'Supply ID')
-        || isPositiveNumber(values.supplyId, 'Supply ID');
+    errors.workerId = isRequired(values.workerId, 'Worker')
+    errors.supplyId = isRequired(values.supplyId, 'Supply')
     errors.quantity = isRequired(values.quantity, "Quantity")
         || isInteger(values.quantity, 'Quantity')
         || isNumber(values.quantity, 'Quantity')

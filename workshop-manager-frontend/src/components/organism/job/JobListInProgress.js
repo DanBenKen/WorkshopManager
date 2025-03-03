@@ -48,7 +48,7 @@ const JobListInProgress = () => {
                     </h1>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
+                <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <Filter
                             type="input"
