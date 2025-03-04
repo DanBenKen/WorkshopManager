@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using WorkshopManager.Enums;
 
 namespace WorkshopManager.DTOs.JobDTOs
@@ -14,11 +13,13 @@ namespace WorkshopManager.DTOs.JobDTOs
         [Required(ErrorMessage = "Supply ID is required.")]
         public int? SupplyId { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Supply quantity must be at least 1.")]
+        [Required(ErrorMessage = "Quantity is required.")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity must be a positive number.")]
         public int SupplyQuantity { get; set; }
 
         [Required(ErrorMessage = "Job name is required.")]
         [StringLength(100, ErrorMessage = "Job name cannot exceed 100 characters.")]
+        [RegularExpression(@"^(?=.*[A-Za-z])[A-Za-z0-9 ]+$", ErrorMessage = "Job name must contain only letters and numbers.")]
         public required string JobName { get; set; }
 
         [Required(ErrorMessage = "Description is required.")]

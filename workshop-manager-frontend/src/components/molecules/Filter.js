@@ -1,18 +1,7 @@
 import React from 'react';
 import { FiX } from 'react-icons/fi';
 
-const Filter = ({
-    type,
-    options,
-    value,
-    onChange,
-    placeholder,
-    className,
-    defaultOptionLabel = "All",
-    id,
-    name,
-    autocomplete = "on"
-}) => {
+const Filter = ({ type, options, value, onChange, placeholder, className, defaultOptionLabel = "All", id, name, autoComplete = "on" }) => {
     if (type === 'select') {
         return (
             <div className={className}>
@@ -22,7 +11,7 @@ const Filter = ({
                     className="border p-2"
                     id={id}
                     name={name}
-                    autoComplete={autocomplete}
+                    autoComplete={autoComplete}
                 >
                     <option value="">{defaultOptionLabel}</option>
                     {options.map((option) => (
@@ -46,7 +35,7 @@ const Filter = ({
                     className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm pr-8`}
                     id={id}
                     name={name}
-                    autoComplete={autocomplete}
+                    autoComplete={autoComplete}
                 />
                 {value && (
                     <button

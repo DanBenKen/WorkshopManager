@@ -7,6 +7,7 @@ import useValidation from '../../../hooks/useValidation';
 import { validateLogin } from '../../../utils/validators';
 import { toast } from 'react-toastify';
 import { FaSpinner } from 'react-icons/fa';
+import ErrorMessage from '../../atoms/ErrorMessage';
 
 const LoginForm = () => {
     const { handleLogin, authError } = useAuth();
@@ -27,26 +28,16 @@ const LoginForm = () => {
         resetErrors();
 
         const validationErrors = validateForm();
-        if (Object.keys(validationErrors).length) return;
-
-        setIsButtonLoading(true);
-
-        const { success, errors } = await handleLogin({ email, password, rememberMe }, rememberMe);
-
+        if (Object.keys(validationErrors).length > 0) return;
+        
+        const { success } = await handleLogin({ email, password, rememberMe }, rememberMe);
+        
         if (success) {
-            toast.success('Login successful!', { autoClose: 1500 });
+            setIsButtonLoading(true);
+            toast.success('Login successful!', { autoClose: 1500, position: 'top-center' });
             setTimeout(() => navigate('/'), 2000);
         } else {
             setIsButtonLoading(false);
-
-            if (errors?.general) {
-                errors.general.forEach((message) => {
-                    toast.error(message, {
-                        autoClose: 1000,
-                        position: 'top-center',
-                    });
-                });
-            }
         }
     };
 
@@ -85,6 +76,8 @@ const LoginForm = () => {
                         onChange={(e) => setRememberMe(e.target.checked)}
                         label={"Remember Me"}
                     />
+
+                    <ErrorMessage message={authError?.general} className="text-center mt-2" />
 
                     <Button type="submit" disabled={isButtonLoading} className="w-full flex items-center justify-center mt-5">
                         {isButtonLoading ? (

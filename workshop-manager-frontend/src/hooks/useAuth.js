@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import { 
-    login as loginService, 
-    register as registerService,
-    logout as logoutService,
-    setLocalToken,
-    removeLocalToken,
-    setSessionToken,
-    removeSessionToken
-} from '../services/authService';
+import { login as loginService, register as registerService, logout as logoutService, setLocalToken, removeLocalToken, setSessionToken, removeSessionToken } from '../services/authService';
 
 const useAuth = () => {
     const [authError, setAuthError] = useState(null);
@@ -88,14 +80,7 @@ const useAuth = () => {
         });
     };
 
-    return {
-        authError,
-        isLoading,
-        handleLogin,
-        handleRegister,
-        handleLogout,
-        setAuthError
-    };
+    return { authError, isLoading, handleLogin, handleRegister, handleLogout, setAuthError };
 };
 
 export default useAuth;

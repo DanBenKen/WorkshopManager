@@ -6,10 +6,11 @@ const hasNumber = (value) => /[0-9]/.test(value) ? undefined : "Password must co
 const hasLowercase = (value) => /[a-z]/.test(value) ? undefined : "Password must contain at least one lowercase letter.";
 const hasUppercase = (value) => /[A-Z]/.test(value) ? undefined : "Password must contain at least one uppercase letter.";
 const passwordsMatch = (password, confirmPassword) => password === confirmPassword ? undefined : "Passwords do not match.";
-const isPositiveNumber = (value, fieldName) => value > 0 ? undefined : `${fieldName} must be a positive number.`;
+const isPositiveNumber = (value, fieldName) => value >= 0 ? undefined : `${fieldName} must be a positive number.`;
 const isAlphabetic = (value, fieldName) => /^[A-Za-z- ]+$/.test(value) ? undefined : `${fieldName} must contain only letters, spaces, or hyphens.`;
-const isAlphanumericWithLetters = (value, fieldName) => /^[A-Za-z0-9-/ ]+$/.test(value) && /[A-Za-z]/.test(value) ? undefined : `${fieldName} must contain at least one letter`;
+const isAlphanumericWithLetters = (value, fieldName) => /^[A-Za-z0-9 ]+$/.test(value) && /[A-Za-z]/.test(value) ? undefined : `${fieldName} can contain only letters with numbers.`;
 const isInteger = (value, fieldName) => Number.isInteger(Number(value)) ? undefined : `${fieldName} must be whole number`;
+const maxLength = (value, length, fieldName) => value.length <= length ? undefined : `${fieldName} must not exceed ${length} characters.`;
 
 // Account validation
 export const validateRegistration = (values) => {
@@ -46,13 +47,16 @@ export const validateJobForm = (values) => {
 
     errors.jobName = isRequired(values.jobName, 'Job Name')
         || isAlphanumericWithLetters(values.jobName, 'Job Name');
-    errors.description = isRequired(values.description, 'Description');
-    errors.workerId = isRequired(values.workerId, 'Worker')
-    errors.supplyId = isRequired(values.supplyId, 'Supply')
+    errors.description = isRequired(values.description, 'Description')
+        || maxLength(values.description, 100, 'Description');
+    errors.workerId = isRequired(values.workerId, 'Worker');
+    errors.supplyId = isRequired(values.supplyId, 'Supply');
     errors.quantity = isRequired(values.quantity, "Quantity")
         || isInteger(values.quantity, 'Quantity')
         || isNumber(values.quantity, 'Quantity')
         || isPositiveNumber(values.quantity, 'Quantity');
+
+    Object.keys(errors).forEach(key => { if (errors[key] === undefined) delete errors[key] });
 
     return errors;
 };

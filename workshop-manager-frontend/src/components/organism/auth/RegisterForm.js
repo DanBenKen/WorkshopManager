@@ -25,24 +25,23 @@ const RegisterForm = () => {
         e.preventDefault();
         resetErrors();
         setAuthError(null);
-    
+
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length) return;
-    
-        setIsButtonLoading(true);
-        const success = await handleRegister({ username, email, password, confirmPassword });
-    
+
+        const { success, errors } = await handleRegister({ username, email, password, confirmPassword });
+
         if (success) {
-            toast.success("Registration successful!", { 
+            setIsButtonLoading(true);
+            toast.success("Registration successful!", {
                 autoClose: 1500,
                 position: 'top-center'
             });
             setTimeout(() => navigate('/account/login'), 2000);
         } else {
             setIsButtonLoading(false);
-            
-            if (authError?.general) {
-                authError.general.forEach((message) => {
+            if (errors?.general) {
+                errors.general.forEach((message) => {
                     toast.error(message, {
                         autoClose: 2000,
                         position: 'top-center',
@@ -62,9 +61,10 @@ const RegisterForm = () => {
                         label="Username"
                         type="text"
                         name="username"
-                        id="id"
+                        id="username"
                         value={username}
                         onChange={handleChange}
+                        autoComplete="username"
                         errorMessage={errors.username || authError?.username}
                         required
                     />
@@ -72,9 +72,10 @@ const RegisterForm = () => {
                         label="Email"
                         type="email"
                         name="email"
-                        id="id"
+                        id="email"
                         value={email}
                         onChange={handleChange}
+                        autoComplete="email"
                         errorMessage={errors.email || authError?.email}
                         required
                     />
@@ -82,7 +83,7 @@ const RegisterForm = () => {
                         label="Password"
                         type="password"
                         name="password"
-                        id="password"
+                        id="new-password"
                         value={password}
                         onChange={handleChange}
                         errorMessage={errors.password || authError?.password}
