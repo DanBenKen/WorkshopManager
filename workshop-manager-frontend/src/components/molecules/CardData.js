@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 const CardData = ({
     data,
@@ -45,19 +44,6 @@ const CardData = ({
             ))}
         </div>
     );
-};
-
-CardData.propTypes = {
-    data: PropTypes.array.isRequired,
-    renderItem: PropTypes.func.isRequired,
-    onItemClick: PropTypes.func,
-    gridClasses: PropTypes.string,
-    keyProp: PropTypes.string,
-    actionIcon: PropTypes.elementType,
-    actionTitle: PropTypes.string,
-    additionalActionIcon: PropTypes.elementType,
-    additionalActionTitle: PropTypes.string,
-    onAdditionalAction: PropTypes.func,
 };
 
 export default CardData;
