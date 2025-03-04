@@ -36,11 +36,62 @@ const WorkerListWithJobs = () => {
     if (isLoading) return <div className="flex justify-center items-center h-64"></div>;
     if (error) return <ErrorMessage message={error} className="mx-auto max-w-screen-xl" />;
 
+    const renderWorkerItem = (worker) => {
+        const { completedJobs, inProgressJobs } = getWorkerJobCounts(worker);
+        return (
+            <div>
+                <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <FiUser className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                            {worker.workerName}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-gray-500 truncate">
+                            ID: {worker.workerId}
+                        </p>
+                    </div>
+                </div>
+    
+                <div className="space-y-2 text-xs sm:text-sm">
+                    <div className="border-t pt-2">
+                        <div className="flex items-center gap-2 mt-2">
+                            <FiActivity className="text-green-500 w-4 h-4" />
+                            <div>
+                                <span className="font-medium">Completed Jobs: </span>
+                                <span className="text-gray-500 ml-2 text-xs">
+                                    {completedJobs}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                            <FiActivity className="text-yellow-500 w-4 h-4" />
+                            <div>
+                                <span className="font-medium">Jobs in Progress: </span>
+                                <span className="text-gray-500 ml-2 text-xs">
+                                    {inProgressJobs}
+                                </span>
+                            </div>
+                        </div>
+    
+                        {worker.jobs.length === 0 && (
+                            <div className="flex items-center gap-2 text-gray-500">
+                                <FiBriefcase className="w-4 h-4" />
+                                <span>No active assignments</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8">
             <div className="max-w-screen-xl mx-auto">
                 <div className="flex flex-row items-center justify-start gap-4 mb-6">
-                    <FiUser className="text-green-500 w-5 h-5" />
+                    <FiUser className="text-green-500 w-8 h-8 sm:w-10 sm:h-10" />
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                         Workers With Assignments
                     </h1>
@@ -49,6 +100,7 @@ const WorkerListWithJobs = () => {
                 <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <Filter
+                            id="searchId"
                             type="input"
                             value={nameFilter}
                             onChange={setNameFilter}
@@ -76,56 +128,7 @@ const WorkerListWithJobs = () => {
                                 actionIcon={FiMoreHorizontal}
                                 actionTitle="View worker details"
                                 onItemClick={handleDetails}
-                                renderItem={(worker) => {
-                                    const { completedJobs, inProgressJobs } = getWorkerJobCounts(worker);
-                                    return (
-                                        <div>
-                                            <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                                                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                                    <FiUser className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
-                                                        {worker.workerName}
-                                                    </h3>
-                                                    <p className="text-xs sm:text-sm text-gray-500 truncate">
-                                                        ID: {worker.workerId}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-2 text-xs sm:text-sm">
-                                                <div className="border-t pt-2">
-                                                    <div className="flex items-center gap-2 mt-2">
-                                                        <FiActivity className="text-green-500 w-4 h-4" />
-                                                        <div>
-                                                            <span className="font-medium">Completed Jobs: </span>
-                                                            <span className="text-gray-500 ml-2 text-xs">
-                                                                {completedJobs}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-2 mt-2">
-                                                        <FiActivity className="text-yellow-500 w-4 h-4" />
-                                                        <div>
-                                                            <span className="font-medium">Jobs in Progress: </span>
-                                                            <span className="text-gray-500 ml-2 text-xs">
-                                                                {inProgressJobs}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
-                                                    {worker.jobs.length === 0 && (
-                                                        <div className="flex items-center gap-2 text-gray-500">
-                                                            <FiBriefcase className="w-4 h-4" />
-                                                            <span>No active assignments</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                }}
+                                renderItem={renderWorkerItem}
                             />
                             <div className='mt-5'>
                                 <ButtonCancel

@@ -58,6 +58,7 @@ const SupplyListWithLowStock = () => {
                             onChange={setNameFilter}
                             placeholder="Search supplies..."
                             icon="search"
+                            id="search"
                             className="w-full sm:w-80"
                         />
                         <span className="text-sm text-gray-500 self-end sm:self-auto">

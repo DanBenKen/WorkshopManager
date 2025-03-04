@@ -102,6 +102,7 @@ const WorkersList = () => {
             <div className="bg-white rounded-xl mb-8">
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
                     <Filter
+                        id="selectId"
                         type="select"
                         value={positionFilter}
                         onChange={setPositionFilter}
@@ -110,6 +111,7 @@ const WorkersList = () => {
                         className="w-full sm:w-48"
                     />
                     <Filter
+                        id="searchId"
                         type="input"
                         value={nameFilter}
                         onChange={setNameFilter}

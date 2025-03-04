@@ -41,12 +41,12 @@ const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
     if (!worker) {
         return (
             <Modal onClose={onClose}>
-                <div className="relative">
-                    <ErrorMessage message="Worker data not found." />
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
             </Modal>
         );
-    }
+    }    
 
     const handleEdit = () => {
         openWorkerForm();
@@ -84,7 +84,7 @@ const WorkerDetailsModal = ({ workerId, onClose, refreshWorkers }) => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Details label="Worker ID:" value={worker.id} />
+                        <Details label="ID:" value={worker.id} />
                         <Details label="Position:" value={worker.position} />
                     </div>
 

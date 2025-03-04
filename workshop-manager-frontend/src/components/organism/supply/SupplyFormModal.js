@@ -54,7 +54,9 @@ const SupplyFormModal = ({ supplyId, onClose, refreshSupplies }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         resetErrors();
-        if (!validateForm()) return;
+        
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) return;
 
         setIsButtonLoading(true);
 
@@ -80,15 +82,18 @@ const SupplyFormModal = ({ supplyId, onClose, refreshSupplies }) => {
 
                 <form onSubmit={handleSubmit}>
                     <FormField
+                        id="nameId"
                         label="Name"
                         type="text"
                         name="name"
                         value={values.name}
                         onChange={handleChange}
                         placeholder="Enter supply name"
+                        autoComplete="off"
                         errorMessage={errors.name}
                     />
                     <FormField
+                        id="quantityId"
                         label="Quantity"
                         type="number"
                         name="quantity"
@@ -98,6 +103,7 @@ const SupplyFormModal = ({ supplyId, onClose, refreshSupplies }) => {
                         errorMessage={errors.quantity}
                     />
                     <FormField
+                        id="typeId"
                         label="Type"
                         type="select"
                         name="type"

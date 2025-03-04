@@ -47,7 +47,7 @@ const SupplyList = () => {
         if (!isNaN(quantity) && quantity > 0) {
             handleAddMoreQuantity(supply, quantity);
             setQuantityInputs(prev => ({ ...prev, [supply.id]: '' }));
-            toast.success(`Added ${quantity} quantity to ${supply.name}}`)
+            toast.success(`Added ${quantity} quantity to ${supply.name}`)
         } else {
             if (quantity < 0) {
                 toast.warn('Quantity must be a positive number.');
@@ -64,7 +64,7 @@ const SupplyList = () => {
             <>
                 <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                        <FiPackage className={`text-blue-600 w-5 h-5 sm:w-6 sm:h-6 ${GetSupplyTypeColor(supply.type)}`} />
+                        <FiPackage className={`w-5 h-5 sm:w-6 sm:h-6 ${GetSupplyTypeColor(supply.type)}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
@@ -78,11 +78,11 @@ const SupplyList = () => {
 
                 <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
                     <div className="flex items-center gap-2">
-                        <FiBox className={`text-gray-400 w-4 h-4 ${GetSupplyTypeColor(supply.type)}`} />
+                        <FiBox className={`w-4 h-4 ${GetSupplyTypeColor(supply.type)}`} />
                         <span className="text-gray-700">Type: {supply.type}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <FiPackage className={`text-gray-400 w-4 h-4 ${GetQuantityColor(supply.quantity)}`} />
+                        <FiPackage className={`w-4 h-4 ${GetQuantityColor(supply.quantity)}`} />
                         <span className="text-gray-700">Quantity: {supply.quantity}</span>
                     </div>
 
@@ -90,6 +90,7 @@ const SupplyList = () => {
                         <input
                             type="number"
                             min="1"
+                            id={supply.id}
                             value={quantityInputs[supply.id] || ''}
                             onChange={(e) =>
                                 setQuantityInputs(prev => ({
@@ -145,6 +146,7 @@ const SupplyList = () => {
             <div className="bg-white rounded-xl mb-8">
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
                     <Filter
+                        id="allTypesId"
                         type="select"
                         value={typeFilter}
                         onChange={setTypeFilter}
@@ -153,6 +155,7 @@ const SupplyList = () => {
                         className="w-full sm:w-48"
                     />
                     <Filter
+                        id="searchId"
                         type="input"
                         value={nameFilter}
                         onChange={setNameFilter}

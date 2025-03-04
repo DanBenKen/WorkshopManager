@@ -42,7 +42,7 @@ const WorkerListWithoutJobs = () => {
         <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8">
             <div className="max-w-screen-xl mx-auto">
                 <div className="flex flex-row items-center justify-start gap-4 mb-6">
-                    <FiUser className="text-red-500 w-5 h-5" />
+                    <FiUser className="text-red-500 w-8 h-8 sm:w-10 sm:h-10" />
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                         Workers Without Assignments
                     </h1>
@@ -51,6 +51,7 @@ const WorkerListWithoutJobs = () => {
                 <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <Filter
+                            id="searchId"
                             type="input"
                             value={nameFilter}
                             onChange={setNameFilter}
