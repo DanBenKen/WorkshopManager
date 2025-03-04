@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 const useValidation = (initialValues, validate) => {
   const [values, setValues] = useState(initialValues);
@@ -26,18 +26,11 @@ const useValidation = (initialValues, validate) => {
     return validationErrors;
   };
 
-  const resetValues = (newValues) => {
+  const resetValues = useCallback((newValues) => {
     setValues(newValues);
-  };
+  }, [setValues]);
 
-  return {
-    values,
-    errors,
-    handleChange,
-    resetErrors,
-    validateForm,
-    resetValues,
-  };
+  return { values, errors, handleChange, resetErrors, validateForm, resetValues };
 };
 
 export default useValidation;

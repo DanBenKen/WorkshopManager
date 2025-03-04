@@ -45,15 +45,16 @@ const useSupplies = () => {
         setSupplies((prevSupplies) => [...prevSupplies, newSupply]);
     }, []);
 
-    const isQuantityPositive = (quantity) => {
-        if (quantity <= 0)
-            throw new Error("Quantity must be a positive number.");
-    };
-
-    const isStockInsufficient = (supplyQuantity, quantityToDeduct) => {
-        if (supplyQuantity < quantityToDeduct)
-            throw new Error('Insufficient stock quantity.');
-    };
+    const validateSupplyQuantity = useCallback((supplyId, requestedQuantity) => {
+        const selectedSupply = supplies.find(s => s.id === Number(supplyId));
+        if (!selectedSupply) {
+            return "Selected supply does not exist.";
+        }
+        if (Number(selectedSupply.quantity) < Number(requestedQuantity)) {
+            return "Not enough quantity available for the selected supply.";
+        }
+        return undefined;
+    }, [supplies]);
 
     const fetchData = useCallback(async () => {
         await handleAsyncAction(async () => {
@@ -77,18 +78,16 @@ const useSupplies = () => {
     const handleUpdateQuantity = useCallback(async (id, quantityToDeduct) => {
         const result = handleAsyncAction(async () => {
             const supply = await getSupplyById(id);
-            isStockInsufficient(supply.quantity, quantityToDeduct);
+            validateSupplyQuantity(supply.quantity, quantityToDeduct);
 
             const updatedSupply = { ...supply, quantity: supply.quantity - quantityToDeduct };
             await updateSupply(id, updatedSupply);
             updateSuppliesState(updatedSupply);
         });
         return result;
-    }, [handleAsyncAction, updateSuppliesState]);
+    }, [handleAsyncAction, updateSuppliesState, validateSupplyQuantity]);
 
     const handleAddMoreQuantity = useCallback(async (supply, quantityToAdd) => {
-        isQuantityPositive(quantityToAdd);
-
         await handleAsyncAction(async () => {
             const updatedSupply = { ...supply, quantity: supply.quantity + quantityToAdd };
             updateSuppliesState(updatedSupply);
@@ -128,7 +127,7 @@ const useSupplies = () => {
     }, [handleAsyncAction, removeSuppliesFromState]);
 
     return {
-        supply, supplies, isLoading, error, totalSupplies, lowStockSuppliesCount, lowStockSupplies, fetchData,
+        supply, supplies, isLoading, error, totalSupplies, lowStockSuppliesCount, lowStockSupplies, fetchData, validateSupplyQuantity,
         fetchSupplyById, handleCreateSupply, handleUpdateSupply, handleUpdateQuantity, handleDeleteSupply, handleAddMoreQuantity, clearError,
     };
 };

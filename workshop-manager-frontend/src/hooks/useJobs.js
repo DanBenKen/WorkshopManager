@@ -24,9 +24,7 @@ const useJobs = (jobId) => {
     const handleError = useCallback((error) => {
         if (error.response) {
             const { status, data } = error.response;
-            if (status === 400) {
-                return;
-            }
+            if (status === 400) return;
 
             if (data && data.detail) {
                 setError([data.detail]);
@@ -72,32 +70,35 @@ const useJobs = (jobId) => {
         setJobs(prevJobs => prevJobs.filter(job => job.id !== jobId));
     };
 
-    const fetchData = useCallback(() => handleAsyncAction(async () => {
-        const jobPromise = jobId ? getJobById(jobId) : getJobs();
-        const [jobData, workersData, suppliesData] = await Promise.all([
-            jobPromise,
-            getWorkers(),
-            getSupplies()
-        ]);
-        
-        if (jobId) {
-            setJob(jobData);
-        } else {
-            setJobs(jobData);
-        }
-        
-        setWorkers(workersData);
-        setSupplies(suppliesData);
-    }), [jobId, handleAsyncAction]);
+    const fetchData = useCallback(async () => {
+        await handleAsyncAction(async () => {
+            const [jobsData, workersData, suppliesData] = await Promise.all([
+                jobId ? getJobById(jobId) : getJobs(),
+                getWorkers(),
+                getSupplies(),
+            ]);
+    
+            if (jobId) {
+                setJob(jobsData);
+            } else {
+                setJobs(jobsData);
+            }
+    
+            setWorkers(workersData);
+            setSupplies(suppliesData);
+        });
+    }, [jobId, handleAsyncAction]);    
 
     useEffect(() => {
         fetchData();
-      }, [fetchData]);
+    }, [fetchData]);
 
-    const handleCreateJob = useCallback(async (jobData) => handleAsyncAction(async () => {
-        const createdJob = await createJob(jobData);
-        addJobToState(createdJob);
-    }), [handleAsyncAction]);
+    const handleCreateJob = useCallback(async (jobData) => {
+        return handleAsyncAction(async () => {
+            const createdJob = await createJob(jobData);
+            addJobToState(createdJob);
+        });
+    }, [handleAsyncAction]);
 
     const handleUpdateJob = useCallback(async (id, jobData) => handleAsyncAction(async () => {
         const updatedJob = await updateJob(id, jobData);
