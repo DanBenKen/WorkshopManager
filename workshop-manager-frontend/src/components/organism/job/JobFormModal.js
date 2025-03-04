@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { validateJobForm } from '../../../utils/validators';
 import { JOB_STATUSES, STATUS_OPTIONS } from '../../../constants/jobStatus';
 import FormField from '../../molecules/FormField';
 import useJobs from '../../../hooks/useJobs';
+import useSupplies from '../../../hooks/useSupplies';
 import ErrorMessage from '../../atoms/ErrorMessage';
 import Button from '../../atoms/Button';
 import useValidation from '../../../hooks/useValidation';
@@ -22,23 +23,12 @@ const initialFormState = {
 
 const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
     const { job, handleCreateJob, handleUpdateJob, error, supplies, workers } = useJobs(jobId);
+    const { validateSupplyQuantity } = useSupplies();
     const [isButtonLoading, setIsButtonLoading] = useState(false);
-    const [formData, setFormData] = useState(initialFormState);
     const isEditMode = !!jobId;
 
-    const {
-        values,
-        errors,
-        handleChange,
-        resetErrors,
-        validateForm
-    } = useValidation(formData, validateJobForm);
-
-    const handleFieldChange = useCallback((e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-        handleChange(e);
-    }, [handleChange]);
+    const { values, errors, handleChange, resetErrors, validateForm, resetValues } =
+        useValidation(initialFormState, validateJobForm);
 
     const getFormStateFromJob = useCallback((job) => {
         const statusEntry = Object.values(JOB_STATUSES).find(s => s.apiValue === job.status);
@@ -48,34 +38,43 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
             status: statusEntry ? statusEntry.id.toString() : JOB_STATUSES.IN_PROGRESS.id.toString(),
             workerId: job.workerId,
             supplyId: job.supplyId || '',
-            quantity: job.supplyQuantity || ''
+            quantity: job.supplyQuantity ? job.supplyQuantity.toString() : ''
         };
     }, []);
 
     useEffect(() => {
         if (job) {
-            setFormData(getFormStateFromJob(job));
+            resetValues(getFormStateFromJob(job));
         }
-    }, [job, getFormStateFromJob]);
+    }, [job, getFormStateFromJob, resetValues]);
 
     const resetForm = useCallback(() => {
         if (isEditMode && job) {
-            setFormData(getFormStateFromJob(job));
+            resetValues(getFormStateFromJob(job));
         } else {
-            setFormData(initialFormState);
+            resetValues(initialFormState);
         }
         resetErrors();
-    }, [isEditMode, job, getFormStateFromJob, resetErrors]);
+    }, [isEditMode, job, getFormStateFromJob, resetValues, resetErrors]);
 
-    const handleSubmit = useCallback(async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         resetErrors();
-        const isValidForm = validateForm();
-        if (!isValidForm) return;
+
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) return;
+
+        if (values.supplyId) {
+            const supplyQuantityError = validateSupplyQuantity(values.supplyId, values.quantity);
+            if (supplyQuantityError) {
+                validationErrors.quantity = supplyQuantityError;
+                return;
+            }
+        }
 
         const selectedStatus = Object.values(JOB_STATUSES).find(
             s => s.id === parseInt(values.status, 10)
-        );
+        ) || JOB_STATUSES.IN_PROGRESS;
 
         const jobData = {
             jobName: values.jobName,
@@ -97,25 +96,17 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
             : await handleCreateJob(jobData);
 
         if (success) {
-            toast.success(isEditMode
-                ? `Job: ${jobData.jobName} updated successfully!`
-                : 'Job created successfully!');
+            toast.success(
+                isEditMode
+                    ? `Job: ${jobData.jobName} updated successfully!`
+                    : `Job ${jobData.jobName} created successfully!`
+            );
             await refreshJobs();
             onClose();
         } else {
             setIsButtonLoading(false);
         }
-    }, [
-        validateForm,
-        values,
-        isEditMode,
-        jobId,
-        handleUpdateJob,
-        handleCreateJob,
-        refreshJobs,
-        onClose,
-        resetErrors
-    ]);
+    };
 
     return (
         <Modal onClose={onClose}>
@@ -133,9 +124,10 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
                         id="jobName"
                         name="jobName"
                         value={values.jobName}
-                        onChange={handleFieldChange}
+                        onChange={handleChange}
                         placeholder="Enter job name"
                         errorMessage={errors.jobName}
+                        required
                     />
 
                     <FormField
@@ -144,9 +136,10 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
                         id="description"
                         name="description"
                         value={values.description}
-                        onChange={handleFieldChange}
+                        onChange={handleChange}
                         placeholder="Enter job description"
                         errorMessage={errors.description}
+                        required
                     />
 
                     <FormField
@@ -155,8 +148,9 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
                         id="status"
                         name="status"
                         value={values.status}
-                        onChange={handleFieldChange}
+                        onChange={handleChange}
                         options={STATUS_OPTIONS}
+                        required
                     />
 
                     <FormField
@@ -165,7 +159,7 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
                         id="workerId"
                         name="workerId"
                         value={values.workerId}
-                        onChange={handleFieldChange}
+                        onChange={handleChange}
                         placeholder="Select worker"
                         errorMessage={errors.workerId}
                         options={[
@@ -175,6 +169,7 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
                                 label: `ID:${worker.id} - ${worker.firstName} ${worker.lastName}`
                             }))
                         ]}
+                        required
                     />
 
                     <FormField
@@ -183,16 +178,17 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
                         id="supplyId"
                         name="supplyId"
                         value={values.supplyId}
-                        onChange={handleFieldChange}
+                        onChange={handleChange}
                         placeholder="Select supply"
                         errorMessage={errors.supplyId}
                         options={[
                             { value: '', label: 'Select Supply' },
                             ...supplies.map(supply => ({
                                 value: supply.id,
-                                label: `ID:${supply.id} - ${supply.name} `
+                                label: `ID:${supply.id} - ${supply.name}`
                             }))
                         ]}
+                        required
                     />
 
                     <FormField
@@ -201,9 +197,10 @@ const JobFormModal = ({ jobId, onClose, refreshJobs }) => {
                         id="quantity"
                         name="quantity"
                         value={values.quantity}
-                        onChange={handleFieldChange}
+                        onChange={handleChange}
                         placeholder="Enter quantity of supply needed"
                         errorMessage={errors.quantity}
+                        required
                     />
 
                     <div className="mt-6 flex gap-3">

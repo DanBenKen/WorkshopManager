@@ -147,7 +147,6 @@ const JobList = () => {
                 ) : (
                     <div>
                         <CardData
-
                             data={paginatedData}
                             keyProp="id"
                             actionIcon={FiMoreHorizontal}

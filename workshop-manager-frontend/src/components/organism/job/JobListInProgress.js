@@ -6,12 +6,13 @@ import Filter from '../../molecules/Filter';
 import usePagination from '../../../hooks/usePagination';
 import ButtonCancel from '../../atoms/ButtonCancel';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FiActivity, FiArrowLeft, FiMoreHorizontal, FiClock } from 'react-icons/fi';
+import { FiActivity, FiArrowLeft, FiMoreHorizontal } from 'react-icons/fi';
 import CardData from '../../molecules/CardData';
 import JobDetailsModal from './JobDetailsModal';
+import { GetJobStatusColor } from '../../../utils/colorChangers';
 
 const JobListInProgress = () => {
-    const { jobs, isLoading, error } = useJobs(null, 'all');
+    const { jobs, isLoading, error, fetchData } = useJobs(null, 'all');
     const [nameFilter, setNameFilter] = useState('');
     const [selectedJobId, setSelectedJobId] = useState(null);
     const navigate = useNavigate();
@@ -42,7 +43,7 @@ const JobListInProgress = () => {
         <div>
             <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <FiClock className="text-blue-600 w-5 h-5 sm:w-6 sm:h-6" />
+                    <FiActivity className={`w-5 h-5 sm:w-6 sm:h-6 ${GetJobStatusColor(job.status)}`} />
                 </div>
                 <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
@@ -56,7 +57,7 @@ const JobListInProgress = () => {
     
             <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm border-t pt-2">
                 <div className="flex items-center gap-2">
-                    <FiActivity className="text-gray-400 w-4 h-4" />
+                    <FiActivity className={`w-4 h-4 ${GetJobStatusColor(job.status)}`} />
                     <span className="text-gray-700">
                         Status: {job.status}
                     </span>
@@ -111,10 +112,11 @@ const JobListInProgress = () => {
                             />                            
 
                             {selectedJobId && (
-                                <JobDetailsModal
-                                    jobId={selectedJobId}
-                                    onClose={() => setSelectedJobId(null)}
-                                />
+                <JobDetailsModal
+                jobId={selectedJobId}
+                onClose={() => setSelectedJobId(null)}
+                refreshJobs={fetchData}
+            />
                             )}
 
                             <div className="mt-6 sm:mt-8">
